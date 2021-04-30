@@ -5,6 +5,7 @@
     <IsPackable>false</IsPackable>
     <IsPublishable>false</IsPublishable>
     <IsTestProject>true</IsTestProject>
+    <RootNamespace>Reductech.EDR.ConnectorManagement.Tests</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup>
