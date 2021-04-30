@@ -1,4 +1,4 @@
-namespace Reductech.Templates.DotNetLibrary
+namespace Reductech.EDR.ConnectorManager
 {
 
 public interface IMessageStream

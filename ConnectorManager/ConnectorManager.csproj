@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <RootNamespace>Reductech.EDR.ConnectorManager</RootNamespace>
+    <AssemblyName>Reductech.EDR.ConnectorManager</AssemblyName>
+    <Version>0.5.0$(VersionSuffix)</Version>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>Reductech.EDR.ConnectorManager</PackageId>
+    <Title></Title>
+    <Description></Description>
+    <Product></Product>
+    <PackageTags></PackageTags>
+
+    <PackageProjectUrl>https://gitlab.com/reductech/edr/connectormanager</PackageProjectUrl>
+    <RepositoryUrl>https://gitlab.com/reductech/edr/connectormanager</RepositoryUrl>
+    <PackageReleaseNotes>Please see https://gitlab.com/reductech/edr/connectormanager/-/releases</PackageReleaseNotes>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    
+    <Authors>Reductech</Authors>
+    <Company>Reductech</Company>
+    <Copyright>Copyright (c) 2020 Reductech Ltd</Copyright>
+  </PropertyGroup>
+
+</Project>

@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <RepositoryUrl>https://gitlab.com/reductech/templates/dotnetlibrary</RepositoryUrl>
+    <RepositoryUrl>https://gitlab.com/reductech/edr/connectormanager</RepositoryUrl>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <Authors>Reductech</Authors>
     <Company>Reductech</Company>
@@ -33,7 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DotNetLibrary\DotNetLibrary.csproj" />
+    <ProjectReference Include="..\ConnectorManager\ConnectorManager.csproj" />
   </ItemGroup>
 
 </Project>

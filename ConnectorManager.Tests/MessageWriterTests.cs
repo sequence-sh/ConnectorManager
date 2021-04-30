@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using Xunit;
 
-namespace Reductech.Templates.DotNetLibrary.Tests
+namespace Reductech.EDR.ConnectorManager.Tests
 {
 
 public class MessageWriterTestCase
