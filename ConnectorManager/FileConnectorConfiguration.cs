@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 using Reductech.EDR.Core.Entities;
 using Reductech.EDR.Core.Internal;
 
-namespace Reductech.EDR
+namespace Reductech.EDR.ConnectorManagement
 {
 
 /// <summary>

@@ -6,11 +6,10 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using MoreLinq;
 using NuGet.Versioning;
 using Reductech.EDR.Core.Internal;
 
-namespace Reductech.EDR
+namespace Reductech.EDR.ConnectorManagement
 {
 
 /// <inheritdoc />
@@ -67,9 +66,12 @@ public class ConnectorManager : IConnectorManager
             throw new Exception($"Could not install connector to {installPath}");
 
         if (_configuration.ContainsId(id))
-            _configuration.Connectors
-                .Where(c => c.Enable && c.Id.Equals(id, StringComparison.Ordinal))
-                .ForEach(c => c.Enable = false);
+        {
+            foreach (var config in _configuration.Connectors.Where(
+                c => c.Enable && c.Id.Equals(id, StringComparison.Ordinal)
+            ))
+                config.Enable = false;
+        }
 
         if (_configuration.Contains(id))
         {

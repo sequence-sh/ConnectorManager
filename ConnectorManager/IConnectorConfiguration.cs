@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Reductech.EDR.Core.Internal;
 
-namespace Reductech.EDR
+namespace Reductech.EDR.ConnectorManagement
 {
 
 /// <summary>

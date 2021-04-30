@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Reductech.EDR
+namespace Reductech.EDR.ConnectorManagement
 {
 
 /// <summary>

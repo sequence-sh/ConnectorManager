@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace Reductech.EDR
+namespace Reductech.EDR.ConnectorManagement
 {
 
 /// <summary>

@@ -1,4 +1,4 @@
-﻿namespace Reductech.EDR
+﻿namespace Reductech.EDR.ConnectorManagement
 {
 
 /// <summary>
