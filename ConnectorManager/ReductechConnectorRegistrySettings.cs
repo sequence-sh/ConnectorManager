@@ -6,10 +6,10 @@ namespace Reductech.EDR.ConnectorManagement
 /// <summary>
 /// Configuration for the default Reductech connector registry.
 /// </summary>
-public class ReductechConnectorRegistry : IConnectorRegistrySettings
+public class ReductechConnectorRegistrySettings : IConnectorRegistrySettings
 {
     /// <summary>
-    /// appsettings.json key that contains ReductechConnectorRegistry
+    /// appsettings.json key that contains ReductechConnectorRegistrySettings
     /// </summary>
     public const string Key = "connectorRegistry";
 
