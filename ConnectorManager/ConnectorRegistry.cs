@@ -4,7 +4,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+using NuGet.Common;
 using NuGet.Configuration;
 using NuGet.Packaging;
 using NuGet.Packaging.Core;
@@ -20,8 +20,7 @@ namespace Reductech.EDR.ConnectorManagement
 /// </summary>
 public class ConnectorRegistry : IConnectorRegistry
 {
-    private readonly NuGet.Common.ILogger _logger = NuGet.Common.NullLogger.Instance;
-
+    private readonly ILogger _logger;
     private readonly IConnectorRegistrySettings _settings;
 
     /// <summary>
@@ -30,9 +29,10 @@ public class ConnectorRegistry : IConnectorRegistry
     /// <param name="logger"></param>
     /// <param name="connectorManagerSettings"></param>
     public ConnectorRegistry(
-        ILogger<ConnectorRegistry> logger,
+        Microsoft.Extensions.Logging.ILogger<ConnectorRegistry> logger,
         IConnectorRegistrySettings connectorManagerSettings)
     {
+        _logger   = new LoggerBridge<ConnectorRegistry>(logger);
         _settings = connectorManagerSettings;
     }
 
