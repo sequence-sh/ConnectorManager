@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Reductech.EDR.Core.Internal;
 
 namespace Reductech.EDR.ConnectorManagement
@@ -27,11 +29,27 @@ public interface IConnectorConfiguration : IEnumerable<KeyValuePair<string, Conn
     void Add(string name, ConnectorSettings settings);
 
     /// <summary>
+    /// Add a connector configuration to the collection.
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="settings"></param>
+    /// <param name="ct"></param>
+    Task AddAsync(string name, ConnectorSettings settings, CancellationToken ct);
+
+    /// <summary>
     /// Remove a connector configuration from the collection.
     /// </summary>
     /// <param name="name"></param>
     /// <returns></returns>
     bool Remove(string name);
+
+    /// <summary>
+    /// Remove a connector configuration from the collection.
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="ct"></param>
+    /// <returns></returns>
+    Task<bool> RemoveAsync(string name, CancellationToken ct);
 
     /// <summary>
     /// Determines if a configuration with the specified name exists.

@@ -2,7 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Abstractions;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Reductech.EDR.Core.Entities;
 using Reductech.EDR.Core.Internal;
@@ -17,31 +20,45 @@ public class FileConnectorConfiguration : IConnectorConfiguration
 {
     private readonly string _path;
     private readonly Dictionary<string, ConnectorSettings> _connectors;
+    private readonly IFileSystem _fileSystem;
 
     /// <summary>
-    /// Create a new ConnectorConfiguration using a json file as a store.
+    /// Create a new ConnectorConfiguration using a JSON file.
     /// </summary>
-    /// <param name="path">Path to the connector configuration file.</param>
-    /// <exception cref="FileNotFoundException">If the configuration file does not exist.</exception>
-    public FileConnectorConfiguration(string path)
+    public static async Task<IConnectorConfiguration> FromJson(
+        string configurationPath,
+        IFileSystem fileSystem)
     {
-        if (!File.Exists(path))
-            throw new FileNotFoundException("Connector configuration file not found.", path);
+        if (!fileSystem.File.Exists(configurationPath))
+            throw new FileNotFoundException(
+                "Connector configuration file not found.",
+                configurationPath
+            );
 
-        var text = File.ReadAllText(path);
+        var text = await fileSystem.File.ReadAllTextAsync(configurationPath);
 
-        _path = path;
-
-        _connectors = JsonConvert.DeserializeObject<Dictionary<string, ConnectorSettings>>(
+        var connectors = JsonConvert.DeserializeObject<Dictionary<string, ConnectorSettings>>(
             text,
             EntityJsonConverter.Instance
         ) ?? new Dictionary<string, ConnectorSettings>();
+
+        return new FileConnectorConfiguration(configurationPath, connectors, fileSystem);
     }
 
-    private void SaveSettings()
+    private FileConnectorConfiguration(
+        string path,
+        Dictionary<string, ConnectorSettings> connectors,
+        IFileSystem fileSystem)
+    {
+        _path       = path;
+        _connectors = connectors;
+        _fileSystem = fileSystem;
+    }
+
+    private async Task SaveSettings(CancellationToken ct)
     {
         var output = JsonConvert.SerializeObject(_connectors, EntityJsonConverter.Instance);
-        File.WriteAllText(_path, output);
+        await _fileSystem.File.WriteAllTextAsync(_path, output, ct);
     }
 
     /// <inheritdoc />
@@ -51,19 +68,26 @@ public class FileConnectorConfiguration : IConnectorConfiguration
     public int Count => _connectors.Count;
 
     /// <inheritdoc />
-    public void Add(string name, ConnectorSettings settings)
+    public void Add(string name, ConnectorSettings settings) =>
+        AddAsync(name, settings, CancellationToken.None).Wait();
+
+    /// <inheritdoc />
+    public async Task AddAsync(string name, ConnectorSettings settings, CancellationToken ct)
     {
         _connectors.Add(name, settings);
-        SaveSettings();
+        await SaveSettings(ct);
     }
 
     /// <inheritdoc />
-    public bool Remove(string name)
+    public bool Remove(string name) => RemoveAsync(name, CancellationToken.None).Result;
+
+    /// <inheritdoc />
+    public async Task<bool> RemoveAsync(string name, CancellationToken ct)
     {
         var success = _connectors.Remove(name);
 
         if (success)
-            SaveSettings();
+            await SaveSettings(ct);
 
         return success;
     }
@@ -91,7 +115,7 @@ public class FileConnectorConfiguration : IConnectorConfiguration
         set
         {
             _connectors[name] = value;
-            SaveSettings();
+            SaveSettings(CancellationToken.None).Wait();
         }
     }
 
