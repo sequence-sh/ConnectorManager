@@ -1,7 +1,8 @@
 /label ~feature
 /label ~"wf::backlog"
-/label ~"area::connectors"
-/epic reductech&19
+/label ~"area::release/packaging"
+/label ~edr
+/epic reductech&24
 
 ## Story
 
