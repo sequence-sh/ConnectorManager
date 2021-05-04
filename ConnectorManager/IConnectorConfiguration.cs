@@ -26,22 +26,8 @@ public interface IConnectorConfiguration : IEnumerable<KeyValuePair<string, Conn
     /// </summary>
     /// <param name="name"></param>
     /// <param name="settings"></param>
-    void Add(string name, ConnectorSettings settings);
-
-    /// <summary>
-    /// Add a connector configuration to the collection.
-    /// </summary>
-    /// <param name="name"></param>
-    /// <param name="settings"></param>
     /// <param name="ct"></param>
     Task AddAsync(string name, ConnectorSettings settings, CancellationToken ct);
-
-    /// <summary>
-    /// Remove a connector configuration from the collection.
-    /// </summary>
-    /// <param name="name"></param>
-    /// <returns></returns>
-    bool Remove(string name);
 
     /// <summary>
     /// Remove a connector configuration from the collection.

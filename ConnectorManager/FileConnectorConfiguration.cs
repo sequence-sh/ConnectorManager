@@ -68,18 +68,11 @@ public class FileConnectorConfiguration : IConnectorConfiguration
     public int Count => _connectors.Count;
 
     /// <inheritdoc />
-    public void Add(string name, ConnectorSettings settings) =>
-        AddAsync(name, settings, CancellationToken.None).Wait();
-
-    /// <inheritdoc />
     public async Task AddAsync(string name, ConnectorSettings settings, CancellationToken ct)
     {
         _connectors.Add(name, settings);
         await SaveSettings(ct);
     }
-
-    /// <inheritdoc />
-    public bool Remove(string name) => RemoveAsync(name, CancellationToken.None).Result;
 
     /// <inheritdoc />
     public async Task<bool> RemoveAsync(string name, CancellationToken ct)
