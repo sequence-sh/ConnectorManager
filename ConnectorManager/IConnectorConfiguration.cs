@@ -79,7 +79,15 @@ public interface IConnectorConfiguration : IEnumerable<KeyValuePair<string, Conn
     /// <param name="name"></param>
     /// <param name="settings"></param>
     /// <returns></returns>
-    bool TryGetValue(string name, out ConnectorSettings settings);
+    bool TryGetSettings(string name, out ConnectorSettings settings);
+
+    /// <summary>
+    /// Gets the configuration(s) associated with the specified id.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="settings"></param>
+    /// <returns></returns>
+    bool TryGetSettingsById(string id, out ConnectorSettings[] settings);
 
     /// <summary>
     /// Gets or sets the configuration with the specified name.

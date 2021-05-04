@@ -105,8 +105,17 @@ public class FileConnectorConfiguration : IConnectorConfiguration
     );
 
     /// <inheritdoc />
-    public bool TryGetValue(string name, out ConnectorSettings settings) =>
+    public bool TryGetSettings(string name, out ConnectorSettings settings) =>
         _connectors.TryGetValue(name, out settings!);
+
+    /// <inheritdoc />
+    public bool TryGetSettingsById(string id, out ConnectorSettings[] settings)
+    {
+        settings = _connectors.Values.Where(c => c.Id.Equals(id, StringComparison.Ordinal))
+            .ToArray();
+
+        return settings.Length > 0;
+    }
 
     /// <inheritdoc />
     public ConnectorSettings this[string name]

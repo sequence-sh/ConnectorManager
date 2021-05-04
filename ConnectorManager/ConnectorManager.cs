@@ -135,7 +135,7 @@ public class ConnectorManager : IConnectorManager
     /// <inheritdoc />
     public void Remove(string id)
     {
-        if (_configuration.TryGetValue(id, out var connector))
+        if (_configuration.TryGetSettings(id, out var connector))
         {
             var removePath = GetInstallPath(id, connector.Version);
 
