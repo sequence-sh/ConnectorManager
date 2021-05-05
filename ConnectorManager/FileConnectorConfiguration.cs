@@ -57,7 +57,19 @@ public class FileConnectorConfiguration : IConnectorConfiguration
 
     private async Task SaveSettings(CancellationToken ct)
     {
-        var output = JsonConvert.SerializeObject(_connectors, EntityJsonConverter.Instance);
+        var jsonSettings =
+            new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                Converters        = new List<JsonConverter> { EntityJsonConverter.Instance }
+            };
+
+        var output = JsonConvert.SerializeObject(
+            _connectors,
+            Formatting.Indented,
+            jsonSettings
+        );
+
         await _fileSystem.File.WriteAllTextAsync(_path, output, ct);
     }
 
@@ -71,14 +83,17 @@ public class FileConnectorConfiguration : IConnectorConfiguration
     public int Count => _connectors.Count;
 
     /// <inheritdoc />
-    public async Task AddAsync(string name, ConnectorSettings settings, CancellationToken ct)
+    public async Task AddAsync(
+        string name,
+        ConnectorSettings settings,
+        CancellationToken ct = default)
     {
         _connectors.Add(name, settings);
         await SaveSettings(ct);
     }
 
     /// <inheritdoc />
-    public async Task<bool> RemoveAsync(string name, CancellationToken ct)
+    public async Task<bool> RemoveAsync(string name, CancellationToken ct = default)
     {
         var success = _connectors.Remove(name);
 

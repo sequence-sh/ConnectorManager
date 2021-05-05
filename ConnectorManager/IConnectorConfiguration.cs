@@ -32,7 +32,7 @@ public interface IConnectorConfiguration : IEnumerable<KeyValuePair<string, Conn
     /// <param name="name"></param>
     /// <param name="settings"></param>
     /// <param name="ct"></param>
-    Task AddAsync(string name, ConnectorSettings settings, CancellationToken ct);
+    Task AddAsync(string name, ConnectorSettings settings, CancellationToken ct = default);
 
     /// <summary>
     /// Remove a connector configuration from the collection.
@@ -40,7 +40,7 @@ public interface IConnectorConfiguration : IEnumerable<KeyValuePair<string, Conn
     /// <param name="name"></param>
     /// <param name="ct"></param>
     /// <returns></returns>
-    Task<bool> RemoveAsync(string name, CancellationToken ct);
+    Task<bool> RemoveAsync(string name, CancellationToken ct = default);
 
     /// <summary>
     /// Determines if a configuration with the specified name exists.
