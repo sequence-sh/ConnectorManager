@@ -42,6 +42,7 @@ public class ConnectorManager : IConnectorManager
     /// <inheritdoc />
     public async Task Add(
         string id,
+        string? name,
         string? version,
         CancellationToken ct,
         bool prerelease = false,
@@ -97,48 +98,48 @@ public class ConnectorManager : IConnectorManager
 
     /// <inheritdoc />
     public async Task Update(
-        string id,
+        string name,
         string? version,
         CancellationToken ct,
         bool prerelease = false)
     {
-        if (!_configuration.Contains(id))
+        if (!_configuration.Contains(name))
         {
-            _logger.LogInformation($"Connector not found: {id}");
+            _logger.LogInformation($"Connector not found: {name}");
             return;
         }
 
-        var cs = _configuration[id];
+        var cs = _configuration[name];
 
-        var nuGetVersion = await GetNuGetVersion(id, version, ct, prerelease);
+        var nuGetVersion = await GetNuGetVersion(name, version, ct, prerelease);
 
         if (cs.Version.Equals(nuGetVersion.ToNormalizedString()))
         {
             _logger.LogInformation(
-                $"Latest version already installed: {id} {nuGetVersion.ToNormalizedString()}"
+                $"Latest version already installed: {name} {nuGetVersion.ToNormalizedString()}"
             );
 
             return;
         }
 
-        var installPath = GetInstallPath(id, nuGetVersion.ToNormalizedString());
+        var installPath = GetInstallPath(name, nuGetVersion.ToNormalizedString());
 
-        var package = await _registry.Install(id, nuGetVersion, installPath, ct);
+        var package = await _registry.Install(name, nuGetVersion, installPath, ct);
 
         if (package == null)
             throw new Exception($"Could not install connector to {installPath}");
 
         cs.Version = nuGetVersion.ToNormalizedString();
 
-        _configuration[id] = cs;
+        _configuration[name] = cs;
     }
 
     /// <inheritdoc />
-    public async Task Remove(string id, CancellationToken ct)
+    public async Task Remove(string name, CancellationToken ct)
     {
-        if (_configuration.TryGetSettings(id, out var connector))
+        if (_configuration.TryGetSettings(name, out var connector))
         {
-            var removePath = GetInstallPath(id, connector.Version);
+            var removePath = GetInstallPath(name, connector.Version);
 
             try
             {
@@ -149,16 +150,16 @@ public class ConnectorManager : IConnectorManager
                 _logger.LogWarning($"Directory not found {removePath}");
             }
 
-            await _configuration.RemoveAsync(id, ct);
+            await _configuration.RemoveAsync(name, ct);
         }
         else
         {
-            _logger.LogError($"Could not find connector {id}");
+            _logger.LogError($"Could not find connector {name}");
         }
     }
 
     /// <inheritdoc />
-    public void List(string? filter)
+    public void List(string? nameFilter)
     {
         if (_configuration.Count <= 0)
             return;
@@ -175,9 +176,9 @@ public class ConnectorManager : IConnectorManager
         Console.WriteLine(outputFormat, "Name", "Id", "Version", "Enabled");
         Console.WriteLine(new string('-', maxNameLen + maxIdLen + maxVerLen + 11));
 
-        var configs = filter == null
+        var configs = nameFilter == null
             ? _configuration
-            : _configuration.Where(c => Regex.IsMatch(c.Key, filter));
+            : _configuration.Where(c => Regex.IsMatch(c.Key, nameFilter));
 
         foreach (var (k, v) in configs)
             Console.WriteLine(outputFormat, k, v.Id, v.Version, v.Enable);

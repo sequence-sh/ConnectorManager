@@ -10,51 +10,57 @@ namespace Reductech.EDR.ConnectorManagement
 public interface IConnectorManager
 {
     /// <summary>
-    /// 
+    /// Add a connector with the specified id to the configuration.
     /// </summary>
-    /// <param name="id"></param>
-    /// <param name="version"></param>
-    /// <param name="ct"></param>
-    /// <param name="prerelease"></param>
-    /// <param name="force"></param>
+    /// <param name="id">Connector registry Id</param>
+    /// <param name="name">Name of the configuration to add</param>
+    /// <param name="version">Connector version</param>
+    /// <param name="ct">Cancellation token</param>
+    /// <param name="prerelease">Allow prerelease versions to be used</param>
+    /// <param name="force">Re-add if connector configuration already exists</param>
     /// <returns></returns>
     Task Add(
         string id,
+        string? name,
         string? version,
         CancellationToken ct,
         bool prerelease = false,
         bool force = false);
 
     /// <summary>
-    /// 
+    /// Update the connector configuration with the specified name.
     /// </summary>
-    /// <param name="id"></param>
-    /// <param name="version"></param>
-    /// <param name="ct"></param>
-    /// <param name="prerelease"></param>
+    /// <param name="name">Name of the configuration to update</param>
+    /// <param name="version">Connector version</param>
+    /// <param name="ct">Cancellation token</param>
+    /// <param name="prerelease">Allow prerelease versions to be used</param>
     /// <returns></returns>
-    Task Update(string id, string? version, CancellationToken ct, bool prerelease = false);
+    Task Update(
+        string name,
+        string? version,
+        CancellationToken ct,
+        bool prerelease = false);
 
     /// <summary>
-    /// 
+    /// Remove the connector configuration with the specified name.
     /// </summary>
-    /// <param name="id"></param>
-    /// <param name="ct"></param>
+    /// <param name="name">Name of the configuration to remove</param>
+    /// <param name="ct">Cancellation token</param>
     /// <returns></returns>
-    Task Remove(string id, CancellationToken ct);
+    Task Remove(string name, CancellationToken ct);
 
     /// <summary>
-    /// 
+    /// List all available configurations.
     /// </summary>
-    /// <param name="filter"></param>
-    void List(string? filter);
+    /// <param name="nameFilter">If specified, only configuration names matching this regular expression will be shown</param>
+    void List(string? nameFilter);
 
     /// <summary>
-    /// 
+    /// Find or list connectors available in the connector registry.
     /// </summary>
-    /// <param name="search"></param>
-    /// <param name="ct"></param>
-    /// <param name="prerelease"></param>
+    /// <param name="search">If specified, only connectors mathing this search string will be shown</param>
+    /// <param name="ct">Cancellation token</param>
+    /// <param name="prerelease">Allow prerelease versions to be used</param>
     /// <returns></returns>
     Task Find(string? search, CancellationToken ct, bool prerelease = false);
 }
