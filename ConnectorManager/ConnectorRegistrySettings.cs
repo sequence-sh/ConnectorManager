@@ -8,8 +8,8 @@ namespace Reductech.EDR.ConnectorManagement
 /// </summary>
 public record ConnectorRegistrySettings(
     [JsonProperty("registry")] string Uri,
-    [JsonProperty("registryUser")] string? RegistryUser,
-    [JsonProperty("registryToken")] string? RegistryToken)
+    [JsonProperty("registryUser")] string? RegistryUser = null,
+    [JsonProperty("registryToken")] string? RegistryToken = null)
 {
     /// <summary>
     /// appsettings.json section key that contains the settings
