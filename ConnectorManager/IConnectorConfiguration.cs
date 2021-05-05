@@ -12,9 +12,14 @@ namespace Reductech.EDR.ConnectorManagement
 public interface IConnectorConfiguration : IEnumerable<KeyValuePair<string, ConnectorSettings>>
 {
     /// <summary>
+    /// Gets a collection containing the names of the configurations.
+    /// </summary>
+    ICollection<string> Keys { get; }
+
+    /// <summary>
     /// Gets a collection containing the connector settings.
     /// </summary>
-    ICollection<ConnectorSettings> Connectors { get; }
+    ICollection<ConnectorSettings> Settings { get; }
 
     /// <summary>
     /// Gets the number of configurations in the collection.

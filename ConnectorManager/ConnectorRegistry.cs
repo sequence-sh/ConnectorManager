@@ -21,7 +21,7 @@ namespace Reductech.EDR.ConnectorManagement
 public class ConnectorRegistry : IConnectorRegistry
 {
     private readonly ILogger _logger;
-    private readonly IConnectorRegistrySettings _settings;
+    private readonly ConnectorRegistrySettings _settings;
 
     /// <summary>
     /// 
@@ -30,7 +30,7 @@ public class ConnectorRegistry : IConnectorRegistry
     /// <param name="connectorManagerSettings"></param>
     public ConnectorRegistry(
         Microsoft.Extensions.Logging.ILogger<ConnectorRegistry> logger,
-        IConnectorRegistrySettings connectorManagerSettings)
+        ConnectorRegistrySettings connectorManagerSettings)
     {
         _logger   = new LoggerBridge<ConnectorRegistry>(logger);
         _settings = connectorManagerSettings;

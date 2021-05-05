@@ -16,7 +16,7 @@ namespace Reductech.EDR.ConnectorManagement
 public class ConnectorManager : IConnectorManager
 {
     private readonly ILogger<ConnectorManager> _logger;
-    private readonly IConnectorManagerSettings _settings;
+    private readonly ConnectorManagerSettings _settings;
     private readonly IConnectorRegistry _registry;
     private readonly IConnectorConfiguration _configuration;
 
@@ -29,7 +29,7 @@ public class ConnectorManager : IConnectorManager
     /// <param name="configuration"></param>
     public ConnectorManager(
         ILogger<ConnectorManager> logger,
-        IConnectorManagerSettings settings,
+        ConnectorManagerSettings settings,
         IConnectorRegistry registry,
         IConnectorConfiguration configuration)
     {
@@ -67,7 +67,7 @@ public class ConnectorManager : IConnectorManager
 
         if (_configuration.ContainsId(id))
         {
-            foreach (var config in _configuration.Connectors.Where(
+            foreach (var config in _configuration.Settings.Where(
                 c => c.Enable && c.Id.Equals(id, StringComparison.Ordinal)
             ))
                 config.Enable = false;
@@ -84,12 +84,13 @@ public class ConnectorManager : IConnectorManager
         }
         else
         {
-            _configuration.Add(
+            await _configuration.AddAsync(
                 id,
                 new ConnectorSettings
                 {
                     Id = id, Version = nuGetVersion.ToNormalizedString(), Enable = true
-                }
+                },
+                ct
             );
         }
     }
@@ -133,7 +134,7 @@ public class ConnectorManager : IConnectorManager
     }
 
     /// <inheritdoc />
-    public void Remove(string id)
+    public async Task Remove(string id, CancellationToken ct)
     {
         if (_configuration.TryGetSettings(id, out var connector))
         {
@@ -148,7 +149,7 @@ public class ConnectorManager : IConnectorManager
                 _logger.LogWarning($"Directory not found {removePath}");
             }
 
-            _configuration.Remove(id);
+            await _configuration.RemoveAsync(id, ct);
         }
         else
         {

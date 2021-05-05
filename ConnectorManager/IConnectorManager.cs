@@ -39,7 +39,9 @@ public interface IConnectorManager
     /// 
     /// </summary>
     /// <param name="id"></param>
-    void Remove(string id);
+    /// <param name="ct"></param>
+    /// <returns></returns>
+    Task Remove(string id, CancellationToken ct);
 
     /// <summary>
     /// 

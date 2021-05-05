@@ -62,7 +62,10 @@ public class FileConnectorConfiguration : IConnectorConfiguration
     }
 
     /// <inheritdoc />
-    public ICollection<ConnectorSettings> Connectors => _connectors.Values;
+    public ICollection<string> Keys => _connectors.Keys;
+
+    /// <inheritdoc />
+    public ICollection<ConnectorSettings> Settings => _connectors.Values;
 
     /// <inheritdoc />
     public int Count => _connectors.Count;
