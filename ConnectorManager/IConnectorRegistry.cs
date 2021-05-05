@@ -1,9 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using NuGet.Packaging;
-using NuGet.Protocol.Core.Types;
-using NuGet.Versioning;
 
 namespace Reductech.EDR.ConnectorManagement
 {
@@ -20,7 +18,7 @@ public interface IConnectorRegistry
     /// <param name="prerelease"></param>
     /// <param name="ct"></param>
     /// <returns></returns>
-    Task<IEnumerable<IPackageSearchMetadata>> Find(
+    Task<ICollection<ConnectorMetadata>> Find(
         string search,
         bool prerelease = false,
         CancellationToken ct = default);
@@ -32,7 +30,7 @@ public interface IConnectorRegistry
     /// <param name="version"></param>
     /// <param name="ct"></param>
     /// <returns></returns>
-    Task<bool> Exists(string id, NuGetVersion version, CancellationToken ct = default);
+    Task<bool> Exists(string id, string? version = null, CancellationToken ct = default);
 
     /// <summary>
     /// 
@@ -41,7 +39,7 @@ public interface IConnectorRegistry
     /// <param name="prerelease"></param>
     /// <param name="ct"></param>
     /// <returns></returns>
-    Task<IEnumerable<IPackageSearchMetadata>> GetMetadata(
+    Task<ICollection<string>> GetVersion(
         string id,
         bool prerelease = false,
         CancellationToken ct = default);
@@ -50,18 +48,10 @@ public interface IConnectorRegistry
     /// 
     /// </summary>
     /// <param name="id"></param>
-    /// <param name="ct"></param>
-    /// <returns></returns>
-    Task<IEnumerable<NuGetVersion>> GetVersion(string id, CancellationToken ct = default);
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="id"></param>
     /// <param name="prerelease"></param>
     /// <param name="ct"></param>
     /// <returns></returns>
-    Task<NuGetVersion> GetLatestVersion(
+    Task<string> GetLatestVersion(
         string id,
         bool prerelease = false,
         CancellationToken ct = default);
@@ -71,12 +61,11 @@ public interface IConnectorRegistry
     /// </summary>
     /// <param name="id"></param>
     /// <param name="version"></param>
-    /// <param name="force"></param>
     /// <param name="ct"></param>
     /// <returns></returns>
-    Task<PackageArchiveReader> GetConnectorPackage(
+    Task<MemoryStream> GetConnectorPackage(
         string id,
-        NuGetVersion version,
+        string? version = null,
         CancellationToken ct = default);
 }
 

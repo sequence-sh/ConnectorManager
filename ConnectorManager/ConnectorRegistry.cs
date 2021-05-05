@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using NuGet.Common;
 using NuGet.Configuration;
-using NuGet.Packaging;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 using NuGet.Versioning;
@@ -40,7 +41,7 @@ public class ConnectorRegistry : IConnectorRegistry
     }
 
     /// <inheritdoc />
-    public async Task<IEnumerable<IPackageSearchMetadata>> Find(
+    public async Task<ICollection<ConnectorMetadata>> Find(
         string search,
         bool prerelease = false,
         CancellationToken ct = default)
@@ -56,82 +57,65 @@ public class ConnectorRegistry : IConnectorRegistry
             ct
         );
 
-        return results;
+        return results.Select(
+                p => new ConnectorMetadata(p.Identity.Id, p.Identity.Version.ToNormalizedString())
+            )
+            .ToArray();
     }
 
     /// <inheritdoc />
-    public async Task<bool> Exists(string id, NuGetVersion version, CancellationToken ct = default)
+    public async Task<bool> Exists(
+        string id,
+        string? version = null,
+        CancellationToken ct = default)
     {
-        var resource = await GetPrivateResource<FindPackageByIdResource>(ct);
-        var cache    = new SourceCacheContext();
-        return await resource.DoesPackageExistAsync(id, version, cache, _logger, ct);
+        var nugetVersion = await GetNuGetVersion(id, version, true, ct);
+        var resource     = await GetPrivateResource<FindPackageByIdResource>(ct);
+        var cache        = new SourceCacheContext();
+        return await resource.DoesPackageExistAsync(id, nugetVersion, cache, _logger, ct);
     }
 
     /// <inheritdoc />
-    public async Task<IEnumerable<IPackageSearchMetadata>> GetMetadata(
+    public async Task<ICollection<string>> GetVersion(
         string id,
         bool prerelease = false,
         CancellationToken ct = default)
     {
-        var resource = await GetPrivateResource<PackageMetadataResource>(ct);
-        var cache    = new SourceCacheContext();
-
-        var connectorVersions = await resource.GetMetadataAsync(
-            id,
-            prerelease,
-            includeUnlisted: false,
-            cache,
-            _logger,
-            ct
-        );
-
-        return connectorVersions;
-    }
-
-    /// <inheritdoc />
-    public async Task<IEnumerable<NuGetVersion>> GetVersion(
-        string id,
-        CancellationToken ct = default)
-    {
         var resource = await GetPrivateResource<FindPackageByIdResource>(ct);
         var cache    = new SourceCacheContext();
+        var versions = await resource.GetAllVersionsAsync(id, cache, _logger, ct);
 
-        var connectorVersions = await resource.GetAllVersionsAsync(
-            id,
-            cache,
-            _logger,
-            ct
-        );
-
-        return connectorVersions;
+        return versions.Where(v => v.IsPrerelease == prerelease)
+            .Select(v => v.ToNormalizedString())
+            .ToArray();
     }
 
     /// <inheritdoc />
-    public async Task<NuGetVersion> GetLatestVersion(
+    public async Task<string> GetLatestVersion(
         string id,
         bool prerelease = false,
         CancellationToken ct = default)
     {
-        var versions = await GetVersion(id, ct);
-        return versions.Last(v => v.IsPrerelease == prerelease);
+        var versions = await GetVersion(id, prerelease, ct);
+        return versions.Last();
     }
 
     /// <inheritdoc />
-    public async Task<PackageArchiveReader> GetConnectorPackage(
+    public async Task<MemoryStream> GetConnectorPackage(
         string id,
-        NuGetVersion version,
+        string? version,
         CancellationToken ct = default)
     {
+        var nugetVersion = await GetNuGetVersion(id, version, true, ct);
+
         var resource = await GetPrivateResource<FindPackageByIdResource>(ct);
         var cache    = new SourceCacheContext();
 
         var ms = new MemoryStream();
 
-        await resource.CopyNupkgToStreamAsync(id, version, ms, cache, _logger, ct);
+        await resource.CopyNupkgToStreamAsync(id, nugetVersion, ms, cache, _logger, ct);
 
-        var packageReader = new PackageArchiveReader(ms);
-
-        return packageReader;
+        return ms;
     }
 
     internal virtual SourceRepository GetSourceRepository(PackageSource? source) =>
@@ -167,6 +151,36 @@ public class ConnectorRegistry : IConnectorRegistry
         }
 
         return await repository.GetResourceAsync<T>(ct);
+    }
+
+    internal async Task<NuGetVersion> GetNuGetVersion(
+        string id,
+        string? version = null,
+        bool prerelease = false,
+        CancellationToken ct = default)
+    {
+        var check = true;
+
+        if (string.IsNullOrEmpty(version))
+        {
+            version = await GetLatestVersion(id, prerelease, ct);
+            check   = false;
+        }
+
+        var nuGetVersion = NuGetVersion.Parse(version);
+
+        if (nuGetVersion == null)
+            throw new ArgumentException(
+                $"Could not parse version string '{version}'",
+                nameof(version)
+            );
+
+        if (check && !await Exists(id, nuGetVersion.ToNormalizedString(), ct))
+            throw new VersionNotFoundException(
+                $"Could not find version '{nuGetVersion.ToNormalizedString()}' for connector {id}"
+            );
+
+        return nuGetVersion;
     }
 }
 
