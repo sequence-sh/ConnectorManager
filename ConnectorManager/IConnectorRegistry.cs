@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using NuGet.Packaging.Core;
+using NuGet.Packaging;
 using NuGet.Protocol.Core.Types;
 using NuGet.Versioning;
 
@@ -17,13 +17,13 @@ public interface IConnectorRegistry
     /// 
     /// </summary>
     /// <param name="search"></param>
-    /// <param name="ct"></param>
     /// <param name="prerelease"></param>
+    /// <param name="ct"></param>
     /// <returns></returns>
     Task<IEnumerable<IPackageSearchMetadata>> Find(
         string search,
-        CancellationToken ct,
-        bool prerelease = false);
+        bool prerelease = false,
+        CancellationToken ct = default);
 
     /// <summary>
     /// 
@@ -32,19 +32,19 @@ public interface IConnectorRegistry
     /// <param name="version"></param>
     /// <param name="ct"></param>
     /// <returns></returns>
-    Task<bool> Exists(string id, NuGetVersion version, CancellationToken ct);
+    Task<bool> Exists(string id, NuGetVersion version, CancellationToken ct = default);
 
     /// <summary>
     /// 
     /// </summary>
     /// <param name="id"></param>
-    /// <param name="ct"></param>
     /// <param name="prerelease"></param>
+    /// <param name="ct"></param>
     /// <returns></returns>
     Task<IEnumerable<IPackageSearchMetadata>> GetMetadata(
         string id,
-        CancellationToken ct,
-        bool prerelease = false);
+        bool prerelease = false,
+        CancellationToken ct = default);
 
     /// <summary>
     /// 
@@ -52,32 +52,33 @@ public interface IConnectorRegistry
     /// <param name="id"></param>
     /// <param name="ct"></param>
     /// <returns></returns>
-    Task<IEnumerable<NuGetVersion>> GetVersion(string id, CancellationToken ct);
+    Task<IEnumerable<NuGetVersion>> GetVersion(string id, CancellationToken ct = default);
 
     /// <summary>
     /// 
     /// </summary>
     /// <param name="id"></param>
-    /// <param name="ct"></param>
     /// <param name="prerelease"></param>
+    /// <param name="ct"></param>
     /// <returns></returns>
-    Task<NuGetVersion> GetLatestVersion(string id, CancellationToken ct, bool prerelease = false);
+    Task<NuGetVersion> GetLatestVersion(
+        string id,
+        bool prerelease = false,
+        CancellationToken ct = default);
 
     /// <summary>
     /// 
     /// </summary>
     /// <param name="id"></param>
     /// <param name="version"></param>
-    /// <param name="path"></param>
-    /// <param name="ct"></param>
     /// <param name="force"></param>
+    /// <param name="ct"></param>
     /// <returns></returns>
-    Task<PackageIdentity?> Install(
+    Task<PackageArchiveReader> GetConnectorPackage(
         string id,
         NuGetVersion version,
-        string path,
-        CancellationToken ct,
-        bool force = false);
+        bool force = false,
+        CancellationToken ct = default);
 }
 
 }
