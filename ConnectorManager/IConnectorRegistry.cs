@@ -18,7 +18,7 @@ public interface IConnectorRegistry
     /// <param name="prerelease"></param>
     /// <param name="ct"></param>
     /// <returns></returns>
-    Task<ICollection<ConnectorMetadata>> Find(
+    Task<ICollection<ConnectorPackage>> Find(
         string search,
         bool prerelease = false,
         CancellationToken ct = default);
@@ -63,7 +63,7 @@ public interface IConnectorRegistry
     /// <param name="version"></param>
     /// <param name="ct"></param>
     /// <returns></returns>
-    Task<MemoryStream> GetConnectorPackage(
+    Task<ConnectorPackage> GetConnectorPackage(
         string id,
         string? version = null,
         CancellationToken ct = default);

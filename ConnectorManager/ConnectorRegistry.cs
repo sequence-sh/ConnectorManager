@@ -41,7 +41,7 @@ public class ConnectorRegistry : IConnectorRegistry
     }
 
     /// <inheritdoc />
-    public async Task<ICollection<ConnectorMetadata>> Find(
+    public async Task<ICollection<ConnectorPackage>> Find(
         string search,
         bool prerelease = false,
         CancellationToken ct = default)
@@ -58,7 +58,7 @@ public class ConnectorRegistry : IConnectorRegistry
         );
 
         return results.Select(
-                p => new ConnectorMetadata(p.Identity.Id, p.Identity.Version.ToNormalizedString())
+                p => new ConnectorPackage(p.Identity.Id, p.Identity.Version.ToNormalizedString())
             )
             .ToArray();
     }
@@ -101,7 +101,7 @@ public class ConnectorRegistry : IConnectorRegistry
     }
 
     /// <inheritdoc />
-    public async Task<MemoryStream> GetConnectorPackage(
+    public async Task<ConnectorPackage> GetConnectorPackage(
         string id,
         string? version,
         CancellationToken ct = default)
@@ -115,7 +115,7 @@ public class ConnectorRegistry : IConnectorRegistry
 
         await resource.CopyNupkgToStreamAsync(id, nugetVersion, ms, cache, _logger, ct);
 
-        return ms;
+        return new ConnectorPackage(id, nugetVersion.ToNormalizedString(), ms);
     }
 
     internal virtual SourceRepository GetSourceRepository(PackageSource? source) =>
