@@ -1,13 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using NuGet.Common;
 using NuGet.Configuration;
 using NuGet.Packaging;
-using NuGet.Packaging.Core;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 using NuGet.Versioning;
@@ -24,23 +22,28 @@ public class ConnectorRegistry : IConnectorRegistry
     private readonly ConnectorRegistrySettings _settings;
 
     /// <summary>
-    /// 
+    /// Max results to return from the remote registry when using Find.
+    /// </summary>
+    public int FindResults { get; set; } = 100;
+
+    /// <summary>
+    /// Create a new connector registry with the specified settings.
     /// </summary>
     /// <param name="logger"></param>
-    /// <param name="connectorManagerSettings"></param>
+    /// <param name="connectorRegistrySettings"></param>
     public ConnectorRegistry(
         Microsoft.Extensions.Logging.ILogger<ConnectorRegistry> logger,
-        ConnectorRegistrySettings connectorManagerSettings)
+        ConnectorRegistrySettings connectorRegistrySettings)
     {
         _logger   = new LoggerBridge<ConnectorRegistry>(logger);
-        _settings = connectorManagerSettings;
+        _settings = connectorRegistrySettings;
     }
 
     /// <inheritdoc />
     public async Task<IEnumerable<IPackageSearchMetadata>> Find(
         string search,
-        CancellationToken ct,
-        bool prerelease = false)
+        bool prerelease = false,
+        CancellationToken ct = default)
     {
         var resource = await GetPrivateResource<PackageSearchResource>(ct);
 
@@ -48,7 +51,7 @@ public class ConnectorRegistry : IConnectorRegistry
             search,
             new SearchFilter(prerelease),
             skip: 0,
-            take: 100,
+            take: FindResults,
             _logger,
             ct
         );
@@ -57,7 +60,7 @@ public class ConnectorRegistry : IConnectorRegistry
     }
 
     /// <inheritdoc />
-    public async Task<bool> Exists(string id, NuGetVersion version, CancellationToken ct)
+    public async Task<bool> Exists(string id, NuGetVersion version, CancellationToken ct = default)
     {
         var resource = await GetPrivateResource<FindPackageByIdResource>(ct);
         var cache    = new SourceCacheContext();
@@ -67,8 +70,8 @@ public class ConnectorRegistry : IConnectorRegistry
     /// <inheritdoc />
     public async Task<IEnumerable<IPackageSearchMetadata>> GetMetadata(
         string id,
-        CancellationToken ct,
-        bool prerelease = false)
+        bool prerelease = false,
+        CancellationToken ct = default)
     {
         var resource = await GetPrivateResource<PackageMetadataResource>(ct);
         var cache    = new SourceCacheContext();
@@ -86,7 +89,9 @@ public class ConnectorRegistry : IConnectorRegistry
     }
 
     /// <inheritdoc />
-    public async Task<IEnumerable<NuGetVersion>> GetVersion(string id, CancellationToken ct)
+    public async Task<IEnumerable<NuGetVersion>> GetVersion(
+        string id,
+        CancellationToken ct = default)
     {
         var resource = await GetPrivateResource<FindPackageByIdResource>(ct);
         var cache    = new SourceCacheContext();
@@ -104,57 +109,36 @@ public class ConnectorRegistry : IConnectorRegistry
     /// <inheritdoc />
     public async Task<NuGetVersion> GetLatestVersion(
         string id,
-        CancellationToken ct,
-        bool prerelease = false)
+        bool prerelease = false,
+        CancellationToken ct = default)
     {
         var versions = await GetVersion(id, ct);
         return versions.Last(v => v.IsPrerelease == prerelease);
     }
 
     /// <inheritdoc />
-    public async Task<PackageIdentity?> Install(
+    public async Task<PackageArchiveReader> GetConnectorPackage(
         string id,
         NuGetVersion version,
-        string path,
-        CancellationToken ct,
-        bool force = false)
+        CancellationToken ct = default)
     {
-        if (Directory.Exists(path))
-        {
-            if (force)
-            {
-                Directory.Delete(path, true);
-            }
-            else
-            {
-                _logger.LogVerbose($"{path} already exists");
-                return null;
-            }
-        }
-
-        var connectorDir = Directory.CreateDirectory(path);
-
         var resource = await GetPrivateResource<FindPackageByIdResource>(ct);
         var cache    = new SourceCacheContext();
 
-        await using var ms = new MemoryStream();
+        var ms = new MemoryStream();
 
         await resource.CopyNupkgToStreamAsync(id, version, ms, cache, _logger, ct);
 
-        using var packageReader = new PackageArchiveReader(ms);
+        var packageReader = new PackageArchiveReader(ms);
 
-        var files = await packageReader.GetPackageFilesAsync(PackageSaveMode.Files, ct);
-
-        foreach (var file in files)
-        {
-            ct.ThrowIfCancellationRequested();
-            var entry       = packageReader.GetEntry(file);
-            var extractPath = Path.Combine(connectorDir.FullName, entry.Name);
-            entry.ExtractToFile(extractPath);
-        }
-
-        return await packageReader.GetIdentityAsync(ct);
+        return packageReader;
     }
+
+    internal virtual SourceRepository GetSourceRepository(PackageSource? source) =>
+        Repository.Factory.GetCoreV3(source);
+
+    internal virtual SourceRepository GetSourceRepository(string? source) =>
+        Repository.Factory.GetCoreV3(source);
 
     private async Task<T> GetPrivateResource<T>(CancellationToken ct)
         where T : class, INuGetResource
@@ -175,11 +159,11 @@ public class ConnectorRegistry : IConnectorRegistry
                 )
             };
 
-            repository = Repository.Factory.GetCoreV3(source);
+            repository = GetSourceRepository(source);
         }
         else
         {
-            repository = Repository.Factory.GetCoreV3(_settings.Uri);
+            repository = GetSourceRepository(_settings.Uri);
         }
 
         return await repository.GetResourceAsync<T>(ct);

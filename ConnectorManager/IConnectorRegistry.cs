@@ -77,7 +77,6 @@ public interface IConnectorRegistry
     Task<PackageArchiveReader> GetConnectorPackage(
         string id,
         NuGetVersion version,
-        bool force = false,
         CancellationToken ct = default);
 }
 
