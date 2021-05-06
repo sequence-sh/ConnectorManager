@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Data;
 using System.IO;
-using System.IO.Compression;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using NuGet.Packaging;
-using NuGet.Packaging.Core;
-using NuGet.Versioning;
 using Reductech.EDR.Core.Internal;
 
 namespace Reductech.EDR.ConnectorManagement
@@ -51,20 +46,16 @@ public class ConnectorManager : IConnectorManager
         bool force = false,
         CancellationToken ct = default)
     {
-        var nuGetVersion = await GetNuGetVersion(id, version, prerelease, ct);
+        var installPath = GetInstallPath(id, version);
 
-        var installPath = GetInstallPath(id, nuGetVersion.ToNormalizedString());
-
-        if (_configuration.ContainsVersionString(id, nuGetVersion.ToNormalizedString()) && !force)
+        if (_configuration.ContainsVersionString(id, version) && !force)
         {
-            _logger.LogInformation(
-                $"Connector {id} {nuGetVersion.ToNormalizedString()} is already installed"
-            );
+            _logger.LogInformation($"Connector {id} {version} is already installed");
 
             return;
         }
 
-        var package = await InstallConnector(id, nuGetVersion, installPath, force, ct);
+        var package = await InstallConnector(id, version, installPath, force, ct);
 
         if (package == null)
             throw new Exception($"Could not install connector to {installPath}");
@@ -81,7 +72,7 @@ public class ConnectorManager : IConnectorManager
         {
             var cs = _configuration[id];
 
-            cs.Version = nuGetVersion.ToNormalizedString();
+            cs.Version = version;
             cs.Enable  = true;
 
             _configuration[id] = cs;
@@ -90,10 +81,7 @@ public class ConnectorManager : IConnectorManager
         {
             await _configuration.AddAsync(
                 id,
-                new ConnectorSettings
-                {
-                    Id = id, Version = nuGetVersion.ToNormalizedString(), Enable = true
-                },
+                new ConnectorSettings { Id = id, Version = version, Enable = true },
                 ct
             );
         }
@@ -114,25 +102,25 @@ public class ConnectorManager : IConnectorManager
 
         var cs = _configuration[name];
 
-        var nuGetVersion = await GetNuGetVersion(name, version, prerelease, ct);
+        //var nuGetVersion = await GetNuGetVersion(name, version, prerelease, ct);
 
-        if (cs.Version.Equals(nuGetVersion.ToNormalizedString()))
+        var latest = await _registry.GetLatestVersion(name, prerelease, ct);
+
+        if (cs.Version.Equals(latest))
         {
-            _logger.LogInformation(
-                $"Latest version already installed: {name} {nuGetVersion.ToNormalizedString()}"
-            );
+            _logger.LogInformation($"Latest version already installed: {name} {latest}");
 
             return;
         }
 
-        var installPath = GetInstallPath(name, nuGetVersion.ToNormalizedString());
+        var installPath = GetInstallPath(name, latest);
 
-        var package = await _registry.GetConnectorPackage(name, nuGetVersion, ct);
+        var package = await _registry.GetConnectorPackage(name, latest, ct);
 
         if (package == null)
             throw new Exception($"Could not install connector to {installPath}");
 
-        cs.Version = nuGetVersion.ToNormalizedString();
+        cs.Version = latest;
 
         _configuration[name] = cs;
     }
@@ -208,13 +196,16 @@ public class ConnectorManager : IConnectorManager
         Console.WriteLine(new string('-', maxIdLen + maxVerLen + 2));
 
         foreach (var c in connectors)
-            Console.WriteLine(outputFormat, c.Identity.Id, c.Identity.Version);
+            Console.WriteLine(outputFormat, c.Id, c.Version);
     }
 
-    private async Task<PackageIdentity?> InstallConnector(
+    private string GetInstallPath(string id, string version) =>
+        Path.Combine(_settings.ConnectorPath, id, version);
+
+    private async Task<ConnectorPackage?> InstallConnector(
         string id,
-        NuGetVersion version,
         string path,
+        string? version = null,
         bool force = false,
         CancellationToken ct = default)
     {
@@ -226,54 +217,16 @@ public class ConnectorManager : IConnectorManager
             }
             else
             {
-                _logger.LogDebug($"{path} already exists");
+                _logger.LogDebug($"{path} already exists. Use force to overwrite.");
                 return null;
             }
         }
 
-        var connectorDir = Directory.CreateDirectory(path);
+        var package = await _registry.GetConnectorPackage(id, version, ct);
 
-        using var packageReader = await _registry.GetConnectorPackage(id, version, ct);
+        await package.Extract(path, ct);
 
-        var files = await packageReader.GetPackageFilesAsync(PackageSaveMode.Files, ct);
-
-        foreach (var file in files)
-        {
-            ct.ThrowIfCancellationRequested();
-            var entry       = packageReader.GetEntry(file);
-            var extractPath = Path.Combine(connectorDir.FullName, entry.Name);
-            entry.ExtractToFile(extractPath);
-        }
-
-        return await packageReader.GetIdentityAsync(ct);
-    }
-
-    private string GetInstallPath(string id, string version) =>
-        Path.Combine(_settings.ConnectorPath, id, version);
-
-    private async Task<NuGetVersion> GetNuGetVersion(
-        string id,
-        string? version,
-        bool prerelease = false,
-        CancellationToken ct = default)
-    {
-        NuGetVersion nuGetVersion;
-
-        if (version == null)
-        {
-            nuGetVersion = await _registry.GetLatestVersion(id, prerelease, ct);
-        }
-        else
-        {
-            nuGetVersion = NuGetVersion.Parse(version);
-
-            if (!await _registry.Exists(id, nuGetVersion, ct))
-                throw new VersionNotFoundException(
-                    $"Connector does not exist in registry: {id} {nuGetVersion.ToNormalizedString()}"
-                );
-        }
-
-        return nuGetVersion;
+        return package;
     }
 }
 
