@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.IO.Abstractions;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -17,6 +18,7 @@ public class ConnectorManager : IConnectorManager
     private readonly ConnectorManagerSettings _settings;
     private readonly IConnectorRegistry _registry;
     private readonly IConnectorConfiguration _configuration;
+    private readonly IFileSystem _fileSystem;
 
     /// <summary>
     /// 
@@ -25,66 +27,80 @@ public class ConnectorManager : IConnectorManager
     /// <param name="settings"></param>
     /// <param name="registry"></param>
     /// <param name="configuration"></param>
+    /// <param name="fileSystem"></param>
     public ConnectorManager(
         ILogger<ConnectorManager> logger,
         ConnectorManagerSettings settings,
         IConnectorRegistry registry,
-        IConnectorConfiguration configuration)
+        IConnectorConfiguration configuration,
+        IFileSystem fileSystem)
     {
         _logger        = logger;
         _settings      = settings;
         _registry      = registry;
         _configuration = configuration;
+        _fileSystem    = fileSystem;
     }
 
     /// <inheritdoc />
     public async Task Add(
         string id,
-        string? name,
-        string? version,
+        string? name = null,
+        string? version = null,
         bool prerelease = false,
         bool force = false,
         CancellationToken ct = default)
     {
-        var installPath = GetInstallPath(id, version);
+        var allVersions = await _registry.GetVersion(id, prerelease, ct);
 
-        if (_configuration.ContainsVersionString(id, version) && !force)
+        if (allVersions.Count == 0)
         {
-            _logger.LogInformation($"Connector {id} {version} is already installed");
-
+            _logger.LogError($"Could not find connector {id} in the registry.");
             return;
         }
+
+        if (version == null)
+            version = allVersions.Last();
+        else if (!allVersions.Contains(version))
+        {
+            _logger.LogError($"Could not find connector {id} version {version} in the registry.");
+            return;
+        }
+
+        if (string.IsNullOrEmpty(name))
+            name = id;
+
+        if (_configuration.Contains(name))
+        {
+            if (force)
+            {
+                await _configuration.RemoveAsync(name, ct);
+                _logger.LogDebug($"Removed {name} from connector configuration.");
+            }
+            else
+            {
+                _logger.LogError(
+                    $"Connector configuration already exists {name}. Use --force to overwrite or update."
+                );
+
+                return;
+            }
+        }
+
+        var installPath = GetInstallPath(id, version);
 
         var package = await InstallConnector(id, version, installPath, force, ct);
 
         if (package == null)
-            throw new Exception($"Could not install connector to {installPath}");
+            return;
 
-        if (_configuration.ContainsId(id))
-        {
-            foreach (var config in _configuration.Settings.Where(
-                c => c.Enable && c.Id.Equals(id, StringComparison.Ordinal)
-            ))
-                config.Enable = false;
-        }
+        await _configuration.AddAsync(
+            id,
+            new ConnectorSettings { Id = package.Id, Version = package.Version, Enable = true },
+            ct
+        );
 
-        if (_configuration.Contains(id))
-        {
-            var cs = _configuration[id];
-
-            cs.Version = version;
-            cs.Enable  = true;
-
-            _configuration[id] = cs;
-        }
-        else
-        {
-            await _configuration.AddAsync(
-                id,
-                new ConnectorSettings { Id = id, Version = version, Enable = true },
-                ct
-            );
-        }
+        _logger.LogInformation($"Successfully installed connector {id} ({version}).");
     }
 
     /// <inheritdoc />
@@ -104,7 +120,7 @@ public class ConnectorManager : IConnectorManager
 
         //var nuGetVersion = await GetNuGetVersion(name, version, prerelease, ct);
 
-        var latest = await _registry.GetLatestVersion(name, prerelease, ct);
+        var latest = "";
 
         if (cs.Version.Equals(latest))
         {
@@ -200,33 +216,36 @@ public class ConnectorManager : IConnectorManager
     }
 
     private string GetInstallPath(string id, string version) =>
-        Path.Combine(_settings.ConnectorPath, id, version);
+        _fileSystem.Path.Combine(_settings.ConnectorPath, id, version);
 
-    private async Task<ConnectorPackage?> InstallConnector(
+    private async Task<ConnectorMetadata?> InstallConnector(
         string id,
+        string version,
         string path,
-        string? version = null,
         bool force = false,
         CancellationToken ct = default)
     {
-        if (Directory.Exists(path))
+        if (_fileSystem.Directory.Exists(path))
         {
             if (force)
-            {
-                Directory.Delete(path, true);
-            }
+                _fileSystem.Directory.Delete(path, true);
             else
             {
-                _logger.LogDebug($"{path} already exists. Use force to overwrite.");
+                _logger.LogError(
+                    $"Connector directory {path} already exists. Use --force to overwrite."
+                );
+
                 return null;
             }
         }
 
-        var package = await _registry.GetConnectorPackage(id, version, ct);
+        _fileSystem.Directory.CreateDirectory(path);
 
-        await package.Extract(path, ct);
+        using var package = await _registry.GetConnectorPackage(id, version, ct);
 
-        return package;
+        await package.Extract(_fileSystem, path, ct);
+
+        return package.Metadata;
     }
 }
 

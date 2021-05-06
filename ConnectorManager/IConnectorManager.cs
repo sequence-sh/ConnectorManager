@@ -21,8 +21,8 @@ public interface IConnectorManager
     /// <returns></returns>
     Task Add(
         string id,
-        string? name,
-        string? version,
+        string? name = null,
+        string? version = null,
         bool prerelease = false,
         bool force = false,
         CancellationToken ct = default);
