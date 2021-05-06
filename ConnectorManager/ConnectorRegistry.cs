@@ -99,10 +99,16 @@ public class ConnectorRegistry : IConnectorRegistry
         string version,
         CancellationToken ct = default)
     {
-        var nugetVersion = NuGetVersion.Parse(version);
+        NuGetVersion nugetVersion;
 
-        if (nugetVersion == null)
+        try
+        {
+            nugetVersion = NuGetVersion.Parse(version);
+        }
+        catch (ArgumentException)
+        {
             throw new VersionNotFoundException($"Could not parse version: {version}");
+        }
 
         var resource = await GetPrivateResource<FindPackageByIdResource>(ct);
         var cache    = new SourceCacheContext();
@@ -110,6 +116,9 @@ public class ConnectorRegistry : IConnectorRegistry
         var ms = new MemoryStream();
 
         await resource.CopyNupkgToStreamAsync(id, nugetVersion, ms, cache, _logger, ct);
+
+        if (ms.Length == 0)
+            throw new ArgumentException($"Can't find connector {id} ({version})");
 
         var packageReader = new PackageArchiveReader(ms);
 
