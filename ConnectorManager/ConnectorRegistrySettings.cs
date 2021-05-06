@@ -20,9 +20,9 @@ public record ConnectorRegistrySettings(
     /// Default settings for the Reductech Connector Registry.
     /// </summary>
     public static ConnectorRegistrySettings Reductech = new(
-        "https://gitlab.com/api/v4/projects/18697166/packages/nuget/index.json",
-        "project_18697166_bot",
-        "drw__6yo8Vym_EqnoGwb"
+        "https://gitlab.com/api/v4/projects/26337972/packages/nuget/index.json",
+        "connectormanager",
+        "DdGjUmoo-oqbcBoCd9pE"
     );
 }
 
