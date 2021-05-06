@@ -17,7 +17,7 @@ public interface IConnectorRegistry
     /// <param name="prerelease"></param>
     /// <param name="ct"></param>
     /// <returns></returns>
-    Task<ICollection<ConnectorPackage>> Find(
+    Task<ICollection<ConnectorMetadata>> Find(
         string search,
         bool prerelease = false,
         CancellationToken ct = default);
@@ -47,24 +47,12 @@ public interface IConnectorRegistry
     /// 
     /// </summary>
     /// <param name="id"></param>
-    /// <param name="prerelease"></param>
-    /// <param name="ct"></param>
-    /// <returns></returns>
-    Task<string> GetLatestVersion(
-        string id,
-        bool prerelease = false,
-        CancellationToken ct = default);
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="id"></param>
     /// <param name="version"></param>
     /// <param name="ct"></param>
     /// <returns></returns>
     Task<ConnectorPackage> GetConnectorPackage(
         string id,
-        string? version = null,
+        string version,
         CancellationToken ct = default);
 }
 

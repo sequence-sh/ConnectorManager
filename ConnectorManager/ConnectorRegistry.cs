@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using NuGet.Common;
 using NuGet.Configuration;
+using NuGet.Packaging;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 using NuGet.Versioning;
@@ -41,7 +42,7 @@ public class ConnectorRegistry : IConnectorRegistry
     }
 
     /// <inheritdoc />
-    public async Task<ICollection<ConnectorPackage>> Find(
+    public async Task<ICollection<ConnectorMetadata>> Find(
         string search,
         bool prerelease = false,
         CancellationToken ct = default)
@@ -58,7 +59,7 @@ public class ConnectorRegistry : IConnectorRegistry
         );
 
         return results.Select(
-                p => new ConnectorPackage(p.Identity.Id, p.Identity.Version.ToNormalizedString())
+                p => new ConnectorMetadata(p.Identity.Id, p.Identity.Version.ToNormalizedString())
             )
             .ToArray();
     }
@@ -69,10 +70,12 @@ public class ConnectorRegistry : IConnectorRegistry
         string? version = null,
         CancellationToken ct = default)
     {
-        var nugetVersion = await GetNuGetVersion(id, version, true, ct);
-        var resource     = await GetPrivateResource<FindPackageByIdResource>(ct);
-        var cache        = new SourceCacheContext();
-        return await resource.DoesPackageExistAsync(id, nugetVersion, cache, _logger, ct);
+        var allVersions = await GetVersion(id, true, ct);
+
+        if (allVersions.Count == 0)
+            return false;
+
+        return version == null || allVersions.Contains(version);
     }
 
     /// <inheritdoc />
@@ -91,22 +94,15 @@ public class ConnectorRegistry : IConnectorRegistry
     }
 
     /// <inheritdoc />
-    public async Task<string> GetLatestVersion(
-        string id,
-        bool prerelease = false,
-        CancellationToken ct = default)
-    {
-        var versions = await GetVersion(id, prerelease, ct);
-        return versions.Last();
-    }
-
-    /// <inheritdoc />
     public async Task<ConnectorPackage> GetConnectorPackage(
         string id,
-        string? version,
+        string version,
         CancellationToken ct = default)
     {
-        var nugetVersion = await GetNuGetVersion(id, version, true, ct);
+        var nugetVersion = NuGetVersion.Parse(version);
+
+        if (nugetVersion == null)
+            throw new VersionNotFoundException($"Could not parse version: {version}");
 
         var resource = await GetPrivateResource<FindPackageByIdResource>(ct);
         var cache    = new SourceCacheContext();
@@ -115,7 +111,12 @@ public class ConnectorRegistry : IConnectorRegistry
 
         await resource.CopyNupkgToStreamAsync(id, nugetVersion, ms, cache, _logger, ct);
 
-        return new ConnectorPackage(id, nugetVersion.ToNormalizedString(), ms);
+        var packageReader = new PackageArchiveReader(ms);
+
+        return new ConnectorPackage(
+            new ConnectorMetadata(id, nugetVersion.ToNormalizedString()),
+            packageReader
+        );
     }
 
     internal virtual SourceRepository GetSourceRepository(PackageSource? source) =>
@@ -151,36 +152,6 @@ public class ConnectorRegistry : IConnectorRegistry
         }
 
         return await repository.GetResourceAsync<T>(ct);
-    }
-
-    internal async Task<NuGetVersion> GetNuGetVersion(
-        string id,
-        string? version = null,
-        bool prerelease = false,
-        CancellationToken ct = default)
-    {
-        var check = true;
-
-        if (string.IsNullOrEmpty(version))
-        {
-            version = await GetLatestVersion(id, prerelease, ct);
-            check   = false;
-        }
-
-        var nuGetVersion = NuGetVersion.Parse(version);
-
-        if (nuGetVersion == null)
-            throw new ArgumentException(
-                $"Could not parse version string '{version}'",
-                nameof(version)
-            );
-
-        if (check && !await Exists(id, nuGetVersion.ToNormalizedString(), ct))
-            throw new VersionNotFoundException(
-                $"Could not find version '{nuGetVersion.ToNormalizedString()}' for connector {id}"
-            );
-
-        return nuGetVersion;
     }
 }
 
