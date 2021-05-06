@@ -88,7 +88,7 @@ public class ConnectorRegistry : IConnectorRegistry
         var cache    = new SourceCacheContext();
         var versions = await resource.GetAllVersionsAsync(id, cache, _logger, ct);
 
-        return versions.Where(v => v.IsPrerelease == prerelease)
+        return versions.Where(v => prerelease || !v.IsPrerelease)
             .Select(v => v.ToNormalizedString())
             .ToArray();
     }
