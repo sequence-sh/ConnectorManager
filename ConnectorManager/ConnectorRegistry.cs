@@ -119,12 +119,6 @@ public class ConnectorRegistry : IConnectorRegistry
         );
     }
 
-    internal virtual SourceRepository GetSourceRepository(PackageSource? source) =>
-        Repository.Factory.GetCoreV3(source);
-
-    internal virtual SourceRepository GetSourceRepository(string? source) =>
-        Repository.Factory.GetCoreV3(source);
-
     private async Task<T> GetPrivateResource<T>(CancellationToken ct)
         where T : class, INuGetResource
     {
@@ -144,11 +138,11 @@ public class ConnectorRegistry : IConnectorRegistry
                 )
             };
 
-            repository = GetSourceRepository(source);
+            repository = Repository.Factory.GetCoreV3(source);
         }
         else
         {
-            repository = GetSourceRepository(_settings.Uri);
+            repository = Repository.Factory.GetCoreV3(_settings.Uri);
         }
 
         return await repository.GetResourceAsync<T>(ct);
