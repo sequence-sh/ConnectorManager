@@ -19,43 +19,12 @@ public class FileConnectorConfigurationTests
     private const string FilePath = @"c:\temp\connectors.json";
     private const string ConnectorName = "Reductech.EDR.Connectors.FileSystem";
 
-    private const string TestConfiguration = @"
-{
-  ""Reductech.EDR.Connectors.Nuix"": {
-    ""id"": ""Reductech.EDR.Connectors.Nuix"",
-    ""version"": ""0.9.0"",
-    ""enabled"": true,
-    ""settings"": {
-      ""exeConsolePath"": ""C:\\Program Files\\Nuix\\Nuix 9.0\\nuix_console.exe"",
-      ""licencesourcetype"": ""dongle"",
-      ""version"": ""9.0"",
-      ""features"": [
-        ""ANALYSIS"",
-        ""CASE_CREATION""
-      ]
-    }
-  },
-  ""Reductech.EDR.Connectors.FileSystem"": {
-    ""id"": ""Reductech.EDR.Connectors.FileSystem"",
-    ""version"": ""0.9.0""
-  },
-  ""Reductech.EDR.Connectors.StructuredData"": {
-    ""id"": ""Reductech.EDR.Connectors.StructuredData"",
-    ""version"": ""0.9.0""
-  },
-  ""StructuredData - disabled"": {
-    ""id"": ""Reductech.EDR.Connectors.StructuredData"",
-    ""version"": ""0.8.0"",
-    ""enable"": false
-  }
-}";
-
     private static async Task<(IConnectorConfiguration, MockFileSystem)> GetEmptyConfig() =>
         await GetConfig(content: "");
 
     private static async Task<(IConnectorConfiguration, MockFileSystem)> GetConfig(
         string file = FilePath,
-        string content = TestConfiguration)
+        string content = Helpers.TestConfiguration)
     {
         var fs = new MockFileSystem();
         fs.AddFile(file, content);

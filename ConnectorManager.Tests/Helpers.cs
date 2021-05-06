@@ -9,6 +9,37 @@ internal static class Helpers
             "integrationtests",
             "E8YL7f4kTM4XJEn1ixnL"
         );
+
+    internal const string TestConfiguration = @"
+{
+  ""Reductech.EDR.Connectors.Nuix"": {
+    ""id"": ""Reductech.EDR.Connectors.Nuix"",
+    ""version"": ""0.9.0"",
+    ""enabled"": true,
+    ""settings"": {
+      ""exeConsolePath"": ""C:\\Program Files\\Nuix\\Nuix 9.0\\nuix_console.exe"",
+      ""licencesourcetype"": ""dongle"",
+      ""version"": ""9.0"",
+      ""features"": [
+        ""ANALYSIS"",
+        ""CASE_CREATION""
+      ]
+    }
+  },
+  ""Reductech.EDR.Connectors.FileSystem"": {
+    ""id"": ""Reductech.EDR.Connectors.FileSystem"",
+    ""version"": ""0.9.0""
+  },
+  ""Reductech.EDR.Connectors.StructuredData"": {
+    ""id"": ""Reductech.EDR.Connectors.StructuredData"",
+    ""version"": ""0.9.0""
+  },
+  ""StructuredData - disabled"": {
+    ""id"": ""Reductech.EDR.Connectors.StructuredData"",
+    ""version"": ""0.8.0"",
+    ""enable"": false
+  }
+}";
 }
 
 }
