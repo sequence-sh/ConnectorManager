@@ -12,13 +12,6 @@ namespace Reductech.EDR.ConnectorManagement.Tests
 
 public class ConnectorRegistryTests
 {
-    private readonly ConnectorRegistrySettings _integrationRegistrySettings =
-        new(
-            "https://gitlab.com/api/v4/projects/26301248/packages/nuget/index.json",
-            "integrationtests",
-            "E8YL7f4kTM4XJEn1ixnL"
-        );
-
     private readonly ILoggerFactory _loggerFactory;
     private readonly ILogger<ConnectorRegistry> _logger;
     private readonly ConnectorRegistry _registry;
@@ -27,7 +20,7 @@ public class ConnectorRegistryTests
     {
         _loggerFactory = TestLoggerFactory.Create();
         _logger        = _loggerFactory.CreateLogger<ConnectorRegistry>();
-        _registry      = new ConnectorRegistry(_logger, _integrationRegistrySettings);
+        _registry      = new ConnectorRegistry(_logger, Helpers.IntegrationRegistrySettings);
     }
 
     [Fact]
