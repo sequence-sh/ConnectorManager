@@ -64,7 +64,7 @@ public partial class ConnectorManagerTests
             log,
             l => l.LogLevel == LogLevel.Error
               && l.Message!.Equals(
-                     $"Connector configuration already exists {id}. Use --force to overwrite or update."
+                     $"Connector configuration '{id}' already exists. Use --force to overwrite or update."
                  )
         );
     }
@@ -101,7 +101,7 @@ public partial class ConnectorManagerTests
         Assert.Contains(
             log,
             l => l.LogLevel == LogLevel.Debug
-              && l.Message!.Equals($"Removed {id} from connector configuration.")
+              && l.Message!.Equals($"Removed '{id}' from connector configuration.")
         );
 
         Assert.Contains(id, _config.Keys);
@@ -126,7 +126,7 @@ public partial class ConnectorManagerTests
         Assert.Contains(
             _loggerFactory.GetTestLoggerSink().LogEntries.ToArray(),
             l => l.LogLevel == LogLevel.Information
-              && l.Message!.Equals($"Successfully installed connector {id} ({version}).")
+              && l.Message!.Equals($"Successfully installed connector '{id}' ({version}).")
         );
 
         Assert.Equal(expected, _fileSystem.AllFiles);
@@ -154,7 +154,7 @@ public partial class ConnectorManagerTests
             log,
             l => l.LogLevel == LogLevel.Error
               && l.Message!.Equals(
-                     $"Connector directory {path} already exists. Use --force to overwrite."
+                     $"Connector directory '{path}' already exists. Use --force to overwrite."
                  )
         );
     }
@@ -184,7 +184,7 @@ public partial class ConnectorManagerTests
         Assert.Contains(
             _loggerFactory.GetTestLoggerSink().LogEntries,
             l => l.LogLevel == LogLevel.Information
-              && l.Message!.Equals($"Successfully installed connector {id} ({version}).")
+              && l.Message!.Equals($"Successfully installed connector '{id}' ({version}).")
         );
 
         Assert.Equal(expected, _fileSystem.AllFiles);

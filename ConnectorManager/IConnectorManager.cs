@@ -37,7 +37,7 @@ public interface IConnectorManager
     /// <returns></returns>
     Task Update(
         string name,
-        string? version,
+        string? version = null,
         bool prerelease = false,
         CancellationToken ct = default);
 
@@ -45,9 +45,10 @@ public interface IConnectorManager
     /// Remove the connector configuration with the specified name.
     /// </summary>
     /// <param name="name">Name of the configuration to remove</param>
+    /// <param name="configurationOnly">Do not remove the connector directory</param>
     /// <param name="ct">Cancellation token</param>
     /// <returns></returns>
-    Task Remove(string name, CancellationToken ct = default);
+    Task Remove(string name, bool configurationOnly = false, CancellationToken ct = default);
 
     /// <summary>
     /// List all available configurations.
