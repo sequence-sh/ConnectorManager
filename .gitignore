@@ -377,3 +377,5 @@ nupkg/
 ####
 **/StrykerOutput/
 version.env
+
+!ConnectorManager.Tests/reductech.edr.connectors.filesystem.0.9.0.nupkg
