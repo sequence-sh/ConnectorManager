@@ -1,105 +1,104 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
+using System.IO.Abstractions;
+using System.Threading;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Reductech.EDR.Core.Entities;
 using Reductech.EDR.Core.Internal;
 
-namespace Reductech.EDR
+namespace Reductech.EDR.ConnectorManagement
 {
 
 /// <summary>
 /// A ConnectorConfiguration that uses a JSON file as the backing store.
 /// </summary>
-public class FileConnectorConfiguration : IConnectorConfiguration
+public class FileConnectorConfiguration : ConnectorConfigurationBase
 {
     private readonly string _path;
-    private readonly Dictionary<string, ConnectorSettings> _connectors;
+    private readonly IFileSystem _fileSystem;
 
-    /// <summary>
-    /// Create a new ConnectorConfiguration using a json file as a store.
-    /// </summary>
-    /// <param name="path">Path to the connector configuration file.</param>
-    /// <exception cref="FileNotFoundException">If the configuration file does not exist.</exception>
-    public FileConnectorConfiguration(string path)
+    private FileConnectorConfiguration(
+        string path,
+        Dictionary<string, ConnectorSettings> connectors,
+        IFileSystem fileSystem) : base(connectors)
     {
-        if (!File.Exists(path))
-            throw new FileNotFoundException("Connector configuration file not found.", path);
-
-        var text = File.ReadAllText(path);
-
-        _path = path;
-
-        _connectors = JsonConvert.DeserializeObject<Dictionary<string, ConnectorSettings>>(
-            text,
-            EntityJsonConverter.Instance
-        ) ?? new Dictionary<string, ConnectorSettings>();
-    }
-
-    private void SaveSettings()
-    {
-        var output = JsonConvert.SerializeObject(_connectors, EntityJsonConverter.Instance);
-        File.WriteAllText(_path, output);
+        _path       = path;
+        _fileSystem = fileSystem;
     }
 
     /// <inheritdoc />
-    public ICollection<ConnectorSettings> Connectors => _connectors.Values;
-
-    /// <inheritdoc />
-    public int Count => _connectors.Count;
-
-    /// <inheritdoc />
-    public void Add(string name, ConnectorSettings settings)
+    public override async Task AddAsync(
+        string name,
+        ConnectorSettings settings,
+        CancellationToken ct = default)
     {
-        _connectors.Add(name, settings);
-        SaveSettings();
+        Connectors.Add(name, settings);
+        await SaveSettings(ct);
     }
 
     /// <inheritdoc />
-    public bool Remove(string name)
+    public override async Task<bool> RemoveAsync(string name, CancellationToken ct = default)
     {
-        var success = _connectors.Remove(name);
+        var success = Connectors.Remove(name);
 
         if (success)
-            SaveSettings();
+            await SaveSettings(ct);
 
         return success;
     }
 
     /// <inheritdoc />
-    public bool Contains(string name) => _connectors.ContainsKey(name);
-
-    /// <inheritdoc />
-    public bool ContainsId(string id) =>
-        _connectors.Values.Any(c => c.Id.Equals(id, StringComparison.Ordinal));
-
-    /// <inheritdoc />
-    public bool ContainsVersionString(string id, string version) => _connectors.Values.Any(
-        c => c.VersionString().Equals($"{id} {version}", StringComparison.Ordinal)
-    );
-
-    /// <inheritdoc />
-    public bool TryGetValue(string name, out ConnectorSettings settings) =>
-        _connectors.TryGetValue(name, out settings!);
-
-    /// <inheritdoc />
-    public ConnectorSettings this[string name]
+    public override ConnectorSettings this[string name]
     {
-        get => _connectors[name];
+        get => Connectors[name];
         set
         {
-            _connectors[name] = value;
-            SaveSettings();
+            Connectors[name] = value;
+            SaveSettings(CancellationToken.None).Wait();
         }
     }
 
-    /// <inheritdoc />
-    public IEnumerator<KeyValuePair<string, ConnectorSettings>> GetEnumerator() =>
-        _connectors.GetEnumerator();
+    private async Task SaveSettings(CancellationToken ct)
+    {
+        var jsonSettings =
+            new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                Converters        = new List<JsonConverter> { EntityJsonConverter.Instance }
+            };
 
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        var output = JsonConvert.SerializeObject(
+            Connectors,
+            Formatting.Indented,
+            jsonSettings
+        );
+
+        await _fileSystem.File.WriteAllTextAsync(_path, output, ct);
+    }
+
+    /// <summary>
+    /// Create a new ConnectorConfiguration using a JSON file.
+    /// </summary>
+    public static async Task<IConnectorConfiguration> FromJson(
+        string configurationPath,
+        IFileSystem fileSystem)
+    {
+        if (!fileSystem.File.Exists(configurationPath))
+            throw new FileNotFoundException(
+                "Connector configuration file not found.",
+                configurationPath
+            );
+
+        var text = await fileSystem.File.ReadAllTextAsync(configurationPath);
+
+        var connectors = JsonConvert.DeserializeObject<Dictionary<string, ConnectorSettings>>(
+            text,
+            EntityJsonConverter.Instance
+        ) ?? new Dictionary<string, ConnectorSettings>();
+
+        return new FileConnectorConfiguration(configurationPath, connectors, fileSystem);
+    }
 }
 
 }

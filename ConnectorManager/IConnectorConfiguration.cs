@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Reductech.EDR.Core.Internal;
 
-namespace Reductech.EDR
+namespace Reductech.EDR.ConnectorManagement
 {
 
 /// <summary>
@@ -10,9 +12,14 @@ namespace Reductech.EDR
 public interface IConnectorConfiguration : IEnumerable<KeyValuePair<string, ConnectorSettings>>
 {
     /// <summary>
+    /// Gets a collection containing the names of the configurations.
+    /// </summary>
+    ICollection<string> Keys { get; }
+
+    /// <summary>
     /// Gets a collection containing the connector settings.
     /// </summary>
-    ICollection<ConnectorSettings> Connectors { get; }
+    ICollection<ConnectorSettings> Settings { get; }
 
     /// <summary>
     /// Gets the number of configurations in the collection.
@@ -24,14 +31,16 @@ public interface IConnectorConfiguration : IEnumerable<KeyValuePair<string, Conn
     /// </summary>
     /// <param name="name"></param>
     /// <param name="settings"></param>
-    void Add(string name, ConnectorSettings settings);
+    /// <param name="ct"></param>
+    Task AddAsync(string name, ConnectorSettings settings, CancellationToken ct = default);
 
     /// <summary>
     /// Remove a connector configuration from the collection.
     /// </summary>
     /// <param name="name"></param>
+    /// <param name="ct"></param>
     /// <returns></returns>
-    bool Remove(string name);
+    Task<bool> RemoveAsync(string name, CancellationToken ct = default);
 
     /// <summary>
     /// Determines if a configuration with the specified name exists.
@@ -61,7 +70,15 @@ public interface IConnectorConfiguration : IEnumerable<KeyValuePair<string, Conn
     /// <param name="name"></param>
     /// <param name="settings"></param>
     /// <returns></returns>
-    bool TryGetValue(string name, out ConnectorSettings settings);
+    bool TryGetSettings(string name, out ConnectorSettings settings);
+
+    /// <summary>
+    /// Gets the configuration(s) associated with the specified id.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="settings"></param>
+    /// <returns></returns>
+    bool TryGetSettingsById(string id, out ConnectorSettings[] settings);
 
     /// <summary>
     /// Gets or sets the configuration with the specified name.
