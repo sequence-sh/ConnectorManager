@@ -32,6 +32,8 @@ public class FakeConnectorRegistry : IConnectorRegistry
                 c => c.Id.Contains(search, StringComparison.OrdinalIgnoreCase)
                   && (prerelease || !c.Version.Contains('-'))
             )
+            .GroupBy(c => c.Id)
+            .Select(g => g.Last())
             .ToList()
     );
 
