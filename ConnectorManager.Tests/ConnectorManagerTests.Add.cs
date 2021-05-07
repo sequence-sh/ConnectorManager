@@ -115,10 +115,7 @@ public partial class ConnectorManagerTests
 
         var expected = new[]
         {
-            _fileSystem.Path.Combine(
-                AppContext.BaseDirectory,
-                @"connectors\Reductech.EDR.Connectors.FileSystem\0.9.0\Reductech.EDR.Connectors.FileSystem.dll"
-            )
+            _fileSystem.Path.Combine(AppContext.BaseDirectory, Helpers.InstalledConnectorPath)
         };
 
         await _manager.Add(id);
@@ -167,10 +164,7 @@ public partial class ConnectorManagerTests
 
         var expected = new[]
         {
-            _fileSystem.Path.Combine(
-                AppContext.BaseDirectory,
-                @"connectors\Reductech.EDR.Connectors.FileSystem\0.9.0\Reductech.EDR.Connectors.FileSystem.dll"
-            )
+            _fileSystem.Path.Combine(AppContext.BaseDirectory, Helpers.InstalledConnectorPath)
         };
 
         var path = _fileSystem.Path.Combine(_settings.ConnectorPath, id, version);

@@ -127,7 +127,10 @@ public partial class ConnectorManagerTests
         {
             _fileSystem.Path.Combine(
                 AppContext.BaseDirectory,
-                $@"connectors\{name}\{version}\Reductech.EDR.Connectors.FileSystem.dll"
+                $@"connectors\{name}\{version}\Reductech.EDR.Connectors.FileSystem.dll".Replace(
+                    '\\',
+                    _fileSystem.Path.DirectorySeparatorChar
+                )
             )
         };
 

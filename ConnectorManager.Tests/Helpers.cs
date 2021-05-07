@@ -1,4 +1,6 @@
-﻿namespace Reductech.EDR.ConnectorManagement.Tests
+﻿using System.IO;
+
+namespace Reductech.EDR.ConnectorManagement.Tests
 {
 
 internal static class Helpers
@@ -9,6 +11,10 @@ internal static class Helpers
             "integrationtests",
             "E8YL7f4kTM4XJEn1ixnL"
         );
+
+    internal static readonly string InstalledConnectorPath =
+        @"connectors\Reductech.EDR.Connectors.FileSystem\0.9.0\Reductech.EDR.Connectors.FileSystem.dll"
+            .Replace('\\', Path.DirectorySeparatorChar);
 
     internal const string TestConfiguration = @"
 {
