@@ -1,5 +1,7 @@
-﻿using System.Threading;
+﻿using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
+using Reductech.EDR.Core.Internal;
 
 namespace Reductech.EDR.ConnectorManagement
 {
@@ -51,10 +53,10 @@ public interface IConnectorManager
     Task Remove(string name, bool configurationOnly = false, CancellationToken ct = default);
 
     /// <summary>
-    /// List all available configurations.
+    /// List all available connector configurations.
     /// </summary>
     /// <param name="nameFilter">If specified, only configuration names matching this regular expression will be shown</param>
-    void List(string? nameFilter);
+    IEnumerable<(string name, ConnectorData data)> List(string? nameFilter = null);
 
     /// <summary>
     /// Find or list connectors available in the connector registry.

@@ -1,12 +1,17 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
+using Reductech.EDR.Core.Connectors;
 using Reductech.EDR.Core.Internal;
+using Reductech.EDR.Core.Internal.Errors;
 
 namespace Reductech.EDR.ConnectorManagement
 {
@@ -206,29 +211,31 @@ public class ConnectorManager : IConnectorManager
     }
 
     /// <inheritdoc />
-    public void List(string? nameFilter)
+    public IEnumerable<(string name, ConnectorData data)> List(string? nameFilter = null)
     {
         if (_configuration.Count <= 0)
-            return;
-
-        var maxNameLen = _configuration.Max(c => c.Key.Length) + 2;
-        var maxIdLen   = _configuration.Max(c => c.Value.Id.Length) + 2;
-        var maxVerLen  = _configuration.Max(c => c.Value.Version.Length) + 2;
-
-        if (maxVerLen < 7)
-            maxVerLen = 7;
-
-        var outputFormat = $" {{0,-{maxNameLen}}} {{1,-{maxIdLen}}} {{2,-{maxVerLen}}} {{3,-9}}";
-
-        Console.WriteLine(outputFormat, "Name", "Id", "Version", "Enabled");
-        Console.WriteLine(new string('-', maxNameLen + maxIdLen + maxVerLen + 11));
+            yield break;
 
         var configs = nameFilter == null
             ? _configuration
             : _configuration.Where(c => Regex.IsMatch(c.Key, nameFilter));
 
-        foreach (var (k, v) in configs)
-            Console.WriteLine(outputFormat, k, v.Id, v.Version, v.Enable);
+        foreach (var (key, settings) in configs)
+        {
+            var dir     = GetInstallPath(settings.Id, settings.Version);
+            var dllPath = _fileSystem.Path.Combine(dir, $"{settings.Id}.dll");
+
+            var loadResult = LoadPlugin(dllPath, _logger);
+
+            if (loadResult.IsFailure)
+            {
+                _logger.LogError($"Failed to load connector configuration '{key}' from '{dir}'.");
+
+                yield break;
+            }
+
+            yield return (key, new ConnectorData(settings, loadResult.Value));
+        }
     }
 
     /// <inheritdoc />
@@ -287,6 +294,9 @@ public class ConnectorManager : IConnectorManager
 
         return package.Metadata;
     }
+
+    internal virtual Result<Assembly, IErrorBuilder> LoadPlugin(string dllPath, ILogger logger) =>
+        PluginLoadContext.LoadPlugin(dllPath, _logger);
 }
 
 }
