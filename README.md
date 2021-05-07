@@ -1,15 +1,56 @@
-# ConnectorManager
+# Connector Manager
 
-[![pipeline status](https://gitlab.com/reductech/edr/connectormanager/badges/master/pipeline.svg)](https://gitlab.com/reductech/edr/connectormanager/-/commits/master)
-[![coverage report](https://gitlab.com/reductech/edr/connectormanager/badges/master/coverage.svg)](https://gitlab.com/reductech/edr/connectormanager/-/commits/master)
-[![Gitter](https://badges.gitter.im/reductech/community.svg)](https://gitter.im/reductech/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+A plugins management system for [EDR Connectors](https://gitlab.com/reductech/edr/connectors).
 
-An example of a .NET Core library that uses:
+# Connectors
 
-- [xUnit](https://xunit.github.io/) for testing
-- [Stryker](https://stryker-mutator.io/) for mutation testing
-- [Coverlet](https://github.com/tonerdo/coverlet) for code coverage
-- and [GitLab CI](https://docs.gitlab.com/ee/ci/README.html) for... CI.
+All the available connectors can be found in the
+[Connector Registry](https://gitlab.com/reductech/edr/connector-registry/-/packages).
+The connector manager is set up to work with this registry by default.
+
+# Example `connectors.json`
+
+```json
+{
+  "Reductech.EDR.Connectors.Nuix": {
+    "id": "Reductech.EDR.Connectors.Nuix",
+    "version": "0.9.0",
+    "settings": {
+      "exeConsolePath": "C:\\Program Files\\Nuix\\Nuix 9.0\\nuix_console.exe",
+      "licencesourcetype": "dongle",
+      "version": "9.0",
+      "features": [
+        "ANALYSIS",
+        "CASE_CREATION",
+        "EXPORT_ITEMS",
+        "METADATA_IMPORT",
+        "OCR_PROCESSING",
+        "PRODUCTION_SET"
+      ]
+    }
+  },
+  "Reductech.EDR.Connectors.FileSystem": {
+    "id": "Reductech.EDR.Connectors.FileSystem",
+    "version": "0.9.0"
+  },
+  "data": {
+    "id": "Reductech.EDR.Connectors.StructuredData",
+    "version": "0.9.0",
+    "enabled": false
+  }
+}
+```
+
+## E-Discovery Reduct
+
+The Connector Manager is part of a group of projects called
+[E-Discovery Reduct](https://gitlab.com/reductech/edr)
+which consists of a collection of [Connectors](https://gitlab.com/reductech/edr/connectors)
+and a command-line application for running Sequences, called
+[EDR](https://gitlab.com/reductech/edr/edr/-/releases).
+
+You can see an implementation of the Connector Manager for the console
+in [EDR](https://gitlab.com/reductech/edr/edr/-/releases).
 
 # Releases
 
@@ -17,9 +58,4 @@ Can be downloaded from the [Releases page](https://gitlab.com/reductech/edr/conn
 
 # NuGet Packages
 
-Are available for download from the [Releases page](https://gitlab.com/reductech/edr/connectormanager/-/releases)
-or from the `package nuget` jobs of the CI pipelines. They're also available in:
-
-- [Reductech Nuget feed](https://gitlab.com/reductech/nuget/-/packages) for releases
-- [Reductech Nuget-dev feed](https://gitlab.com/reductech/nuget-dev/-/packages) for releases, master branch and dev builds
-
+Are available in the [Reductech Nuget feed](https://gitlab.com/reductech/nuget/-/packages).
