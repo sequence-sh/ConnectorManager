@@ -114,6 +114,48 @@ public partial class ConnectorManagerTests
         Assert.Equal(name,    configs[0].data.ConnectorSettings.Id);
         Assert.Equal(version, configs[0].data.ConnectorSettings.Version);
     }
+
+    [Fact]
+    public async Task Find_ByDefault_ReturnsLatestMajorVersionOnly()
+    {
+        var expected = new ConnectorMetadata[]
+        {
+            new("Reductech.EDR.Connectors.FileSystem", "0.9.0"),
+            new("Reductech.EDR.Connectors.StructuredData", "0.9.0")
+        };
+
+        var connectors = await _manager.Find();
+
+        Assert.Equal(expected, connectors);
+    }
+
+    [Fact]
+    public async Task Find_WhenPrereleaseIsTrue_ReturnsLatestVersions()
+    {
+        var expected = new ConnectorMetadata[]
+        {
+            new("Reductech.EDR.Connectors.FileSystem", "0.9.0"),
+            new("Reductech.EDR.Connectors.StructuredData", "0.9.0"),
+            new("Reductech.EDR.Connectors.Nuix", "0.9.0-beta.2")
+        };
+
+        var connectors = await _manager.Find(prerelease: true);
+
+        Assert.Equal(expected, connectors);
+    }
+
+    [Fact]
+    public async Task Find_SearchIsSet_ReturnsFilteredList()
+    {
+        var expected = new ConnectorMetadata[]
+        {
+            new("Reductech.EDR.Connectors.FileSystem", "0.9.0")
+        };
+
+        var connectors = await _manager.Find("File");
+
+        Assert.Equal(expected, connectors);
+    }
 }
 
 }
