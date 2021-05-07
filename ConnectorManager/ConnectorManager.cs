@@ -239,28 +239,11 @@ public class ConnectorManager : IConnectorManager
     }
 
     /// <inheritdoc />
-    public async Task Find(string? search, bool prerelease = false, CancellationToken ct = default)
-    {
-        var found      = await _registry.Find(search ?? string.Empty, prerelease, ct);
-        var connectors = found.ToList();
-
-        if (connectors.Count <= 0)
-            return;
-
-        var maxIdLen  = _configuration.Max(c => c.Value.Id.Length) + 2;
-        var maxVerLen = _configuration.Max(c => c.Value.Version.Length) + 2;
-
-        if (maxVerLen < 7)
-            maxVerLen = 7;
-
-        var outputFormat = $" {{0,-{maxIdLen}}} {{1,-{maxVerLen}}}";
-
-        Console.WriteLine(outputFormat, "Id", "Version");
-        Console.WriteLine(new string('-', maxIdLen + maxVerLen + 2));
-
-        foreach (var c in connectors)
-            Console.WriteLine(outputFormat, c.Id, c.Version);
-    }
+    public async Task<ICollection<ConnectorMetadata>> Find(
+        string? search = null,
+        bool prerelease = false,
+        CancellationToken ct = default) =>
+        (await _registry.Find(search ?? string.Empty, prerelease, ct)).ToList();
 
     private string GetInstallPath(string id, string version) =>
         _fileSystem.Path.Combine(_settings.ConnectorPath, id, version);

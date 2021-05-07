@@ -65,7 +65,10 @@ public interface IConnectorManager
     /// <param name="prerelease">Allow prerelease versions to be used</param>
     /// <param name="ct">Cancellation token</param>
     /// <returns></returns>
-    Task Find(string? search, bool prerelease = false, CancellationToken ct = default);
+    Task<ICollection<ConnectorMetadata>> Find(
+        string? search = null,
+        bool prerelease = false,
+        CancellationToken ct = default);
 }
 
 }
