@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.IO;
 using System.IO.Abstractions.TestingHelpers;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -16,30 +15,33 @@ namespace Reductech.EDR.ConnectorManagement.Tests
 
 public class FileConnectorConfigurationTests
 {
-    private const string FilePath = @"c:\temp\connectors.json";
     private const string ConnectorName = "Reductech.EDR.Connectors.FileSystem";
 
     private static async Task<(IConnectorConfiguration, MockFileSystem)> GetEmptyConfig() =>
         await GetConfig(content: "");
 
     private static async Task<(IConnectorConfiguration, MockFileSystem)> GetConfig(
-        string file = FilePath,
+        string file = Helpers.ConfigurationPath,
         string content = Helpers.TestConfiguration)
     {
         var fs = new MockFileSystem();
         fs.AddFile(file, content);
-        var config = await FileConnectorConfiguration.FromJson(FilePath, fs);
+
+        var settings = file == Helpers.ConfigurationPath
+            ? Helpers.ManagerSettings
+            : Helpers.ManagerSettings with { ConfigurationPath = file };
+
+        var config = await FileConnectorConfiguration.CreateFromJson(settings, fs);
+
         return (config, fs);
     }
 
     [Fact]
-    public async Task FromJson_WhenFileDoesNotExist_Throws()
+    public async Task FromJson_WhenFileDoesNotExist_CreatesFile()
     {
-        var error = await Assert.ThrowsAsync<FileNotFoundException>(
-            () => FileConnectorConfiguration.FromJson("doesnotexist", new MockFileSystem())
-        );
-
-        Assert.Equal("Connector configuration file not found.", error.Message);
+        var fs = new MockFileSystem();
+        await FileConnectorConfiguration.CreateFromJson(Helpers.ManagerSettings, fs);
+        Assert.Equal("{}", fs.GetFile(Helpers.ConfigurationPath).TextContents);
     }
 
     [Fact]
@@ -63,10 +65,10 @@ public class FileConnectorConfigurationTests
     public async Task FromJson_WhenConfigFileIsNotValid_Throws()
     {
         var fs = new MockFileSystem();
-        fs.AddFile(FilePath, "{\"notright:\"\"}");
+        fs.AddFile(Helpers.ConfigurationPath, "{\"notright:\"\"}");
 
         var error = await Assert.ThrowsAsync<JsonReaderException>(
-            () => FileConnectorConfiguration.FromJson(FilePath, fs)
+            () => FileConnectorConfiguration.CreateFromJson(Helpers.ManagerSettings, fs)
         );
 
         Assert.Matches("Invalid character", error.Message);
@@ -123,7 +125,7 @@ public class FileConnectorConfigurationTests
 
         Assert.Equal(2, config.Count);
 
-        var content = fs.GetFile(FilePath);
+        var content = fs.GetFile(Helpers.ConfigurationPath);
 
         Assert.NotNull(content);
         Assert.Matches(Regex.Escape(ConnectorName), content.TextContents);
@@ -139,7 +141,7 @@ public class FileConnectorConfigurationTests
         Assert.Equal(3, config.Count);
         Assert.DoesNotContain(ConnectorName, config.Keys);
 
-        var content = fs.GetFile(FilePath);
+        var content = fs.GetFile(Helpers.ConfigurationPath);
 
         Assert.NotNull(content);
         Assert.DoesNotMatch(Regex.Escape(ConnectorName), content.TextContents);
@@ -234,7 +236,7 @@ public class FileConnectorConfigurationTests
 
         Assert.Equal(4, config.Count);
 
-        var content = fs.GetFile(FilePath);
+        var content = fs.GetFile(Helpers.ConfigurationPath);
 
         Assert.NotNull(content);
         Assert.Matches(Regex.Escape(expectedVersion), content.TextContents);

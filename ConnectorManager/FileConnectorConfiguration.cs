@@ -1,5 +1,5 @@
+using System;
 using System.Collections.Generic;
-using System.IO;
 using System.IO.Abstractions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -78,17 +78,38 @@ public class FileConnectorConfiguration : ConnectorConfigurationBase
     }
 
     /// <summary>
-    /// Create a new ConnectorConfiguration using a JSON file.
+    /// Create a new configuration using the settings dictionary.
     /// </summary>
-    public static async Task<IConnectorConfiguration> FromJson(
+    public static async Task<IConnectorConfiguration> Create(
+        ConnectorManagerSettings settings,
+        IFileSystem fileSystem,
+        Dictionary<string, ConnectorSettings> connectors,
+        CancellationToken ct = default)
+    {
+        if (fileSystem.File.Exists(settings.ConfigurationPath))
+            throw new ArgumentException("Configuration file alread exists", nameof(settings));
+
+        var config = new FileConnectorConfiguration(
+            settings.ConfigurationPath,
+            connectors,
+            fileSystem
+        );
+
+        await config.SaveSettings(ct);
+
+        return config;
+    }
+
+    /// <summary>
+    /// Create a new ConnectorConfiguration using a JSON file.
+    /// If the JSON file does not exist, an empty file will be created.
+    /// </summary>
+    public static async Task<IConnectorConfiguration> CreateFromJson(
         ConnectorManagerSettings settings,
         IFileSystem fileSystem)
     {
         if (!fileSystem.File.Exists(settings.ConfigurationPath))
-            throw new FileNotFoundException(
-                "Connector configuration file not found.",
-                settings.ConfigurationPath
-            );
+            await fileSystem.File.WriteAllTextAsync(settings.ConfigurationPath, "{}");
 
         var text = await fileSystem.File.ReadAllTextAsync(settings.ConfigurationPath);
 
