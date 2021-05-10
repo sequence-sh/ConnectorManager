@@ -213,9 +213,7 @@ public class ConnectorManager : IConnectorManager
     }
 
     /// <inheritdoc />
-    public async Task<bool> Verify(
-        bool installMissing = false,
-        CancellationToken ct = default)
+    public async Task<bool> Verify(CancellationToken ct = default)
     {
         var success = true;
 
@@ -256,7 +254,7 @@ public class ConnectorManager : IConnectorManager
                 continue;
             }
 
-            if (installMissing)
+            if (_settings.AutoDownload)
             {
                 await InstallConnector(settings.Id, settings.Version, dir, false, ct);
             }

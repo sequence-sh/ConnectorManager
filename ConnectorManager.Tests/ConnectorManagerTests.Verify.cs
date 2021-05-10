@@ -46,7 +46,7 @@ public partial class ConnectorManagerTests
     }
 
     [Fact]
-    public async Task Verify_WhenDirectoryDoesNotExist_ReturnsFalse()
+    public async Task Verify_WhenDirectoryDoesNotExistAndAutoDownloadIsFalse_ReturnsFalse()
     {
         var exists = _config["Reductech.EDR.Connectors.StructuredData"];
         var dir    = _fileSystem.Path.Combine(_settings.ConnectorPath, exists.Id, exists.Version);
@@ -62,7 +62,15 @@ public partial class ConnectorManagerTests
             missing.Version
         );
 
-        var result = await _manager.Verify();
+        var manager = new ConnectorManager(
+            _loggerFactory.CreateLogger<ConnectorManager>(),
+            _settings with { AutoDownload = false },
+            _registry,
+            _config,
+            _fileSystem
+        );
+
+        var result = await manager.Verify();
 
         Assert.False(result);
 
@@ -81,7 +89,7 @@ public partial class ConnectorManagerTests
     public async Task
         Verify_WhenDirectoryDoesNotExistAndInstallMissingIsTrue_InstallsConnectorAndReturnsTrue()
     {
-        var result = await _manager.Verify(true);
+        var result = await _manager.Verify();
 
         Assert.True(result);
 
