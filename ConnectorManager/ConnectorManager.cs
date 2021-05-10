@@ -47,32 +47,6 @@ public class ConnectorManager : IConnectorManager
         _fileSystem    = fileSystem;
     }
 
-    private async Task<(string? version, string? latest)> CheckVersion(
-        string id,
-        string? version,
-        bool prerelease,
-        CancellationToken ct)
-    {
-        var allVersions = await _registry.GetVersion(id, prerelease, ct);
-
-        if (allVersions.Count == 0)
-        {
-            _logger.LogError($"Could not find connector {id} in the registry.");
-            return (null, null);
-        }
-
-        var latest = allVersions.Last();
-
-        if (version == null)
-            return (latest, latest);
-
-        if (allVersions.Contains(version))
-            return (version, latest);
-
-        _logger.LogError($"Could not find connector {id} version {version} in the registry.");
-        return (null, latest);
-    }
-
     /// <inheritdoc />
     public async Task Add(
         string id,
@@ -238,6 +212,9 @@ public class ConnectorManager : IConnectorManager
         }
     }
 
+    internal virtual Result<Assembly, IErrorBuilder> LoadPlugin(string dllPath, ILogger logger) =>
+        PluginLoadContext.LoadPlugin(dllPath, _logger);
+
     /// <inheritdoc />
     public async Task<ICollection<ConnectorMetadata>> Find(
         string? search = null,
@@ -278,8 +255,31 @@ public class ConnectorManager : IConnectorManager
         return package.Metadata;
     }
 
-    internal virtual Result<Assembly, IErrorBuilder> LoadPlugin(string dllPath, ILogger logger) =>
-        PluginLoadContext.LoadPlugin(dllPath, _logger);
+    private async Task<(string? version, string? latest)> CheckVersion(
+        string id,
+        string? version,
+        bool prerelease,
+        CancellationToken ct)
+    {
+        var allVersions = await _registry.GetVersion(id, prerelease, ct);
+
+        if (allVersions.Count == 0)
+        {
+            _logger.LogError($"Could not find connector {id} in the registry.");
+            return (null, null);
+        }
+
+        var latest = allVersions.Last();
+
+        if (version == null)
+            return (latest, latest);
+
+        if (allVersions.Contains(version))
+            return (version, latest);
+
+        _logger.LogError($"Could not find connector {id} version {version} in the registry.");
+        return (null, latest);
+    }
 }
 
 }
