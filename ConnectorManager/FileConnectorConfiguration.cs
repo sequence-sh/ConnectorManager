@@ -87,7 +87,7 @@ public class FileConnectorConfiguration : ConnectorConfigurationBase
         CancellationToken ct = default)
     {
         if (fileSystem.File.Exists(settings.ConfigurationPath))
-            throw new ArgumentException("Configuration file alread exists", nameof(settings));
+            throw new ArgumentException("Configuration file already exists", nameof(settings));
 
         var config = new FileConnectorConfiguration(
             settings.ConfigurationPath,

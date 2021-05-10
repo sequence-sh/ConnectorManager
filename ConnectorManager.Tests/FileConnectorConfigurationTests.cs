@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO.Abstractions.TestingHelpers;
 using System.Linq;
@@ -37,7 +38,7 @@ public class FileConnectorConfigurationTests
     }
 
     [Fact]
-    public async Task FromJson_WhenFileDoesNotExist_CreatesFile()
+    public async Task CreateFromJson_WhenFileDoesNotExist_CreatesFile()
     {
         var fs = new MockFileSystem();
         await FileConnectorConfiguration.CreateFromJson(Helpers.ManagerSettings, fs);
@@ -45,7 +46,7 @@ public class FileConnectorConfigurationTests
     }
 
     [Fact]
-    public async Task FromJson_WhenConfigFileIsValid_ReturnsConfig()
+    public async Task CreateFromJson_WhenConfigFileIsValid_ReturnsConfig()
     {
         var (config, _) = await GetConfig();
 
@@ -62,7 +63,7 @@ public class FileConnectorConfigurationTests
     }
 
     [Fact]
-    public async Task FromJson_WhenConfigFileIsNotValid_Throws()
+    public async Task CreateFromJson_WhenConfigFileIsNotValid_Throws()
     {
         var fs = new MockFileSystem();
         fs.AddFile(Helpers.ConfigurationPath, "{\"notright:\"\"}");
@@ -75,10 +76,50 @@ public class FileConnectorConfigurationTests
     }
 
     [Fact]
-    public async Task FromJson_WhenConfigIsEmpty_ReturnsEmptyConfig()
+    public async Task CreateFromJson_WhenConfigIsEmpty_ReturnsEmptyConfig()
     {
         var (config, _) = await GetEmptyConfig();
         Assert.Empty(config);
+    }
+
+    [Fact]
+    public async Task Create_WhenConfigurationFileExists_Throws()
+    {
+        var fs = new MockFileSystem();
+        fs.AddFile(Helpers.ConfigurationPath, "");
+
+        var error = await Assert.ThrowsAsync<ArgumentException>(
+            () => FileConnectorConfiguration.Create(
+                Helpers.ManagerSettings,
+                fs,
+                new Dictionary<string, ConnectorSettings>()
+            )
+        );
+
+        Assert.Matches("Configuration file already exists", error.Message);
+    }
+
+    [Fact]
+    public async Task Create_ByDefault_CreatesAndSavesSettings()
+    {
+        var fs = new MockFileSystem();
+
+        var connectors = new Dictionary<string, ConnectorSettings>
+        {
+            { ConnectorName, new ConnectorSettings { Id = ConnectorName, Version = "0.9.0" } }
+        };
+
+        var config = await FileConnectorConfiguration.Create(
+            Helpers.ManagerSettings,
+            fs,
+            connectors
+        );
+
+        Assert.Contains(ConnectorName, config.Keys);
+
+        var content = fs.GetFile(Helpers.ConfigurationPath).TextContents;
+
+        Assert.Matches(ConnectorName, content);
     }
 
     [Fact]
