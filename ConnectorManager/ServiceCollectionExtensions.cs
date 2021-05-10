@@ -6,16 +6,24 @@ namespace Reductech.EDR.ConnectorManagement
 {
 
 /// <summary>
-/// 
+/// Extension methods for dependency injection using IServiceCollection.
 /// </summary>
 public static class ServiceCollectionExtensions
 {
     /// <summary>
+    /// Create all the required services to set up a ConnectorManager using
+    /// a JSON configuration file.
+    /// 
+    ///   - ConnectorManagerSettings
+    ///   - ConnectorRegistrySettings
+    ///   - IConnectorRegistry
+    ///   - IConnectorConfiguration (FileConnectorConfiguration)
+    ///   - IConnectorManager
     /// 
     /// </summary>
-    /// <param name="services"></param>
-    /// <param name="configuration"></param>
-    /// <param name="fileSystem"></param>
+    /// <param name="services">IServiceCollection</param>
+    /// <param name="configuration">The application Configuration.</param>
+    /// <param name="fileSystem">The file system.</param>
     /// <returns></returns>
     public static IServiceCollection AddConnectorManager(
         this IServiceCollection services,
@@ -34,15 +42,8 @@ public static class ServiceCollectionExtensions
 
         services.AddSingleton<IConnectorRegistry, ConnectorRegistry>();
 
-        // TODO: include this in the FromJson method. Rename to CreateOrLoadFromJson
-        if (!fileSystem.File.Exists(managerSettings.ConfigurationPath))
-            fileSystem.File.WriteAllText(managerSettings.ConfigurationPath, "{}");
-
-        // TODO: Add a FromObject()
-        var connectorConfig = FileConnectorConfiguration.FromJson(
-            managerSettings.ConfigurationPath,
-            fileSystem
-        );
+        var connectorConfig =
+            FileConnectorConfiguration.CreateFromJson(managerSettings, fileSystem);
 
         connectorConfig.Wait();
 
