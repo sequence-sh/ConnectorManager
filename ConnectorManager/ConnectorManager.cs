@@ -212,8 +212,68 @@ public class ConnectorManager : IConnectorManager
         }
     }
 
-    internal virtual Result<Assembly, IErrorBuilder> LoadPlugin(string dllPath, ILogger logger) =>
-        PluginLoadContext.LoadPlugin(dllPath, _logger);
+    /// <inheritdoc />
+    public async Task<bool> Verify(
+        bool installMissing = false,
+        CancellationToken ct = default)
+    {
+        var success = true;
+
+        foreach (var (key, settings) in _configuration)
+        {
+            _logger.LogDebug("Checking connector configuration '{name}'.", key);
+
+            var dir     = GetInstallPath(settings.Id, settings.Version);
+            var dllPath = _fileSystem.Path.Combine(dir, $"{settings.Id}.dll");
+
+            if (_fileSystem.Directory.Exists(dir))
+            {
+                _logger.LogDebug(
+                    "Verified connector '{connector}' install path exists: {directory}",
+                    settings.Id,
+                    dir
+                );
+
+                if (_fileSystem.File.Exists(dllPath))
+                {
+                    _logger.LogDebug(
+                        "Verified connector '{connector}' dll exists: {dllPath}",
+                        settings.Id,
+                        dllPath
+                    );
+                }
+                else
+                {
+                    _logger.LogError(
+                        "Configuration '{configuration}' connector dll missing: {dllPath}",
+                        key,
+                        dllPath
+                    );
+
+                    success = false;
+                }
+
+                continue;
+            }
+
+            if (installMissing)
+            {
+                await InstallConnector(settings.Id, settings.Version, dir, false, ct);
+            }
+            else
+            {
+                _logger.LogError(
+                    "Configuration '{configuration}' installation path missing: {path}",
+                    key,
+                    dir
+                );
+
+                success = false;
+            }
+        }
+
+        return success;
+    }
 
     /// <inheritdoc />
     public async Task<ICollection<ConnectorMetadata>> Find(
@@ -221,6 +281,9 @@ public class ConnectorManager : IConnectorManager
         bool prerelease = false,
         CancellationToken ct = default) =>
         (await _registry.Find(search ?? string.Empty, prerelease, ct)).ToList();
+
+    internal virtual Result<Assembly, IErrorBuilder> LoadPlugin(string dllPath, ILogger logger) =>
+        PluginLoadContext.LoadPlugin(dllPath, _logger);
 
     private string GetInstallPath(string id, string version) =>
         _fileSystem.Path.Combine(_settings.ConnectorPath, id, version);
@@ -246,11 +309,20 @@ public class ConnectorManager : IConnectorManager
             }
         }
 
+        _logger.LogDebug(
+            "Installing connector {connector} - {version} to: {installDir}",
+            id,
+            version,
+            path
+        );
+
         _fileSystem.Directory.CreateDirectory(path);
 
         using var package = await _registry.GetConnectorPackage(id, version, ct);
 
         await package.Extract(_fileSystem, path, ct);
+
+        _logger.LogInformation($"Successfully installed connector '{id}' ({version}).");
 
         return package.Metadata;
     }

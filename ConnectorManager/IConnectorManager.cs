@@ -69,6 +69,16 @@ public interface IConnectorManager
         string? search = null,
         bool prerelease = false,
         CancellationToken ct = default);
+
+    /// <summary>
+    /// Verifies that connectors defined in the configuration have been installed.
+    /// Does a basic check for the directory and connector dll only, does not verify
+    /// if the connector package has all the correct dependencies.
+    /// </summary>
+    /// <param name="installMissing">Installs any missing connectors</param>
+    /// <param name="ct">Cancellation token</param>
+    /// <returns></returns>
+    Task<bool> Verify(bool installMissing = false, CancellationToken ct = default);
 }
 
 }

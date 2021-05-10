@@ -96,8 +96,6 @@ public partial class ConnectorManagerTests
 
         var log = _loggerFactory.GetTestLoggerSink().LogEntries.ToArray();
 
-        Assert.Equal(2, log.Length);
-
         Assert.Contains(
             log,
             l => l.LogLevel == LogLevel.Debug
