@@ -41,7 +41,7 @@ The connector manager is set up to work with this registry by default.
 }
 ```
 
-## E-Discovery Reduct
+# E-Discovery Reduct
 
 The Connector Manager is part of a group of projects called
 [E-Discovery Reduct](https://gitlab.com/reductech/edr)
@@ -51,6 +51,38 @@ and a command-line application for running Sequences, called
 
 You can see an implementation of the Connector Manager for the console
 in [EDR](https://gitlab.com/reductech/edr/edr/-/releases).
+
+# Packaging Projects as Connectors
+
+For a nuget package to be compatible with Core, all the dependencies
+need to be included. To do this, add this to your `csproj` file:
+
+```xml
+  <PropertyGroup Condition="$(PackConnector) != ''">
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+
+  <Target Name="AddConnectorDependencies"
+          BeforeTargets="GenerateNuspec"
+          Condition="$(PackConnector) != ''">
+    <ItemGroup>
+      <_PackageFiles
+        Include="@(RuntimeCopyLocalItems)"
+        PackagePath="$(BuildOutputTargetFolder)/$(TargetFramework)/%(Filename)%(Extension)" />
+    </ItemGroup>
+  </Target>
+```
+
+Then package the connector using:
+
+```powershell
+dotnet pack --configuration Release --version-suffix "-alpha.1" -p:PackConnector=true --output ./
+```
+
+# Testing
+
+`ConnectorRegistry` is integration tested against the
+[nuget feed](https://gitlab.com/reductech/edr/connectormanager/-/packages) of this project.
 
 # Releases
 
