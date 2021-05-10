@@ -81,23 +81,23 @@ public class FileConnectorConfiguration : ConnectorConfigurationBase
     /// Create a new ConnectorConfiguration using a JSON file.
     /// </summary>
     public static async Task<IConnectorConfiguration> FromJson(
-        string configurationPath,
+        ConnectorManagerSettings settings,
         IFileSystem fileSystem)
     {
-        if (!fileSystem.File.Exists(configurationPath))
+        if (!fileSystem.File.Exists(settings.ConfigurationPath))
             throw new FileNotFoundException(
                 "Connector configuration file not found.",
-                configurationPath
+                settings.ConfigurationPath
             );
 
-        var text = await fileSystem.File.ReadAllTextAsync(configurationPath);
+        var text = await fileSystem.File.ReadAllTextAsync(settings.ConfigurationPath);
 
         var connectors = JsonConvert.DeserializeObject<Dictionary<string, ConnectorSettings>>(
             text,
             EntityJsonConverter.Instance
         ) ?? new Dictionary<string, ConnectorSettings>();
 
-        return new FileConnectorConfiguration(configurationPath, connectors, fileSystem);
+        return new FileConnectorConfiguration(settings.ConfigurationPath, connectors, fileSystem);
     }
 }
 
