@@ -23,7 +23,7 @@ public partial class ConnectorManagerTests
         Assert.Contains(
             log,
             l => l.LogLevel == LogLevel.Error
-              && l.Message!.Equals($"Could not find connector {id} in the registry.")
+              && l.Message!.Equals($"Could not find connector '{id}' in the registry.")
         );
     }
 
@@ -44,7 +44,7 @@ public partial class ConnectorManagerTests
             log,
             l => l.LogLevel == LogLevel.Error
               && l.Message!.Equals(
-                     $"Could not find connector {id} version {version} in the registry."
+                     $"Could not find connector '{id}' version '{version}' in the registry."
                  )
         );
     }
@@ -83,7 +83,7 @@ public partial class ConnectorManagerTests
         Assert.Contains(
             log,
             l => l.LogLevel == LogLevel.Error
-              && l.Message!.Equals($"Could not find connector {id} in the registry.")
+              && l.Message!.Equals($"Could not find connector '{id}' in the registry.")
         );
     }
 
@@ -120,8 +120,8 @@ public partial class ConnectorManagerTests
 
         Assert.Contains(
             _loggerFactory.GetTestLoggerSink().LogEntries.ToArray(),
-            l => l.LogLevel == LogLevel.Information
-              && l.Message!.Equals($"Successfully installed connector '{id}' ({version}).")
+            l => l.LogLevel == LogLevel.Debug
+              && l.Message!.Equals($"Successfully installed connector '{id}' - '{version}'.")
         );
 
         Assert.Equal(expected, _fileSystem.AllFiles);
@@ -175,8 +175,8 @@ public partial class ConnectorManagerTests
 
         Assert.Contains(
             _loggerFactory.GetTestLoggerSink().LogEntries,
-            l => l.LogLevel == LogLevel.Information
-              && l.Message!.Equals($"Successfully installed connector '{id}' ({version}).")
+            l => l.LogLevel == LogLevel.Debug
+              && l.Message!.Equals($"Successfully installed connector '{id}' - '{version}'.")
         );
 
         Assert.Equal(expected, _fileSystem.AllFiles);

@@ -69,12 +69,13 @@ public class ConnectorManager : IConnectorManager
             if (force)
             {
                 await _configuration.RemoveAsync(name, ct);
-                _logger.LogDebug($"Removed '{name}' from connector configuration.");
+                _logger.LogDebug("Removed '{configuration}' from connector configuration.", name);
             }
             else
             {
                 _logger.LogError(
-                    $"Connector configuration '{name}' already exists. Use --force to overwrite or update."
+                    "Connector configuration '{configuration}' already exists. Use --force to overwrite or update.",
+                    name
                 );
 
                 return;
@@ -94,7 +95,7 @@ public class ConnectorManager : IConnectorManager
             ct
         );
 
-        _logger.LogInformation($"Successfully installed connector '{id}' ({version}).");
+        _logger.LogDebug("Successfully installed connector '{id}' - '{version}'.", id, version);
     }
 
     /// <inheritdoc />
@@ -107,7 +108,8 @@ public class ConnectorManager : IConnectorManager
         if (!_configuration.TryGetSettings(name, out var cs))
         {
             _logger.LogError(
-                $"Connector configuration '{name}' does not exist. To install, use add."
+                "Connector configuration '{configuration}' does not exist. To install, use add.",
+                name
             );
 
             return;
@@ -115,7 +117,11 @@ public class ConnectorManager : IConnectorManager
 
         if (version != null && cs.Version.Equals(version))
         {
-            _logger.LogError($"Connector configuration '{name}' already has version {version}.");
+            _logger.LogError(
+                "Connector configuration '{configuration}' already has version '{version}'.",
+                name,
+                version
+            );
 
             return;
         }
@@ -130,7 +136,9 @@ public class ConnectorManager : IConnectorManager
         if (version.Equals(latest, StringComparison.Ordinal))
         {
             _logger.LogInformation(
-                $"Connector configuration '{name}' already has the latest version ({version}) installed."
+                "Connector configuration '{configuration}' already has the latest version '{version}' installed.",
+                name,
+                version
             );
 
             return;
@@ -148,7 +156,9 @@ public class ConnectorManager : IConnectorManager
         _configuration[name] = cs;
 
         _logger.LogInformation(
-            $"Connector configuration '{name}' successfully updated to {version}."
+            "Connector configuration '{configuration}' successfully updated to '{version}'.",
+            name,
+            version
         );
     }
 
@@ -170,17 +180,20 @@ public class ConnectorManager : IConnectorManager
                 }
                 catch (DirectoryNotFoundException)
                 {
-                    _logger.LogWarning($"Connector directory '{removePath}' not found.");
+                    _logger.LogWarning(
+                        "Connector directory '{connectorDirectory}' not found.",
+                        removePath
+                    );
                 }
             }
 
             await _configuration.RemoveAsync(name, ct);
 
-            _logger.LogInformation($"Connector configuration '{name}' removed.");
+            _logger.LogDebug("Connector configuration '{configuration}' removed.", name);
         }
         else
         {
-            _logger.LogError($"Connector configuration '{name}' not found.");
+            _logger.LogError("Connector configuration '{configuration}' not found.", name);
         }
     }
 
@@ -203,7 +216,11 @@ public class ConnectorManager : IConnectorManager
 
             if (loadResult.IsFailure)
             {
-                _logger.LogError($"Failed to load connector configuration '{key}' from '{dir}'.");
+                _logger.LogError(
+                    "Failed to load connector configuration '{configuration}' from '{installPath}'.",
+                    key,
+                    dir
+                );
 
                 yield break;
             }
@@ -300,7 +317,8 @@ public class ConnectorManager : IConnectorManager
             else
             {
                 _logger.LogError(
-                    $"Connector directory '{path}' already exists. Use --force to overwrite."
+                    "Connector directory '{connectorDir}' already exists. Use --force to overwrite.",
+                    path
                 );
 
                 return null;
@@ -320,7 +338,11 @@ public class ConnectorManager : IConnectorManager
 
         await package.Extract(_fileSystem, path, ct);
 
-        _logger.LogInformation($"Successfully installed connector '{id}' ({version}).");
+        _logger.LogDebug(
+            "Successfully downloaded and extracted '{id}' - '{version}'.",
+            id,
+            version
+        );
 
         return package.Metadata;
     }
@@ -335,7 +357,7 @@ public class ConnectorManager : IConnectorManager
 
         if (allVersions.Count == 0)
         {
-            _logger.LogError($"Could not find connector {id} in the registry.");
+            _logger.LogError("Could not find connector '{connectorId}' in the registry.", id);
             return (null, null);
         }
 
@@ -347,7 +369,12 @@ public class ConnectorManager : IConnectorManager
         if (allVersions.Contains(version))
             return (version, latest);
 
-        _logger.LogError($"Could not find connector {id} version {version} in the registry.");
+        _logger.LogError(
+            "Could not find connector '{connectorId}' version '{version}' in the registry.",
+            id,
+            version
+        );
+
         return (null, latest);
     }
 }
