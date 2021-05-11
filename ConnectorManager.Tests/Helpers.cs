@@ -5,19 +5,21 @@ namespace Reductech.EDR.ConnectorManagement.Tests
 
 internal static class Helpers
 {
-    internal static readonly ConnectorRegistrySettings IntegrationRegistrySettings = new(
-        "https://gitlab.com/api/v4/projects/26301248/packages/nuget/index.json",
-        "integrationtests",
-        "E8YL7f4kTM4XJEn1ixnL"
-    );
+    internal static readonly ConnectorRegistrySettings IntegrationRegistrySettings = new()
+    {
+        Uri   = "https://gitlab.com/api/v4/projects/26301248/packages/nuget/index.json",
+        User  = "integrationtests",
+        Token = "E8YL7f4kTM4XJEn1ixnL"
+    };
 
     internal const string ConfigurationPath = @"c:\temp\connectors.json";
 
-    internal static readonly ConnectorManagerSettings ManagerSettings = new(
-        @"c:\temp\connectors",
-        ConfigurationPath,
-        true
-    );
+    internal static readonly ConnectorManagerSettings ManagerSettings = new()
+    {
+        ConnectorPath     = @"c:\temp\connectors",
+        ConfigurationPath = ConfigurationPath,
+        AutoDownload      = true
+    };
 
     internal static readonly string InstalledConnectorPath =
         @"connectors\Reductech.EDR.Connectors.FileSystem\0.9.0\Reductech.EDR.Connectors.FileSystem.dll"

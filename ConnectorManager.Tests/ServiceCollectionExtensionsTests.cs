@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Reductech.EDR.Core.Internal;
 using Xunit;
 
@@ -76,6 +78,55 @@ public class ServiceCollectionExtensions
         var config = (IConnectorConfiguration)provider.GetService(typeof(IConnectorConfiguration));
 
         Assert.Contains(connectorName, config.Keys);
+    }
+
+    [Fact]
+    public void AddConnectorManager_CorrectlySerializesCustomAppSettingsJson()
+    {
+        const string settingsJson = @"{
+  ""connectorRegistry"": {
+    ""uri"": ""https://registry/packages/index.json"",
+    ""user"": ""connectoruser""
+  },
+  ""edr"": {
+    ""connectorPath"": ""c:\\connectors"",
+    ""configurationPath"": ""c:\\connectors\\connectors.json"",
+    ""autoDownload"": false
+  }
+}";
+
+        var fs         = new MockFileSystem();
+        var configPath = fs.Path.Combine(AppContext.BaseDirectory, "appsettings.json");
+        fs.AddFile(configPath, settingsJson);
+
+        fs.AddDirectory("c:\\connectors");
+
+        var hb = new HostBuilder().ConfigureAppConfiguration(
+                (_, config) => config.AddJsonStream(fs.File.OpenRead(configPath))
+            )
+            .ConfigureServices(
+                (context, services) =>
+                {
+                    services.AddSingleton<IFileSystem>(fs);
+                    services.AddLogging();
+                    services.AddConnectorManager(context.Configuration, fs);
+                }
+            )
+            .Build();
+
+        var registryConfig =
+            (ConnectorRegistrySettings)hb.Services.GetService(typeof(ConnectorRegistrySettings))!;
+
+        Assert.Equal("https://registry/packages/index.json", registryConfig.Uri);
+        Assert.Equal("connectoruser",                        registryConfig.User);
+        Assert.Null(registryConfig.Token);
+
+        var managerConfig =
+            (ConnectorManagerSettings)hb.Services.GetService(typeof(ConnectorManagerSettings))!;
+
+        Assert.Equal("c:\\connectors",                  managerConfig.ConnectorPath);
+        Assert.Equal("c:\\connectors\\connectors.json", managerConfig.ConfigurationPath);
+        Assert.False(managerConfig.AutoDownload);
     }
 }
 
