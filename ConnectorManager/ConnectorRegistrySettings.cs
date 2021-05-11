@@ -22,19 +22,24 @@ public record ConnectorRegistrySettings
     };
 
     /// <summary>
-    /// 
+    /// The uri of the connector registry.
     /// </summary>
     public string Uri { get; init; }
 
     /// <summary>
-    /// 
+    /// UserName for private registries.
     /// </summary>
     public string? User { get; init; }
 
     /// <summary>
-    /// 
+    /// Token / password for private registries.
     /// </summary>
     public string? Token { get; init; }
+
+    /// <summary>
+    /// By default, nuget protocol logging is disabled. For debugging, set this to true.
+    /// </summary>
+    public bool EnableNuGetLog { get; init; } = false;
 }
 
 }

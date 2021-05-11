@@ -37,7 +37,10 @@ public class ConnectorRegistry : IConnectorRegistry
         Microsoft.Extensions.Logging.ILogger<ConnectorRegistry> logger,
         ConnectorRegistrySettings connectorRegistrySettings)
     {
-        _logger   = new LoggerBridge<ConnectorRegistry>(logger);
+        _logger = connectorRegistrySettings.EnableNuGetLog
+            ? new LoggerBridge<ConnectorRegistry>(logger)
+            : new NullLogger();
+
         _settings = connectorRegistrySettings;
     }
 
