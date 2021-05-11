@@ -314,9 +314,9 @@ public class ConnectorManager : IConnectorManager
             path
         );
 
-        _fileSystem.Directory.CreateDirectory(path);
-
         using var package = await _registry.GetConnectorPackage(id, version, ct);
+
+        _fileSystem.Directory.CreateDirectory(path);
 
         await package.Extract(_fileSystem, path, ct);
 
