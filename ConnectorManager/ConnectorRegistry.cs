@@ -133,15 +133,15 @@ public class ConnectorRegistry : IConnectorRegistry
     {
         SourceRepository repository;
 
-        if (!string.IsNullOrEmpty(_settings.RegistryUser)
-         || !string.IsNullOrEmpty(_settings.RegistryToken))
+        if (!string.IsNullOrEmpty(_settings.User)
+         || !string.IsNullOrEmpty(_settings.Token))
         {
             var source = new PackageSource(_settings.Uri)
             {
                 Credentials = new PackageSourceCredential(
                     source: _settings.Uri,
-                    username: _settings.RegistryUser,
-                    passwordText: _settings.RegistryToken,
+                    username: _settings.User,
+                    passwordText: _settings.Token,
                     isPasswordClearText: true,
                     validAuthenticationTypesText: null
                 )
