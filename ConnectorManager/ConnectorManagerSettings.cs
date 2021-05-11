@@ -33,17 +33,17 @@ public record ConnectorManagerSettings
     };
 
     /// <summary>
-    /// 
+    /// Path to the installation directory for connectors.
     /// </summary>
     public string ConnectorPath { get; init; }
 
     /// <summary>
-    /// 
+    /// Path to the connector configuration JSON.
     /// </summary>
     public string ConfigurationPath { get; init; }
 
     /// <summary>
-    /// 
+    /// Automatically download missing connectors when using the Verify method.
     /// </summary>
     public bool AutoDownload { get; init; }
 }
