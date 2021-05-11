@@ -90,7 +90,7 @@ public class ConnectorManager : IConnectorManager
             return;
 
         await _configuration.AddAsync(
-            id,
+            name,
             new ConnectorSettings { Id = package.Id, Version = package.Version, Enable = true },
             ct
         );
