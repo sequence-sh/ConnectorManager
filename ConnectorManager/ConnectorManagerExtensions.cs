@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Reductech.EDR.Core.Internal;
 
@@ -17,34 +18,26 @@ public static class ConnectorManagerExtensions
     /// <returns></returns>
     public static async Task<StepFactoryStore> GetStepFactoryStoreAsync(
         this IConnectorManager connectorManager,
+        CancellationToken ct = default,
         params ConnectorData[] additionalConnectors)
     {
-        var connectors = await GetConnectors(connectorManager);
+        if (!await connectorManager.Verify(ct))
+            throw new ConnectorConfigurationException("Could not validate installed connectors.");
+
+        var connectors = connectorManager.List()
+            .Select(c => c.data)
+            .Where(c => c.ConnectorSettings.Enable)
+            .ToArray();
+
+        if (connectors.GroupBy(c => c.ConnectorSettings.Id).Any(g => g.Count() > 1))
+            throw new ConnectorConfigurationException(
+                "When using multiple configurations with the same connector id, at most one can be enabled."
+            );
 
         var stepFactoryStore =
             StepFactoryStore.Create(connectors.Concat(additionalConnectors).ToArray());
 
         return stepFactoryStore;
-
-        static async Task<ConnectorData[]> GetConnectors(IConnectorManager connectorManager)
-        {
-            if (!await connectorManager.Verify())
-                throw new ConnectorConfigurationException(
-                    "Could not validate installed connectors."
-                );
-
-            var connectors = connectorManager.List()
-                .Select(c => c.data)
-                .Where(c => c.ConnectorSettings.Enable)
-                .ToArray();
-
-            if (connectors.GroupBy(c => c.ConnectorSettings.Id).Any(g => g.Count() > 1))
-                throw new ConnectorConfigurationException(
-                    "More than one connector configuration with the same id."
-                );
-
-            return connectors;
-        }
     }
 
     /// <summary>
