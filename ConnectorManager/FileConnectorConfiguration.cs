@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.IO.Abstractions;
 using System.Threading;
@@ -18,13 +17,27 @@ public class FileConnectorConfiguration : ConnectorConfigurationBase
     private readonly string _path;
     private readonly IFileSystem _fileSystem;
 
-    private FileConnectorConfiguration(
-        string path,
-        Dictionary<string, ConnectorSettings> connectors,
-        IFileSystem fileSystem) : base(connectors)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="settings"></param>
+    /// <param name="fileSystem"></param>
+    public FileConnectorConfiguration(ConnectorManagerSettings settings, IFileSystem fileSystem)
     {
-        _path       = path;
+        _path       = settings.ConfigurationPath;
         _fileSystem = fileSystem;
+    }
+
+    private Dictionary<string, ConnectorSettings> _connectors = null!;
+
+    /// <inheritdoc />
+    protected override Dictionary<string, ConnectorSettings> Connectors
+    {
+        get
+        {
+            Initialize();
+            return _connectors;
+        }
     }
 
     /// <inheritdoc />
@@ -74,58 +87,34 @@ public class FileConnectorConfiguration : ConnectorConfigurationBase
             jsonSettings
         );
 
-        await _fileSystem.File.WriteAllTextAsync(_path, output, ct);
+        await _fileSystem.File.WriteAllTextAsync(_path, output, ct).ConfigureAwait(false);
     }
 
-    /// <summary>
-    /// Create a new configuration using the settings dictionary.
-    /// </summary>
-    public static async Task<IConnectorConfiguration> Create(
-        ConnectorManagerSettings settings,
-        IFileSystem fileSystem,
-        Dictionary<string, ConnectorSettings> connectors,
-        CancellationToken ct = default)
+    private bool _init;
+
+    private void Initialize()
     {
-        if (fileSystem.File.Exists(settings.ConfigurationPath))
-            throw new ArgumentException("Configuration file already exists", nameof(settings));
+        if (_init)
+            return;
 
-        var config = new FileConnectorConfiguration(
-            settings.ConfigurationPath,
-            connectors,
-            fileSystem
-        );
-
-        await config.SaveSettings(ct);
-
-        return config;
-    }
-
-    /// <summary>
-    /// Create a new ConnectorConfiguration using a JSON file.
-    /// If the JSON file does not exist, an empty file will be created.
-    /// </summary>
-    public static async Task<IConnectorConfiguration> CreateFromJson(
-        ConnectorManagerSettings settings,
-        IFileSystem fileSystem)
-    {
         string text;
 
-        if (fileSystem.File.Exists(settings.ConfigurationPath))
+        if (_fileSystem.File.Exists(_path))
         {
-            text = await fileSystem.File.ReadAllTextAsync(settings.ConfigurationPath);
+            text = _fileSystem.File.ReadAllText(_path);
         }
         else
         {
             text = "{}";
-            await fileSystem.File.WriteAllTextAsync(settings.ConfigurationPath, text);
+            _fileSystem.File.WriteAllText(_path, text);
         }
 
-        var connectors = JsonConvert.DeserializeObject<Dictionary<string, ConnectorSettings>>(
+        _connectors = JsonConvert.DeserializeObject<Dictionary<string, ConnectorSettings>>(
             text,
             EntityJsonConverter.Instance
         ) ?? new Dictionary<string, ConnectorSettings>();
 
-        return new FileConnectorConfiguration(settings.ConfigurationPath, connectors, fileSystem);
+        _init = true;
     }
 }
 

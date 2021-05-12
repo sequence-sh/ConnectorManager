@@ -5,7 +5,6 @@ using System.IO.Abstractions.TestingHelpers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Reductech.EDR.Core.Internal;
 using Xunit;
 
 namespace Reductech.EDR.ConnectorManagement.Tests
@@ -13,8 +12,7 @@ namespace Reductech.EDR.ConnectorManagement.Tests
 
 public class ServiceCollectionExtensions
 {
-    private static (ServiceProvider, MockFileSystem) CreateServiceCollection(
-        Dictionary<string, ConnectorSettings>? connectorSettings = null)
+    private static (ServiceProvider, MockFileSystem) CreateServiceCollection()
     {
         var services = new ServiceCollection();
 
@@ -34,7 +32,7 @@ public class ServiceCollectionExtensions
 
         services.AddLogging();
 
-        services.AddConnectorManager(config, fs, connectorSettings);
+        services.AddConnectorManager(config);
 
         var provider = services.BuildServiceProvider();
 
@@ -42,42 +40,15 @@ public class ServiceCollectionExtensions
     }
 
     [Fact]
-    public void AddConnectorManager_ByDefault_CreateConnectorManagerWithEmptyConfiguration()
+    public void AddConnectorManager_ByDefault_CreatesTheRequiredServices()
     {
-        var (provider, fs) = CreateServiceCollection();
+        var (provider, _) = CreateServiceCollection();
 
         Assert.NotNull(provider.GetService(typeof(ConnectorManagerSettings)));
         Assert.NotNull(provider.GetService(typeof(ConnectorRegistrySettings)));
         Assert.NotNull(provider.GetService(typeof(IConnectorRegistry)));
         Assert.NotNull(provider.GetService(typeof(IConnectorConfiguration)));
         Assert.NotNull(provider.GetService(typeof(IConnectorManager)));
-
-        var configFile = fs.GetFile(ConnectorManagerSettings.Default.ConfigurationPath);
-
-        Assert.NotNull(configFile);
-        Assert.Equal("{}", configFile.TextContents);
-    }
-
-    [Fact]
-    public void AddConnectorManager_WithDefaultSettings_CreatesConfiguration()
-    {
-        const string connectorName = "EDR.Connector";
-
-        var connectorSettings = new Dictionary<string, ConnectorSettings>
-        {
-            { connectorName, new ConnectorSettings { Id = connectorName, Version = "0.1.0" } }
-        };
-
-        var (provider, fs) = CreateServiceCollection(connectorSettings);
-
-        var configFile = fs.GetFile(ConnectorManagerSettings.Default.ConfigurationPath);
-
-        Assert.NotNull(configFile);
-        Assert.Matches("Connector", configFile.TextContents);
-
-        var config = (IConnectorConfiguration)provider.GetService(typeof(IConnectorConfiguration));
-
-        Assert.Contains(connectorName, config.Keys);
     }
 
     [Fact]
@@ -109,7 +80,7 @@ public class ServiceCollectionExtensions
                 {
                     services.AddSingleton<IFileSystem>(fs);
                     services.AddLogging();
-                    services.AddConnectorManager(context.Configuration, fs);
+                    services.AddConnectorManager(context.Configuration);
                 }
             )
             .Build();

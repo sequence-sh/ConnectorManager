@@ -1,13 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.IO.Abstractions.TestingHelpers;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Reductech.EDR.Core;
-using Reductech.EDR.Core.Entities;
 using Reductech.EDR.Core.Internal;
 using Xunit;
 
@@ -18,10 +14,7 @@ public class FileConnectorConfigurationTests
 {
     private const string ConnectorName = "Reductech.EDR.Connectors.FileSystem";
 
-    private static async Task<(IConnectorConfiguration, MockFileSystem)> GetEmptyConfig() =>
-        await GetConfig(content: "");
-
-    private static async Task<(IConnectorConfiguration, MockFileSystem)> GetConfig(
+    private static (IConnectorConfiguration, MockFileSystem) GetConfig(
         string file = Helpers.ConfigurationPath,
         string content = Helpers.TestConfiguration)
     {
@@ -32,109 +25,34 @@ public class FileConnectorConfigurationTests
             ? Helpers.ManagerSettings
             : Helpers.ManagerSettings with { ConfigurationPath = file };
 
-        var config = await FileConnectorConfiguration.CreateFromJson(settings, fs);
+        var config = new FileConnectorConfiguration(settings, fs);
 
         return (config, fs);
     }
 
     [Fact]
-    public async Task CreateFromJson_WhenFileDoesNotExist_CreatesFile()
+    public void LazyInit_WhenFileDoesNotExist_CreatesFile()
     {
-        var fs = new MockFileSystem();
-        await FileConnectorConfiguration.CreateFromJson(Helpers.ManagerSettings, fs);
+        var fs     = new MockFileSystem();
+        var config = new FileConnectorConfiguration(Helpers.ManagerSettings, fs);
+        Assert.False(fs.FileExists(Helpers.ConfigurationPath));
+        _ = config.Keys; // should initialize empty file
         Assert.Equal("{}", fs.GetFile(Helpers.ConfigurationPath).TextContents);
     }
 
     [Fact]
-    public async Task CreateFromJson_WhenConfigFileIsValid_ReturnsConfig()
+    public void Keys_ReturnsConfigurationNames()
     {
-        var (config, _) = await GetConfig();
-
-        var nuixSettings = config["Reductech.EDR.Connectors.Nuix"];
-
-        Assert.Equal(4, config.Count);
-        Assert.IsType<Entity>(nuixSettings.Settings);
-
-        var features = nuixSettings.Settings.TryGetNestedList("features");
-
-        Assert.True(features.HasValue);
-        Assert.Equal(2, features.Value.Length);
-        Assert.Contains("ANALYSIS", features.Value);
-    }
-
-    [Fact]
-    public async Task CreateFromJson_WhenConfigFileIsNotValid_Throws()
-    {
-        var fs = new MockFileSystem();
-        fs.AddFile(Helpers.ConfigurationPath, "{\"notright:\"\"}");
-
-        var error = await Assert.ThrowsAsync<JsonReaderException>(
-            () => FileConnectorConfiguration.CreateFromJson(Helpers.ManagerSettings, fs)
-        );
-
-        Assert.Matches("Invalid character", error.Message);
-    }
-
-    [Fact]
-    public async Task CreateFromJson_WhenConfigIsEmpty_ReturnsEmptyConfig()
-    {
-        var (config, _) = await GetEmptyConfig();
-        Assert.Empty(config);
-    }
-
-    [Fact]
-    public async Task Create_WhenConfigurationFileExists_Throws()
-    {
-        var fs = new MockFileSystem();
-        fs.AddFile(Helpers.ConfigurationPath, "");
-
-        var error = await Assert.ThrowsAsync<ArgumentException>(
-            () => FileConnectorConfiguration.Create(
-                Helpers.ManagerSettings,
-                fs,
-                new Dictionary<string, ConnectorSettings>()
-            )
-        );
-
-        Assert.Matches("Configuration file already exists", error.Message);
-    }
-
-    [Fact]
-    public async Task Create_ByDefault_CreatesAndSavesSettings()
-    {
-        var fs = new MockFileSystem();
-
-        var connectors = new Dictionary<string, ConnectorSettings>
-        {
-            { ConnectorName, new ConnectorSettings { Id = ConnectorName, Version = "0.9.0" } }
-        };
-
-        var config = await FileConnectorConfiguration.Create(
-            Helpers.ManagerSettings,
-            fs,
-            connectors
-        );
-
-        Assert.Contains(ConnectorName, config.Keys);
-
-        var content = fs.GetFile(Helpers.ConfigurationPath).TextContents;
-
-        Assert.Matches(ConnectorName, content);
-    }
-
-    [Fact]
-    public async Task Keys_ReturnsConfigurationNames()
-    {
-        var (config, _) = await GetConfig();
+        var (config, _) = GetConfig();
         Assert.Equal(4, config.Keys.Count);
         Assert.Equal(3, config.Keys.Count(k => Regex.IsMatch(k, "^Reductech.EDR.Connectors")));
         Assert.Equal(1, config.Keys.Count(k => Regex.IsMatch(k, "disabled")));
     }
 
     [Fact]
-    public async Task Settings_ReturnsSettingsObjects()
+    public void Settings_ReturnsSettingsObjects()
     {
-        var (config, _) = await GetConfig();
+        var (config, _) = GetConfig();
         Assert.Equal(4, config.Settings.Count);
 
         Assert.Equal(
@@ -146,8 +64,7 @@ public class FileConnectorConfigurationTests
     }
 
     [Fact]
-    public async Task Count_ReturnsNumberOfSettings() =>
-        Assert.Equal(4, (await GetConfig()).Item1.Count);
+    public void Count_ReturnsNumberOfSettings() => Assert.Equal(4, GetConfig().Item1.Count);
 
     [Fact]
     public async Task AddAsync_AddsConfigFile()
@@ -159,7 +76,7 @@ public class FileConnectorConfigurationTests
   }
 }";
 
-        var (config, fs) = await GetConfig(content: initialConfig);
+        var (config, fs) = GetConfig(content: initialConfig);
 
         var settings = new ConnectorSettings { Id = ConnectorName, Version = "0.5.0" };
         await config.AddAsync(ConnectorName, settings, CancellationToken.None);
@@ -175,7 +92,7 @@ public class FileConnectorConfigurationTests
     [Fact]
     public async Task RemoveAsync_RemovesFromConfigFile()
     {
-        var (config, fs) = await GetConfig();
+        var (config, fs) = GetConfig();
 
         await config.RemoveAsync(ConnectorName, CancellationToken.None);
 
@@ -191,9 +108,9 @@ public class FileConnectorConfigurationTests
     [Theory]
     [InlineData("DoesNotExist", false)]
     [InlineData(ConnectorName,  true)]
-    public async Task Contains_ChecksKeys(string name, bool expected)
+    public void Contains_ChecksKeys(string name, bool expected)
     {
-        var (config, _) = await GetConfig();
+        var (config, _) = GetConfig();
         Assert.Equal(expected, config.Contains(name));
     }
 
@@ -201,9 +118,9 @@ public class FileConnectorConfigurationTests
     [InlineData("DoesNotExist",              false)]
     [InlineData("StructuredData - disabled", false)]
     [InlineData(ConnectorName,               true)]
-    public async Task ContainsId_ChecksConnectorIds(string id, bool expected)
+    public void ContainsId_ChecksConnectorIds(string id, bool expected)
     {
-        var (config, _) = await GetConfig();
+        var (config, _) = GetConfig();
         Assert.Equal(expected, config.ContainsId(id));
     }
 
@@ -214,37 +131,37 @@ public class FileConnectorConfigurationTests
     [InlineData("Reductech.EDR.Connectors.StructuredData", "0.9.0", true)]
     [InlineData("Reductech.EDR.Connectors.StructuredData", "0.8.0", true)]
     [InlineData("StructuredData - disabled",               "0.8.0", false)]
-    public async Task ContainsVersionString_ChecksConnectorIdAndVersion(
+    public void ContainsVersionString_ChecksConnectorIdAndVersion(
         string id,
         string version,
         bool expected)
     {
-        var (config, fs) = await GetConfig();
+        var (config, _) = GetConfig();
         Assert.Equal(expected, config.ContainsVersionString(id, version));
     }
 
     [Fact]
-    public async Task TryGetSettings_WhenKeyExists_ReturnsTrue()
+    public void TryGetSettings_WhenKeyExists_ReturnsTrue()
     {
-        var (config, _) = await GetConfig();
+        var (config, _) = GetConfig();
         var success = config.TryGetSettings(ConnectorName, out var settings);
         Assert.True(success);
         Assert.Equal(ConnectorName, settings.Id);
     }
 
     [Fact]
-    public async Task TryGetSettings_WhenKeyDoesNotExist_ReturnsFalse()
+    public void TryGetSettings_WhenKeyDoesNotExist_ReturnsFalse()
     {
-        var (config, _) = await GetConfig();
+        var (config, _) = GetConfig();
         var success = config.TryGetSettings("doesnotexist", out var settings);
         Assert.False(success);
         Assert.Null(settings);
     }
 
     [Fact]
-    public async Task TryGetSettingsById_WhenIdExists_ReturnsAllMatchingSettings()
+    public void TryGetSettingsById_WhenIdExists_ReturnsAllMatchingSettings()
     {
-        var (config, _) = await GetConfig();
+        var (config, _) = GetConfig();
 
         var success = config.TryGetSettingsById(
             "Reductech.EDR.Connectors.StructuredData",
@@ -256,20 +173,20 @@ public class FileConnectorConfigurationTests
     }
 
     [Fact]
-    public async Task TryGetSettingsById_WhenIdDoesNotExist_ReturnsFalse()
+    public void TryGetSettingsById_WhenIdDoesNotExist_ReturnsFalse()
     {
-        var (config, _) = await GetConfig();
+        var (config, _) = GetConfig();
         var success = config.TryGetSettingsById("StructuredData - disabled", out var settings);
         Assert.False(success);
         Assert.Empty(settings);
     }
 
     [Fact]
-    public async Task Indexer_WhenSetting_WritesToFile()
+    public void Indexer_WhenSetting_WritesToFile()
     {
         const string expectedVersion = "0.5.0";
 
-        var (config, fs) = await GetConfig();
+        var (config, fs) = GetConfig();
 
         var settings = new ConnectorSettings { Id = ConnectorName, Version = expectedVersion };
 
@@ -284,19 +201,19 @@ public class FileConnectorConfigurationTests
     }
 
     [Fact]
-    public async Task Indexer_Getter_ReturnsSettings()
+    public void Indexer_Getter_ReturnsSettings()
     {
-        var (config, _) = await GetConfig();
+        var (config, _) = GetConfig();
         var settings = config[ConnectorName];
         Assert.Equal(ConnectorName, settings.Id);
     }
 
     [Fact]
-    public async Task Indexer_Getter_WhenKeyDoesNotExist_Throws()
+    public void Indexer_Getter_WhenKeyDoesNotExist_Throws()
     {
         const string key = "doesnotexist";
 
-        var (config, _) = await GetConfig();
+        var (config, _) = GetConfig();
         var error = Assert.Throws<KeyNotFoundException>(() => config[key]);
 
         Assert.Equal(
@@ -306,9 +223,9 @@ public class FileConnectorConfigurationTests
     }
 
     [Fact]
-    public async Task Enumerator_Enumerates()
+    public void Enumerator_Enumerates()
     {
-        var (config, _) = await GetConfig();
+        var (config, _) = GetConfig();
 
         foreach (var c in config)
             Assert.NotEmpty(c.Key);
