@@ -222,7 +222,7 @@ public class ConnectorManager : IConnectorManager
                     dir
                 );
 
-                yield break;
+                continue;
             }
 
             yield return (key, new ConnectorData(settings, loadResult.Value));
