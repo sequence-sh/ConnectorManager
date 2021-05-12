@@ -25,7 +25,7 @@ public partial class ConnectorManagerTests
     public ConnectorManagerTests()
     {
         _loggerFactory = TestLoggerFactory.Create();
-        _config        = new FakeConnectorConfiguration();
+        _config        = new ConnectorConfiguration(Helpers.GetDefaultConnectors());
         _settings      = ConnectorManagerSettings.Default;
         _fileSystem    = new MockFileSystem();
         _registry      = new FakeConnectorRegistry();

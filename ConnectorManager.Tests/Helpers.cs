@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using Reductech.EDR.Core.Internal;
 
 namespace Reductech.EDR.ConnectorManagement.Tests
 {
@@ -53,6 +55,21 @@ internal static class Helpers
     ""enable"": false
   }
 }";
+
+    internal static Dictionary<string, ConnectorSettings> GetDefaultConnectors() => new()
+    {
+        {
+            "Reductech.EDR.Connectors.Nuix",
+            new ConnectorSettings { Id = "Reductech.EDR.Connectors.Nuix", Version = "0.9.0" }
+        },
+        {
+            "Reductech.EDR.Connectors.StructuredData",
+            new ConnectorSettings
+            {
+                Id = "Reductech.EDR.Connectors.StructuredData", Version = "0.9.0"
+            }
+        }
+    };
 }
 
 }
