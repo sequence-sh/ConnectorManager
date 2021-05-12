@@ -108,10 +108,17 @@ public class FileConnectorConfiguration : ConnectorConfigurationBase
         ConnectorManagerSettings settings,
         IFileSystem fileSystem)
     {
-        if (!fileSystem.File.Exists(settings.ConfigurationPath))
-            await fileSystem.File.WriteAllTextAsync(settings.ConfigurationPath, "{}");
+        string text;
 
-        var text = await fileSystem.File.ReadAllTextAsync(settings.ConfigurationPath);
+        if (fileSystem.File.Exists(settings.ConfigurationPath))
+        {
+            text = await fileSystem.File.ReadAllTextAsync(settings.ConfigurationPath);
+        }
+        else
+        {
+            text = "{}";
+            await fileSystem.File.WriteAllTextAsync(settings.ConfigurationPath, text);
+        }
 
         var connectors = JsonConvert.DeserializeObject<Dictionary<string, ConnectorSettings>>(
             text,
