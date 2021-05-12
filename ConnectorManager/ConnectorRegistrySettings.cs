@@ -16,9 +16,7 @@ public record ConnectorRegistrySettings
     /// </summary>
     public static ConnectorRegistrySettings Reductech = new()
     {
-        Uri   = "https://gitlab.com/api/v4/projects/26337972/packages/nuget/index.json",
-        User  = "connectormanager",
-        Token = "DdGjUmoo-oqbcBoCd9pE"
+        Uri = "https://gitlab.com/api/v4/projects/26337972/packages/nuget/index.json"
     };
 
     /// <summary>
