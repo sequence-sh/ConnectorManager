@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.IO;
 using System.IO.Abstractions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -18,13 +17,27 @@ public class FileConnectorConfiguration : ConnectorConfigurationBase
     private readonly string _path;
     private readonly IFileSystem _fileSystem;
 
-    private FileConnectorConfiguration(
-        string path,
-        Dictionary<string, ConnectorSettings> connectors,
-        IFileSystem fileSystem) : base(connectors)
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="settings"></param>
+    /// <param name="fileSystem"></param>
+    public FileConnectorConfiguration(ConnectorManagerSettings settings, IFileSystem fileSystem)
     {
-        _path       = path;
+        _path       = settings.ConfigurationPath;
         _fileSystem = fileSystem;
+    }
+
+    private Dictionary<string, ConnectorSettings> _connectors = null!;
+
+    /// <inheritdoc />
+    protected override Dictionary<string, ConnectorSettings> Connectors
+    {
+        get
+        {
+            Initialize();
+            return _connectors;
+        }
     }
 
     /// <inheritdoc />
@@ -74,30 +87,34 @@ public class FileConnectorConfiguration : ConnectorConfigurationBase
             jsonSettings
         );
 
-        await _fileSystem.File.WriteAllTextAsync(_path, output, ct);
+        await _fileSystem.File.WriteAllTextAsync(_path, output, ct).ConfigureAwait(false);
     }
 
-    /// <summary>
-    /// Create a new ConnectorConfiguration using a JSON file.
-    /// </summary>
-    public static async Task<IConnectorConfiguration> FromJson(
-        string configurationPath,
-        IFileSystem fileSystem)
+    private bool _init;
+
+    private void Initialize()
     {
-        if (!fileSystem.File.Exists(configurationPath))
-            throw new FileNotFoundException(
-                "Connector configuration file not found.",
-                configurationPath
-            );
+        if (_init)
+            return;
 
-        var text = await fileSystem.File.ReadAllTextAsync(configurationPath);
+        string text;
 
-        var connectors = JsonConvert.DeserializeObject<Dictionary<string, ConnectorSettings>>(
+        if (_fileSystem.File.Exists(_path))
+        {
+            text = _fileSystem.File.ReadAllText(_path);
+        }
+        else
+        {
+            text = "{}";
+            _fileSystem.File.WriteAllText(_path, text);
+        }
+
+        _connectors = JsonConvert.DeserializeObject<Dictionary<string, ConnectorSettings>>(
             text,
             EntityJsonConverter.Instance
         ) ?? new Dictionary<string, ConnectorSettings>();
 
-        return new FileConnectorConfiguration(configurationPath, connectors, fileSystem);
+        _init = true;
     }
 }
 

@@ -71,7 +71,7 @@ public partial class ConnectorManagerTests
 
         Assert.Contains(
             log,
-            l => l.LogLevel == LogLevel.Information
+            l => l.LogLevel == LogLevel.Debug
               && l.Message!.Equals($"Connector configuration '{name}' removed.")
         );
 

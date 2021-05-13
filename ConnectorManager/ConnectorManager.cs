@@ -47,32 +47,6 @@ public class ConnectorManager : IConnectorManager
         _fileSystem    = fileSystem;
     }
 
-    private async Task<(string? version, string? latest)> CheckVersion(
-        string id,
-        string? version,
-        bool prerelease,
-        CancellationToken ct)
-    {
-        var allVersions = await _registry.GetVersion(id, prerelease, ct);
-
-        if (allVersions.Count == 0)
-        {
-            _logger.LogError($"Could not find connector {id} in the registry.");
-            return (null, null);
-        }
-
-        var latest = allVersions.Last();
-
-        if (version == null)
-            return (latest, latest);
-
-        if (allVersions.Contains(version))
-            return (version, latest);
-
-        _logger.LogError($"Could not find connector {id} version {version} in the registry.");
-        return (null, latest);
-    }
-
     /// <inheritdoc />
     public async Task Add(
         string id,
@@ -95,12 +69,13 @@ public class ConnectorManager : IConnectorManager
             if (force)
             {
                 await _configuration.RemoveAsync(name, ct);
-                _logger.LogDebug($"Removed '{name}' from connector configuration.");
+                _logger.LogDebug("Removed '{configuration}' from connector configuration.", name);
             }
             else
             {
                 _logger.LogError(
-                    $"Connector configuration '{name}' already exists. Use --force to overwrite or update."
+                    "Connector configuration '{configuration}' already exists. Use --force to overwrite or update.",
+                    name
                 );
 
                 return;
@@ -115,12 +90,12 @@ public class ConnectorManager : IConnectorManager
             return;
 
         await _configuration.AddAsync(
-            id,
+            name,
             new ConnectorSettings { Id = package.Id, Version = package.Version, Enable = true },
             ct
         );
 
-        _logger.LogInformation($"Successfully installed connector '{id}' ({version}).");
+        _logger.LogDebug("Successfully installed connector '{id}' - '{version}'.", id, version);
     }
 
     /// <inheritdoc />
@@ -133,7 +108,8 @@ public class ConnectorManager : IConnectorManager
         if (!_configuration.TryGetSettings(name, out var cs))
         {
             _logger.LogError(
-                $"Connector configuration '{name}' does not exist. To install, use add."
+                "Connector configuration '{configuration}' does not exist. To install, use add.",
+                name
             );
 
             return;
@@ -141,7 +117,11 @@ public class ConnectorManager : IConnectorManager
 
         if (version != null && cs.Version.Equals(version))
         {
-            _logger.LogError($"Connector configuration '{name}' already has version {version}.");
+            _logger.LogError(
+                "Connector configuration '{configuration}' already has version '{version}'.",
+                name,
+                version
+            );
 
             return;
         }
@@ -156,7 +136,9 @@ public class ConnectorManager : IConnectorManager
         if (version.Equals(latest, StringComparison.Ordinal))
         {
             _logger.LogInformation(
-                $"Connector configuration '{name}' already has the latest version ({version}) installed."
+                "Connector configuration '{configuration}' already has the latest version '{version}' installed.",
+                name,
+                version
             );
 
             return;
@@ -174,7 +156,9 @@ public class ConnectorManager : IConnectorManager
         _configuration[name] = cs;
 
         _logger.LogInformation(
-            $"Connector configuration '{name}' successfully updated to {version}."
+            "Connector configuration '{configuration}' successfully updated to '{version}'.",
+            name,
+            version
         );
     }
 
@@ -196,17 +180,20 @@ public class ConnectorManager : IConnectorManager
                 }
                 catch (DirectoryNotFoundException)
                 {
-                    _logger.LogWarning($"Connector directory '{removePath}' not found.");
+                    _logger.LogWarning(
+                        "Connector directory '{connectorDirectory}' not found.",
+                        removePath
+                    );
                 }
             }
 
             await _configuration.RemoveAsync(name, ct);
 
-            _logger.LogInformation($"Connector configuration '{name}' removed.");
+            _logger.LogDebug("Connector configuration '{configuration}' removed.", name);
         }
         else
         {
-            _logger.LogError($"Connector configuration '{name}' not found.");
+            _logger.LogError("Connector configuration '{configuration}' not found.", name);
         }
     }
 
@@ -229,13 +216,78 @@ public class ConnectorManager : IConnectorManager
 
             if (loadResult.IsFailure)
             {
-                _logger.LogError($"Failed to load connector configuration '{key}' from '{dir}'.");
+                _logger.LogError(
+                    "Failed to load connector configuration '{configuration}' from '{installPath}'.",
+                    key,
+                    dir
+                );
 
-                yield break;
+                continue;
             }
 
             yield return (key, new ConnectorData(settings, loadResult.Value));
         }
+    }
+
+    /// <inheritdoc />
+    public async Task<bool> Verify(CancellationToken ct = default)
+    {
+        var success = true;
+
+        foreach (var (key, settings) in _configuration)
+        {
+            _logger.LogDebug("Checking connector configuration '{name}'.", key);
+
+            var dir     = GetInstallPath(settings.Id, settings.Version);
+            var dllPath = _fileSystem.Path.Combine(dir, $"{settings.Id}.dll");
+
+            if (_fileSystem.Directory.Exists(dir))
+            {
+                _logger.LogDebug(
+                    "Verified connector '{connector}' install path exists: {directory}",
+                    settings.Id,
+                    dir
+                );
+
+                if (_fileSystem.File.Exists(dllPath))
+                {
+                    _logger.LogDebug(
+                        "Verified connector '{connector}' dll exists: {dllPath}",
+                        settings.Id,
+                        dllPath
+                    );
+                }
+                else
+                {
+                    _logger.LogError(
+                        "Configuration '{configuration}' connector dll missing: {dllPath}",
+                        key,
+                        dllPath
+                    );
+
+                    success = false;
+                }
+
+                continue;
+            }
+
+            if (_settings.AutoDownload)
+            {
+                await InstallConnector(settings.Id, settings.Version, dir, false, ct);
+            }
+            else
+            {
+                _logger.LogError(
+                    "Configuration '{configuration}' installation path missing: {path}",
+                    key,
+                    dir
+                );
+
+                success = false;
+            }
+        }
+
+        return success;
     }
 
     /// <inheritdoc />
@@ -244,6 +296,9 @@ public class ConnectorManager : IConnectorManager
         bool prerelease = false,
         CancellationToken ct = default) =>
         (await _registry.Find(search ?? string.Empty, prerelease, ct)).ToList();
+
+    internal virtual Result<Assembly, IErrorBuilder> LoadPlugin(string dllPath, ILogger logger) =>
+        PluginLoadContext.LoadPlugin(dllPath, _logger);
 
     private string GetInstallPath(string id, string version) =>
         _fileSystem.Path.Combine(_settings.ConnectorPath, id, version);
@@ -262,24 +317,66 @@ public class ConnectorManager : IConnectorManager
             else
             {
                 _logger.LogError(
-                    $"Connector directory '{path}' already exists. Use --force to overwrite."
+                    "Connector directory '{connectorDir}' already exists. Use --force to overwrite.",
+                    path
                 );
 
                 return null;
             }
         }
 
-        _fileSystem.Directory.CreateDirectory(path);
+        _logger.LogDebug(
+            "Installing connector {connector} - {version} to: {installDir}",
+            id,
+            version,
+            path
+        );
 
         using var package = await _registry.GetConnectorPackage(id, version, ct);
 
+        _fileSystem.Directory.CreateDirectory(path);
+
         await package.Extract(_fileSystem, path, ct);
+
+        _logger.LogDebug(
+            "Successfully downloaded and extracted '{id}' - '{version}'.",
+            id,
+            version
+        );
 
         return package.Metadata;
     }
 
-    internal virtual Result<Assembly, IErrorBuilder> LoadPlugin(string dllPath, ILogger logger) =>
-        PluginLoadContext.LoadPlugin(dllPath, _logger);
+    private async Task<(string? version, string? latest)> CheckVersion(
+        string id,
+        string? version,
+        bool prerelease,
+        CancellationToken ct)
+    {
+        var allVersions = await _registry.GetVersion(id, prerelease, ct);
+
+        if (allVersions.Count == 0)
+        {
+            _logger.LogError("Could not find connector '{connectorId}' in the registry.", id);
+            return (null, null);
+        }
+
+        var latest = allVersions.Last();
+
+        if (version == null)
+            return (latest, latest);
+
+        if (allVersions.Contains(version))
+            return (version, latest);
+
+        _logger.LogError(
+            "Could not find connector '{connectorId}' version '{version}' in the registry.",
+            id,
+            version
+        );
+
+        return (null, latest);
+    }
 }
 
 }

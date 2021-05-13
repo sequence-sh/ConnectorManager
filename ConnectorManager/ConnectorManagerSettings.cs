@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using Newtonsoft.Json;
 
 namespace Reductech.EDR.ConnectorManagement
 {
@@ -8,10 +7,7 @@ namespace Reductech.EDR.ConnectorManagement
 /// <summary>
 /// Settings for the connector manager.
 /// </summary>
-public record ConnectorManagerSettings(
-    [JsonProperty("connectorPath")] string ConnectorPath,
-    [JsonProperty("configurationPath")] string ConfigurationPath,
-    [JsonProperty("autoDownload")] bool AutoDownload)
+public record ConnectorManagerSettings
 {
     /// <summary>
     /// appsettings.json section key that contains the settings
@@ -23,18 +19,33 @@ public record ConnectorManagerSettings(
     /// Connectors are stored in .\connectors and the settings
     /// are in .\connectors.json
     /// </summary>
-    public static ConnectorManagerSettings Default = new(
-        Path.Combine(
+    public static ConnectorManagerSettings Default = new()
+    {
+        ConnectorPath = Path.Combine(
             AppContext.BaseDirectory,
             "connectors"
         ),
-        Path.Combine(
+        ConfigurationPath = Path.Combine(
             AppContext.BaseDirectory,
-            //"connectors",
             "connectors.json"
         ),
-        true
-    );
+        AutoDownload = true
+    };
+
+    /// <summary>
+    /// Path to the installation directory for connectors.
+    /// </summary>
+    public string ConnectorPath { get; init; }
+
+    /// <summary>
+    /// Path to the connector configuration JSON.
+    /// </summary>
+    public string ConfigurationPath { get; init; }
+
+    /// <summary>
+    /// Automatically download missing connectors when using the Verify method.
+    /// </summary>
+    public bool AutoDownload { get; init; }
 }
 
 }

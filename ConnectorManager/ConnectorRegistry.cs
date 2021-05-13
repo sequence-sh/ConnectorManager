@@ -37,7 +37,10 @@ public class ConnectorRegistry : IConnectorRegistry
         Microsoft.Extensions.Logging.ILogger<ConnectorRegistry> logger,
         ConnectorRegistrySettings connectorRegistrySettings)
     {
-        _logger   = new LoggerBridge<ConnectorRegistry>(logger);
+        _logger = connectorRegistrySettings.EnableNuGetLog
+            ? new LoggerBridge<ConnectorRegistry>(logger)
+            : new NullLogger();
+
         _settings = connectorRegistrySettings;
     }
 
@@ -133,15 +136,15 @@ public class ConnectorRegistry : IConnectorRegistry
     {
         SourceRepository repository;
 
-        if (!string.IsNullOrEmpty(_settings.RegistryUser)
-         || !string.IsNullOrEmpty(_settings.RegistryToken))
+        if (!string.IsNullOrEmpty(_settings.User)
+         || !string.IsNullOrEmpty(_settings.Token))
         {
             var source = new PackageSource(_settings.Uri)
             {
                 Credentials = new PackageSourceCredential(
                     source: _settings.Uri,
-                    username: _settings.RegistryUser,
-                    passwordText: _settings.RegistryToken,
+                    username: _settings.User,
+                    passwordText: _settings.Token,
                     isPasswordClearText: true,
                     validAuthenticationTypesText: null
                 )

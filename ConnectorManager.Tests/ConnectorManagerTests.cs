@@ -25,7 +25,7 @@ public partial class ConnectorManagerTests
     public ConnectorManagerTests()
     {
         _loggerFactory = TestLoggerFactory.Create();
-        _config        = FakeConnectorConfiguration.GetDefaultConfiguration();
+        _config        = new ConnectorConfiguration(Helpers.GetDefaultConnectors());
         _settings      = ConnectorManagerSettings.Default;
         _fileSystem    = new MockFileSystem();
         _registry      = new FakeConnectorRegistry();
@@ -53,7 +53,7 @@ public partial class ConnectorManagerTests
     }
 
     [Fact]
-    public void List_WhenDllDoesNotExist_WritesErrorAndReturns()
+    public void List_WhenDllDoesNotExist_WritesErrorAndContinues()
     {
         const string name    = "Reductech.EDR.Connectors.Nuix";
         const string version = "0.9.0";
@@ -68,14 +68,15 @@ public partial class ConnectorManagerTests
             _fileSystem
         );
 
-        mock.Setup(m => m.LoadPlugin(path, It.IsAny<ILogger>()))
-            .Returns(() => new ErrorBuilder(new Exception(), ErrorCode.Unknown));
+        mock.SetupSequence(m => m.LoadPlugin(It.IsAny<string>(), It.IsAny<ILogger>()))
+            .Returns(() => new ErrorBuilder(new Exception(), ErrorCode.Unknown))
+            .Returns(() => new Result<Assembly, IErrorBuilder>());
 
         mock.CallBase = true;
 
         var configs = mock.Object.List().ToArray();
 
-        Assert.Empty(configs);
+        Assert.Single(configs);
 
         var log = _loggerFactory.GetTestLoggerSink().LogEntries.ToArray();
 

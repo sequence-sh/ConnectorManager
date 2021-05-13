@@ -45,7 +45,7 @@ public partial class ConnectorManagerTests
             log,
             l => l.LogLevel == LogLevel.Error
               && l.Message!.Equals(
-                     $"Connector configuration '{name}' already has version {version}."
+                     $"Connector configuration '{name}' already has version '{version}'."
                  )
         );
     }
@@ -67,7 +67,7 @@ public partial class ConnectorManagerTests
         Assert.Contains(
             log,
             l => l.LogLevel == LogLevel.Error
-              && l.Message!.Equals($"Could not find connector {id} in the registry.")
+              && l.Message!.Equals($"Could not find connector '{id}' in the registry.")
         );
     }
 
@@ -87,7 +87,7 @@ public partial class ConnectorManagerTests
             log,
             l => l.LogLevel == LogLevel.Information
               && l.Message!.Equals(
-                     $"Connector configuration '{name}' already has the latest version ({version}) installed."
+                     $"Connector configuration '{name}' already has the latest version '{version}' installed."
                  )
         );
     }
@@ -140,7 +140,7 @@ public partial class ConnectorManagerTests
             _loggerFactory.GetTestLoggerSink().LogEntries.ToArray(),
             l => l.LogLevel == LogLevel.Information
               && l.Message!.Equals(
-                     $"Connector configuration '{name}' successfully updated to {version}."
+                     $"Connector configuration '{name}' successfully updated to '{version}'."
                  )
         );
 

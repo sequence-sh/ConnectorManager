@@ -13,16 +13,9 @@ namespace Reductech.EDR.ConnectorManagement
 public abstract class ConnectorConfigurationBase : IConnectorConfiguration
 {
     /// <summary>
-    /// 
+    /// Backing dictionary
     /// </summary>
-    protected Dictionary<string, ConnectorSettings> Connectors;
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="connectors"></param>
-    protected ConnectorConfigurationBase(Dictionary<string, ConnectorSettings> connectors) =>
-        Connectors = connectors;
+    protected abstract Dictionary<string, ConnectorSettings> Connectors { get; }
 
     /// <inheritdoc />
     public ICollection<string> Keys => Connectors.Keys;

@@ -1,16 +1,25 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using Reductech.EDR.Core.Internal;
 
 namespace Reductech.EDR.ConnectorManagement.Tests
 {
 
 internal static class Helpers
 {
-    internal static readonly ConnectorRegistrySettings IntegrationRegistrySettings =
-        new(
-            "https://gitlab.com/api/v4/projects/26301248/packages/nuget/index.json",
-            "integrationtests",
-            "E8YL7f4kTM4XJEn1ixnL"
-        );
+    internal static readonly ConnectorRegistrySettings IntegrationRegistrySettings = new()
+    {
+        Uri = "https://gitlab.com/api/v4/projects/26301248/packages/nuget/index.json"
+    };
+
+    internal const string ConfigurationPath = @"c:\temp\connectors.json";
+
+    internal static readonly ConnectorManagerSettings ManagerSettings = new()
+    {
+        ConnectorPath     = @"c:\temp\connectors",
+        ConfigurationPath = ConfigurationPath,
+        AutoDownload      = true
+    };
 
     internal static readonly string InstalledConnectorPath =
         @"connectors\Reductech.EDR.Connectors.FileSystem\0.9.0\Reductech.EDR.Connectors.FileSystem.dll"
@@ -46,6 +55,21 @@ internal static class Helpers
     ""enable"": false
   }
 }";
+
+    internal static Dictionary<string, ConnectorSettings> GetDefaultConnectors() => new()
+    {
+        {
+            "Reductech.EDR.Connectors.Nuix",
+            new ConnectorSettings { Id = "Reductech.EDR.Connectors.Nuix", Version = "0.9.0" }
+        },
+        {
+            "Reductech.EDR.Connectors.StructuredData",
+            new ConnectorSettings
+            {
+                Id = "Reductech.EDR.Connectors.StructuredData", Version = "0.9.0"
+            }
+        }
+    };
 }
 
 }
