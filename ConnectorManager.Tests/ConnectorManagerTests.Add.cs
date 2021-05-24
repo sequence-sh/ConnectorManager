@@ -111,10 +111,16 @@ public partial class ConnectorManagerTests
         const string id      = "Reductech.EDR.Connectors.FileSystem";
         const string version = "0.9.0";
 
-        var expected = new[]
-        {
-            _fileSystem.Path.Combine(AppContext.BaseDirectory, Helpers.InstalledConnectorPath)
-        };
+        var expected = Helpers.InstalledConnectorExpectedFiles.Select(
+                f => _fileSystem.Path.Combine(
+                        AppContext.BaseDirectory,
+                        Helpers.InstalledConnectorPath,
+                        f
+                    )
+                    .Replace('\\', _fileSystem.Path.DirectorySeparatorChar)
+            )
+            .OrderBy(f => f)
+            .ToArray();
 
         await _manager.Add(id);
 
@@ -124,7 +130,7 @@ public partial class ConnectorManagerTests
               && l.Message!.Equals($"Successfully installed connector '{id}' - '{version}'.")
         );
 
-        Assert.Equal(expected, _fileSystem.AllFiles);
+        Assert.Equal(expected, _fileSystem.AllFiles.OrderBy(f => f).ToArray());
 
         Assert.Contains(id, _config.Keys);
     }
@@ -160,10 +166,16 @@ public partial class ConnectorManagerTests
         const string id      = "Reductech.EDR.Connectors.FileSystem";
         const string version = "0.9.0";
 
-        var expected = new[]
-        {
-            _fileSystem.Path.Combine(AppContext.BaseDirectory, Helpers.InstalledConnectorPath)
-        };
+        var expected = Helpers.InstalledConnectorExpectedFiles.Select(
+                f => _fileSystem.Path.Combine(
+                        AppContext.BaseDirectory,
+                        Helpers.InstalledConnectorPath,
+                        f
+                    )
+                    .Replace('\\', _fileSystem.Path.DirectorySeparatorChar)
+            )
+            .OrderBy(f => f)
+            .ToArray();
 
         var path = _fileSystem.Path.Combine(_settings.ConnectorPath, id, version);
 
@@ -179,7 +191,7 @@ public partial class ConnectorManagerTests
               && l.Message!.Equals($"Successfully installed connector '{id}' - '{version}'.")
         );
 
-        Assert.Equal(expected, _fileSystem.AllFiles);
+        Assert.Equal(expected, _fileSystem.AllFiles.OrderBy(f => f).ToArray());
 
         Assert.Contains(id, _config.Keys);
     }

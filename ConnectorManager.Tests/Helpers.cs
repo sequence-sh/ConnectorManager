@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using Reductech.EDR.Core.Internal;
 
 namespace Reductech.EDR.ConnectorManagement.Tests
@@ -22,8 +21,13 @@ internal static class Helpers
     };
 
     internal static readonly string InstalledConnectorPath =
-        @"connectors\Reductech.EDR.Connectors.FileSystem\0.9.0\Reductech.EDR.Connectors.FileSystem.dll"
-            .Replace('\\', Path.DirectorySeparatorChar);
+        @"connectors\Reductech.EDR.Connectors.FileSystem\0.9.0";
+
+    internal static readonly string[] InstalledConnectorExpectedFiles =
+    {
+        "x64\\additional.dll", "content.txt", "Reductech.EDR.Connectors.FileSystem.dll",
+        "Reductech.EDR.Connectors.FileSystem.xml", "System.IO.Abstractions.dll"
+    };
 
     internal const string TestConfiguration = @"
 {
