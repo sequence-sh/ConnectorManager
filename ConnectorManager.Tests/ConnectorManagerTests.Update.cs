@@ -123,16 +123,13 @@ public partial class ConnectorManagerTests
         const string name    = "Reductech.EDR.Connectors.Nuix";
         const string version = "0.9.0-a.master.2105052200";
 
-        var expected = new[]
-        {
-            _fileSystem.Path.Combine(
-                AppContext.BaseDirectory,
-                $@"connectors\{name}\{version}\Reductech.EDR.Connectors.FileSystem.dll".Replace(
-                    '\\',
-                    _fileSystem.Path.DirectorySeparatorChar
-                )
+        var expected = _fileSystem.Path.Combine(
+            AppContext.BaseDirectory,
+            $@"connectors\{name}\{version}\Reductech.EDR.Connectors.FileSystem.dll".Replace(
+                '\\',
+                _fileSystem.Path.DirectorySeparatorChar
             )
-        };
+        );
 
         await _manager.Update(name, version, true);
 
@@ -144,7 +141,7 @@ public partial class ConnectorManagerTests
                  )
         );
 
-        Assert.Equal(expected, _fileSystem.AllFiles);
+        Assert.Contains(expected, _fileSystem.AllFiles);
 
         Assert.Equal(version, _config[name].Version);
     }

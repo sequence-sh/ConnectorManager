@@ -79,6 +79,16 @@ Then package the connector using:
 dotnet pack --configuration Release --version-suffix "-alpha.1" -p:PackConnector=true --output ./
 ```
 
+## Connector Directory Structure
+
+Everything in these nuget package directories will be extracted to the connector's
+root directory, preserving any subdirectories:
+
+- `lib/net5.0/`
+- `contentFiles/any/any/`
+
+All other files will be extracted to their respective paths.
+
 # Testing
 
 `ConnectorRegistry` is integration tested against the

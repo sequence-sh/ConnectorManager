@@ -19,6 +19,8 @@ public record ConnectorMetadata(string Id, string Version) { }
 public sealed record ConnectorPackage
     (ConnectorMetadata Metadata, PackageArchiveReader Package) : IDisposable
 {
+    private static readonly string[] FlattenPaths = { "lib/net5.0/", "contentFiles/any/any/" };
+
     /// <summary>
     /// Extract the connector to the destination directory.
     /// </summary>
@@ -35,8 +37,17 @@ public sealed record ConnectorPackage
         foreach (var file in files)
         {
             ct.ThrowIfCancellationRequested();
-            var entry       = Package.GetEntry(file);
-            var extractPath = Path.Combine(destination, entry.Name);
+
+            var entry    = Package.GetEntry(file);
+            var filePath = entry.FullName.TrimStart('/');
+
+            foreach (var rm in FlattenPaths)
+                filePath = filePath.Replace(rm, string.Empty);
+
+            var extractPath = fileSystem.Path.Combine(destination, filePath);
+
+            fileSystem.FileInfo.FromFileName(extractPath).Directory.Create();
+
             entry.ExtractToFile(fileSystem, extractPath);
         }
     }
