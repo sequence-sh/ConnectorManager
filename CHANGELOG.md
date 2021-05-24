@@ -1,3 +1,11 @@
+# v0.2.0 (2021-05-24)
+
+Directory structure is now preserved when extracting connector packages.
+
+### New Features
+
+- Preserve subdirectory structure #10
+
 # v0.1.0 (2021-05-15)
 
 Initial release of the Connector Manager which provides functionality to:
