@@ -1,5 +1,7 @@
 # v0.2.1 (2021-06-03)
 
+Bug fixes to support runtime-independent connector packages.
+
 ## Issues Closed in this Release
 
 ### Bug Fixes
