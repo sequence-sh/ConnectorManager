@@ -1,3 +1,14 @@
+# v0.2.1 (2021-06-03)
+
+Bug fixes to support runtime-independent connector packages.
+
+## Issues Closed in this Release
+
+### Bug Fixes
+
+- ConnectorPackage Extract should only flatten root of path #11
+- Package ID should have correct capitalization #13
+
 # v0.2.0 (2021-05-24)
 
 Directory structure is now preserved when extracting connector packages.
