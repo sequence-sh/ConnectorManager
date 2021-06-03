@@ -156,6 +156,25 @@ public class ConnectorRegistryTests
 
         Assert.Equal(14, files.Count());
     }
+
+    [Fact]
+    [Trait("Category", "Integration")]
+    public async Task GetConnectorPackage_WhenIdIsLowerCase_ReturnsConnectorPackageWithCorrectId()
+    {
+        const string id              = "reductech.edr.connectors.nuix";
+        const string expectedId      = "Reductech.EDR.Connectors.Nuix";
+        const string version         = "0.9.0-BETA.1";
+        const string expectedVersion = "0.9.0-beta.1";
+
+        using var package = await _registry.GetConnectorPackage(id, version);
+
+        Assert.Equal(expectedId,      package.Metadata.Id);
+        Assert.Equal(expectedVersion, package.Metadata.Version);
+
+        var files = await package.Package.GetFilesAsync(CancellationToken.None);
+
+        Assert.Equal(14, files.Count());
+    }
 }
 
 }

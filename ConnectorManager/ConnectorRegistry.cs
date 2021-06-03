@@ -125,8 +125,10 @@ public class ConnectorRegistry : IConnectorRegistry
 
         var packageReader = new PackageArchiveReader(ms);
 
+        var packageIdentity = await packageReader.GetIdentityAsync(ct);
+
         return new ConnectorPackage(
-            new ConnectorMetadata(id, nugetVersion.ToNormalizedString()),
+            new ConnectorMetadata(packageIdentity.Id, packageIdentity.Version.ToNormalizedString()),
             packageReader
         );
     }

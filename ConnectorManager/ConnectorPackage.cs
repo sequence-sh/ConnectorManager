@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.IO.Abstractions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -42,7 +41,8 @@ public sealed record ConnectorPackage
             var filePath = entry.FullName.TrimStart('/');
 
             foreach (var rm in FlattenPaths)
-                filePath = filePath.Replace(rm, string.Empty);
+                if (filePath.StartsWith(rm))
+                    filePath = filePath.Remove(0, rm.Length);
 
             var extractPath = fileSystem.Path.Combine(destination, filePath);
 
