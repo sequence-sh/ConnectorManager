@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Reductech.EDR.Core.Internal;
 using Xunit;
 
 namespace Reductech.EDR.ConnectorManagement.Tests
