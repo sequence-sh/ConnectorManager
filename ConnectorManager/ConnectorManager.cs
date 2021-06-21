@@ -3,15 +3,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Abstractions;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using CSharpFunctionalExtensions;
 using Microsoft.Extensions.Logging;
-using Reductech.EDR.Core.Connectors;
-using Reductech.EDR.Core.Internal;
-using Reductech.EDR.Core.Internal.Errors;
 
 namespace Reductech.EDR.ConnectorManagement
 {
@@ -212,20 +209,25 @@ public class ConnectorManager : IConnectorManager
             var dir     = GetInstallPath(settings.Id, settings.Version);
             var dllPath = _fileSystem.Path.Combine(dir, $"{settings.Id}.dll");
 
-            var loadResult = LoadPlugin(dllPath, _logger);
+            Assembly? plugin;
 
-            if (loadResult.IsFailure)
+            try
+            {
+                plugin = LoadPlugin(dllPath, _logger);
+            }
+            catch (Exception e)
             {
                 _logger.LogError(
-                    "Failed to load connector configuration '{configuration}' from '{installPath}'.",
+                    "Failed to load connector configuration '{configuration}' from '{installPath}'. Exception: {exception}",
                     key,
-                    dir
+                    dir,
+                    e
                 );
 
                 continue;
             }
 
-            yield return (key, new ConnectorData(settings, loadResult.Value));
+            yield return (key, new ConnectorData(settings, plugin));
         }
     }
 
@@ -297,7 +299,7 @@ public class ConnectorManager : IConnectorManager
         CancellationToken ct = default) =>
         (await _registry.Find(search ?? string.Empty, prerelease, ct)).ToList();
 
-    internal virtual Result<Assembly, IErrorBuilder> LoadPlugin(string dllPath, ILogger logger) =>
+    internal virtual Assembly LoadPlugin(string dllPath, ILogger logger) =>
         PluginLoadContext.LoadPlugin(dllPath, _logger);
 
     private string GetInstallPath(string id, string version) =>
