@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
+using System.Reflection.Metadata.Ecma335;
 using Newtonsoft.Json;
 
 namespace Reductech.EDR.ConnectorManagement
@@ -49,14 +51,21 @@ public class ConnectorSettings
     /// <summary>
     /// Create default settings for an assembly.
     /// </summary>
-    public static ConnectorSettings DefaultForAssembly(Assembly assembly) => new()
+    public static ConnectorSettings DefaultForAssembly(Assembly assembly)
     {
-        Id = assembly.GetName().Name ?? "Unknown",
-        Version = FileVersionInfo
-            .GetVersionInfo(assembly.Location)
-            .ProductVersion ?? "Unknown",
-        Enable = true
-    };
+        var versionAttribute =
+            assembly.GetCustomAttribute(typeof(AssemblyInformationalVersionAttribute)) as
+                AssemblyInformationalVersionAttribute;
+
+        var version = versionAttribute?.InformationalVersion;
+
+        return new ConnectorSettings
+        {
+            Id      = assembly.GetName().Name ?? "Unknown",
+            Version = version ?? "Unknown",
+            Enable  = true
+        };
+    }
 }
 
 }
