@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
-using System.Reflection.Metadata.Ecma335;
 using Newtonsoft.Json;
 
 namespace Reductech.EDR.ConnectorManagement
