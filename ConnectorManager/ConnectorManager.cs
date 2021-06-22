@@ -297,7 +297,7 @@ public class ConnectorManager : IConnectorManager
     /// <summary>
     /// Load connector from the dllPath.
     /// </summary>
-    protected virtual Assembly LoadPlugin(string dllPath, ILogger logger) =>
+    protected internal virtual Assembly LoadPlugin(string dllPath, ILogger logger) =>
         PluginLoadContext.LoadPlugin(dllPath, _logger);
 
     private string GetInstallPath(string id, string version) =>
