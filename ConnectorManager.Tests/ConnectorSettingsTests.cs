@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Moq;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace Reductech.EDR.ConnectorManagement.Tests
@@ -42,6 +45,27 @@ public class ConnectorSettingsTests
 
         Assert.Equal(unknown, settings.Id);
         Assert.Equal(unknown, settings.Version);
+    }
+
+    [Fact]
+    public void Settings_IsCorrectlyDeserialized()
+    {
+        var expectedFeatures = new[] { "ANALYSIS", "CASE_CREATION" };
+
+        var settings =
+            JsonConvert.DeserializeObject<Dictionary<string, ConnectorSettings>>(
+                Helpers.TestConfiguration
+            );
+
+        var nuixSettings = settings["Reductech.EDR.Connectors.Nuix"];
+
+        Assert.NotNull(nuixSettings.Settings);
+        Assert.Equal("dongle", nuixSettings.Settings!["licencesourcetype"]);
+
+        var nuixFeatures = nuixSettings.Settings!["features"] as JArray;
+
+        Assert.NotNull(nuixFeatures);
+        Assert.Equal(expectedFeatures, nuixFeatures!.ToObject<string[]>());
     }
 }
 
