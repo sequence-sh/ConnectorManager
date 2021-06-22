@@ -23,13 +23,8 @@ public class ConnectorManager : IConnectorManager
     private readonly IFileSystem _fileSystem;
 
     /// <summary>
-    /// 
+    /// Create connector manager
     /// </summary>
-    /// <param name="logger"></param>
-    /// <param name="settings"></param>
-    /// <param name="registry"></param>
-    /// <param name="configuration"></param>
-    /// <param name="fileSystem"></param>
     public ConnectorManager(
         ILogger<ConnectorManager> logger,
         ConnectorManagerSettings settings,
@@ -299,7 +294,10 @@ public class ConnectorManager : IConnectorManager
         CancellationToken ct = default) =>
         (await _registry.Find(search ?? string.Empty, prerelease, ct)).ToList();
 
-    internal virtual Assembly LoadPlugin(string dllPath, ILogger logger) =>
+    /// <summary>
+    /// Load connector from the dllPath.
+    /// </summary>
+    protected virtual Assembly LoadPlugin(string dllPath, ILogger logger) =>
         PluginLoadContext.LoadPlugin(dllPath, _logger);
 
     private string GetInstallPath(string id, string version) =>
