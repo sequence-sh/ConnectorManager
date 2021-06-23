@@ -2,8 +2,8 @@
 using System.IO.Abstractions;
 using System.Threading;
 using System.Threading.Tasks;
-using ConnectorManager.Base;
 using NuGet.Packaging;
+using Reductech.EDR.ConnectorManagement.Base;
 
 namespace Reductech.EDR.ConnectorManagement
 {

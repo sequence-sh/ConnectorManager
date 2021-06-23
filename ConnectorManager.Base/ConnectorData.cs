@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace ConnectorManager.Base
+namespace Reductech.EDR.ConnectorManagement.Base
 {
 
 /// <summary>

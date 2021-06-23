@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using ConnectorManager.Base;
+using Reductech.EDR.ConnectorManagement.Base;
 
 namespace Reductech.EDR.ConnectorManagement.Tests
 {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using ConnectorManager.Base;
+using Reductech.EDR.ConnectorManagement.Base;
 using Xunit;
 
 namespace Reductech.EDR.ConnectorManagement.Tests

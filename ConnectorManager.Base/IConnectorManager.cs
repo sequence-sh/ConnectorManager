@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ConnectorManager.Base
+namespace Reductech.EDR.ConnectorManagement.Base
 {
 
 /// <summary>

@@ -1,10 +1,8 @@
-﻿#nullable enable
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.Serialization;
 
-namespace ConnectorManager.Base
+namespace Reductech.EDR.ConnectorManagement.Base
 {
 
 /// <summary>

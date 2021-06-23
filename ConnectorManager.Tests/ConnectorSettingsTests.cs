@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using ConnectorManager.Base;
 using Moq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Reductech.EDR.ConnectorManagement.Base;
 using Xunit;
 
 namespace Reductech.EDR.ConnectorManagement.Tests
@@ -40,7 +40,7 @@ public class ConnectorSettingsTests
         assembly.Setup(a => a.GetName()).Returns(() => new AssemblyName());
 
         assembly.Setup(a => a.GetCustomAttributes(It.IsAny<Type>(), true))
-            .Returns(() => new Attribute[] { });
+            .Returns(() => Array.Empty<Attribute>());
 
         var settings = ConnectorSettings.DefaultForAssembly(assembly.Object);
 
