@@ -3,6 +3,7 @@ using System.Data;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ConnectorManager.Base;
 using MELT;
 using Microsoft.Extensions.Logging;
 using Xunit;

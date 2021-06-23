@@ -1,39 +1,40 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.Reflection;
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
-namespace Reductech.EDR.ConnectorManagement
+namespace ConnectorManager.Base
 {
 
 /// <summary>
 /// Settings for a connector
 /// </summary>
-[Serializable]
+[DataContract]
 public class ConnectorSettings
 {
     /// <summary>
     /// The id of the connector in the registry
     /// </summary>
-    [JsonProperty(propertyName: "id")]
-    public string Id { get; set; }
+    [DataMember(Name = "id")]
+    public string Id { get; set; } = null!;
 
     /// <summary>
     /// The version of the connector
     /// </summary>
-    [JsonProperty(propertyName: "version")]
-    public string Version { get; set; }
+    [DataMember(Name = "version")]
+    public string Version { get; set; } = null!;
 
     /// <summary>
     /// Whether to enable this connector
     /// </summary>
-    [JsonProperty(propertyName: "enable")]
+    [DataMember(Name = "enable")]
     public bool Enable { get; set; } = true;
 
     /// <summary>
     /// Individual settings for the connector
     /// </summary>
-    [JsonProperty(propertyName: "settings")]
+    [DataMember(Name = "settings")]
     public Dictionary<string, object>? Settings { get; set; }
 
     /// <summary>

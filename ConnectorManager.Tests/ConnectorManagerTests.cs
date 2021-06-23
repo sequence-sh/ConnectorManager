@@ -3,6 +3,7 @@ using System.IO.Abstractions.TestingHelpers;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using ConnectorManager.Base;
 using MELT;
 using Microsoft.Extensions.Logging;
 using Moq;

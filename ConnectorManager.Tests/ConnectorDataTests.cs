@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using ConnectorManager.Base;
+using Xunit;
 
 namespace Reductech.EDR.ConnectorManagement.Tests
 {

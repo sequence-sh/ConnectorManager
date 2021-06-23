@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using ConnectorManager.Base;
 using Microsoft.Extensions.Logging;
 
 namespace Reductech.EDR.ConnectorManagement
