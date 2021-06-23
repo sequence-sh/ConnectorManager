@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using MELT;
 using Microsoft.Extensions.Logging;
+using Reductech.EDR.ConnectorManagement.Base;
 using Xunit;
 
 namespace Reductech.EDR.ConnectorManagement.Tests

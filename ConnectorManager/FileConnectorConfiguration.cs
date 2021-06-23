@@ -3,8 +3,7 @@ using System.IO.Abstractions;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Reductech.EDR.Core.Entities;
-using Reductech.EDR.Core.Internal;
+using Reductech.EDR.ConnectorManagement.Base;
 
 namespace Reductech.EDR.ConnectorManagement
 {
@@ -75,11 +74,7 @@ public class FileConnectorConfiguration : ConnectorConfigurationBase
     private async Task SaveSettings(CancellationToken ct)
     {
         var jsonSettings =
-            new JsonSerializerSettings
-            {
-                NullValueHandling = NullValueHandling.Ignore,
-                Converters        = new List<JsonConverter> { EntityJsonConverter.Instance }
-            };
+            new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
 
         var output = JsonConvert.SerializeObject(
             Connectors,
@@ -109,10 +104,8 @@ public class FileConnectorConfiguration : ConnectorConfigurationBase
             _fileSystem.File.WriteAllText(_path, text);
         }
 
-        _connectors = JsonConvert.DeserializeObject<Dictionary<string, ConnectorSettings>>(
-            text,
-            EntityJsonConverter.Instance
-        ) ?? new Dictionary<string, ConnectorSettings>();
+        _connectors = JsonConvert.DeserializeObject<Dictionary<string, ConnectorSettings>>(text)
+                   ?? new Dictionary<string, ConnectorSettings>();
 
         _init = true;
     }

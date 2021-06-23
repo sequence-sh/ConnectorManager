@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Reductech.EDR.ConnectorManagement.Base;
 
 namespace Reductech.EDR.ConnectorManagement
 {

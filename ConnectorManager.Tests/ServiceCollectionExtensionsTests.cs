@@ -5,6 +5,7 @@ using System.IO.Abstractions.TestingHelpers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Reductech.EDR.ConnectorManagement.Base;
 using Xunit;
 
 namespace Reductech.EDR.ConnectorManagement.Tests

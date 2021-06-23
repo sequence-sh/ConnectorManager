@@ -1,19 +1,19 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <RootNamespace>Reductech.EDR.ConnectorManagement</RootNamespace>
-    <AssemblyName>Reductech.EDR.ConnectorManagement</AssemblyName>
+    <RootNamespace>Reductech.EDR.ConnectorManagement.Base</RootNamespace>
+    <AssemblyName>Reductech.EDR.ConnectorManagement.Base</AssemblyName>
     <Nullable>enable</Nullable>
     <Version>0.3.0$(VersionSuffix)</Version>
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageId>Reductech.EDR.ConnectorManager</PackageId>
-    <Title>EDR Connector Manager</Title>
-    <Description>Connector package management for EDR. Uses a nuget feed to manage and configure packages.</Description>
+    <PackageId>Reductech.EDR.ConnectorManager.Base</PackageId>
+    <Title>EDR Connector Manager Base</Title>
+    <Description>Generic Connector package management.</Description>
     <Product>EDR</Product>
     <PackageTags>ediscovery;forensics;automation;orchestration;edrm;packagemanagement;nuget;connectors</PackageTags>
 
@@ -26,16 +26,5 @@
     <Company>Reductech</Company>
     <Copyright>Copyright (c) 2021 Reductech Ltd</Copyright>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
-    <PackageReference Include="NuGet.Protocol" Version="5.9.1" />
-    <PackageReference Include="System.IO.Abstractions" Version="13.2.31" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\ConnectorManager.Base\ConnectorManager.Base.csproj" />
-  </ItemGroup>
 
 </Project>

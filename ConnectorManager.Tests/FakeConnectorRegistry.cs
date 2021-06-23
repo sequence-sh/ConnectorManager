@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using NuGet.Packaging;
+using Reductech.EDR.ConnectorManagement.Base;
 
 namespace Reductech.EDR.ConnectorManagement.Tests
 {

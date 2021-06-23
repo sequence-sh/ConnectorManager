@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Reductech.EDR.Core.Internal;
 
-namespace Reductech.EDR.ConnectorManagement
+namespace Reductech.EDR.ConnectorManagement.Base
 {
 
 /// <summary>

@@ -3,11 +3,10 @@ using System.IO.Abstractions.TestingHelpers;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using CSharpFunctionalExtensions;
 using MELT;
 using Microsoft.Extensions.Logging;
 using Moq;
-using Reductech.EDR.Core.Internal.Errors;
+using Reductech.EDR.ConnectorManagement.Base;
 using Xunit;
 
 namespace Reductech.EDR.ConnectorManagement.Tests
@@ -69,8 +68,8 @@ public partial class ConnectorManagerTests
         );
 
         mock.SetupSequence(m => m.LoadPlugin(It.IsAny<string>(), It.IsAny<ILogger>()))
-            .Returns(() => new ErrorBuilder(new Exception(), ErrorCode.Unknown))
-            .Returns(() => new Result<Assembly, IErrorBuilder>());
+            .Returns(() => throw new Exception())
+            .Returns(Mock.Of<Assembly>);
 
         mock.CallBase = true;
 
@@ -83,7 +82,7 @@ public partial class ConnectorManagerTests
         Assert.Contains(
             log,
             l => l.LogLevel == LogLevel.Error
-              && l.Message!.Equals(
+              && l.Message!.Contains(
                      $"Failed to load connector configuration '{name}' from '{path}'."
                  )
         );
@@ -105,7 +104,7 @@ public partial class ConnectorManagerTests
         );
 
         mock.Setup(m => m.LoadPlugin(It.IsAny<string>(), It.IsAny<ILogger>()))
-            .Returns(() => new Result<Assembly, IErrorBuilder>());
+            .Returns(Mock.Of<Assembly>);
 
         var configs = mock.Object.List(filter).ToArray();
 

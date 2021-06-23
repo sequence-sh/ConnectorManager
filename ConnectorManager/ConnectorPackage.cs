@@ -3,14 +3,10 @@ using System.IO.Abstractions;
 using System.Threading;
 using System.Threading.Tasks;
 using NuGet.Packaging;
+using Reductech.EDR.ConnectorManagement.Base;
 
 namespace Reductech.EDR.ConnectorManagement
 {
-
-/// <summary>
-/// Stores connector metadata.
-/// </summary>
-public record ConnectorMetadata(string Id, string Version) { }
 
 /// <summary>
 /// Connector metadata which includes a downloaded connector package.
