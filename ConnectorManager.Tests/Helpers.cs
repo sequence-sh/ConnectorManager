@@ -70,7 +70,7 @@ internal static class Helpers
             "Reductech.EDR.Connectors.StructuredData",
             new ConnectorSettings
             {
-                Id = "Reductech.EDR.Connectors.StructuredData", Version = "0.9.0"
+                Id = "Reductech.EDR.Connectors.StructuredData", Version = "0.8.0"
             }
         }
     };

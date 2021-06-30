@@ -145,6 +145,35 @@ public partial class ConnectorManagerTests
 
         Assert.Equal(version, _config[name].Version);
     }
+
+    [Fact]
+    public async Task Update_WhenVersionIsNull_UpdatesToLatestVersion()
+    {
+        const string name    = "Reductech.EDR.Connectors.StructuredData";
+        const string version = "0.9.0";
+
+        var expected = _fileSystem.Path.Combine(
+            AppContext.BaseDirectory,
+            $@"connectors\{name}\{version}\Reductech.EDR.Connectors.FileSystem.dll".Replace(
+                '\\',
+                _fileSystem.Path.DirectorySeparatorChar
+            )
+        );
+
+        await _manager.Update(name, null, true);
+
+        Assert.Contains(
+            _loggerFactory.GetTestLoggerSink().LogEntries.ToArray(),
+            l => l.LogLevel == LogLevel.Information
+              && l.Message!.Equals(
+                     $"Connector configuration '{name}' successfully updated to '{version}'."
+                 )
+        );
+
+        Assert.Contains(expected, _fileSystem.AllFiles);
+
+        Assert.Equal(version, _config[name].Version);
+    }
 }
 
 }
