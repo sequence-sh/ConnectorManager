@@ -48,9 +48,9 @@ public class ConnectorManager : IConnectorManager
         bool force = false,
         CancellationToken ct = default)
     {
-        (version, _) = await CheckVersion(id, version, prerelease, ct);
+        var versionCheck = await CheckVersion(id, version, prerelease, ct);
 
-        if (version == null)
+        if (versionCheck == null || (version != null && !versionCheck.IsValid))
             return;
 
         if (string.IsNullOrEmpty(name))
@@ -66,7 +66,7 @@ public class ConnectorManager : IConnectorManager
             else
             {
                 _logger.LogError(
-                    "Connector configuration '{configuration}' already exists. Use --force to overwrite or update.",
+                    "Connector configuration '{configuration}' already exists. Use --force to overwrite.",
                     name
                 );
 
@@ -74,9 +74,9 @@ public class ConnectorManager : IConnectorManager
             }
         }
 
-        var installPath = GetInstallPath(id, version);
+        var installPath = GetInstallPath(id, versionCheck.Version);
 
-        var package = await InstallConnector(id, version, installPath, force, ct);
+        var package = await InstallConnector(id, versionCheck.Version, installPath, force, ct);
 
         if (package == null)
             return;
@@ -87,7 +87,11 @@ public class ConnectorManager : IConnectorManager
             ct
         );
 
-        _logger.LogDebug("Successfully installed connector '{id}' - '{version}'.", id, version);
+        _logger.LogDebug(
+            "Successfully installed connector '{id}' - '{version}'.",
+            id,
+            versionCheck.Version
+        );
     }
 
     /// <inheritdoc />
@@ -109,7 +113,7 @@ public class ConnectorManager : IConnectorManager
 
         if (version != null && cs.Version.Equals(version))
         {
-            _logger.LogError(
+            _logger.LogInformation(
                 "Connector configuration '{configuration}' already has version '{version}'.",
                 name,
                 version
@@ -118,39 +122,37 @@ public class ConnectorManager : IConnectorManager
             return;
         }
 
-        string? latest;
+        var versionCheck = await CheckVersion(cs.Id, version, prerelease, ct);
 
-        (version, latest) = await CheckVersion(cs.Id, version, prerelease, ct);
-
-        if (version == null)
+        if (versionCheck == null || !versionCheck.IsValid || versionCheck.IsLatest)
             return;
 
-        if (version.Equals(latest, StringComparison.Ordinal))
+        if (version == null && cs.Version.Equals(versionCheck.Version))
         {
             _logger.LogInformation(
                 "Connector configuration '{configuration}' already has the latest version '{version}' installed.",
                 name,
-                version
+                versionCheck.Version
             );
 
             return;
         }
 
-        var installPath = GetInstallPath(cs.Id, version);
+        var installPath = GetInstallPath(cs.Id, versionCheck.Version);
 
-        var package = await InstallConnector(cs.Id, version, installPath, false, ct);
+        var package = await InstallConnector(cs.Id, versionCheck.Version, installPath, false, ct);
 
         if (package == null)
             return;
 
-        cs.Version = version;
+        cs.Version = versionCheck.Version;
 
         _configuration[name] = cs;
 
         _logger.LogInformation(
             "Connector configuration '{configuration}' successfully updated to '{version}'.",
             name,
-            version
+            versionCheck.Version
         );
     }
 
@@ -347,7 +349,9 @@ public class ConnectorManager : IConnectorManager
         return package.Metadata;
     }
 
-    private async Task<(string? version, string? latest)> CheckVersion(
+    private record VersionCheck(string Version, string Latest, bool IsValid, bool IsLatest);
+
+    private async Task<VersionCheck?> CheckVersion(
         string id,
         string? version,
         bool prerelease,
@@ -358,24 +362,33 @@ public class ConnectorManager : IConnectorManager
         if (allVersions.Count == 0)
         {
             _logger.LogError("Could not find connector '{connectorId}' in the registry.", id);
-            return (null, null);
+            return null;
         }
 
         var latest = allVersions.Last();
 
         if (version == null)
-            return (latest, latest);
+            return new VersionCheck(latest, latest, true, false);
 
-        if (allVersions.Contains(version))
-            return (version, latest);
+        var isValid = allVersions.Contains(version, StringComparer.OrdinalIgnoreCase);
 
-        _logger.LogError(
-            "Could not find connector '{connectorId}' version '{version}' in the registry.",
-            id,
-            version
-        );
+        if (!isValid)
+            _logger.LogError(
+                "Could not find connector '{connectorId}' version '{version}' in the registry.",
+                id,
+                version
+            );
 
-        return (null, latest);
+        var isLatest = version.Equals(latest, StringComparison.OrdinalIgnoreCase);
+
+        if (isLatest)
+            _logger.LogInformation(
+                "Version '{version}' is the latest available for '{connectorId}'.",
+                version,
+                id
+            );
+
+        return new VersionCheck(version, latest, isValid, isLatest);
     }
 }
 
