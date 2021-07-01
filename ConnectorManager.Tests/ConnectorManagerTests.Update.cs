@@ -30,7 +30,7 @@ public partial class ConnectorManagerTests
     }
 
     [Fact]
-    public async Task Update_WhenVersionIsSameAsConfig_WritesErrorAndReturns()
+    public async Task Update_WhenVersionIsSameAsConfig_WritesInfoAndReturns()
     {
         const string name    = "Reductech.EDR.Connectors.Nuix";
         const string version = "0.9.0";
@@ -43,7 +43,7 @@ public partial class ConnectorManagerTests
 
         Assert.Contains(
             log,
-            l => l.LogLevel == LogLevel.Error
+            l => l.LogLevel == LogLevel.Information
               && l.Message!.Equals(
                      $"Connector configuration '{name}' already has version '{version}'."
                  )
@@ -77,11 +77,11 @@ public partial class ConnectorManagerTests
         const string name    = "Reductech.EDR.Connectors.StructuredData";
         const string version = "0.9.0";
 
+        _config[name].Version = version;
+
         await _manager.Update(name);
 
         var log = _loggerFactory.GetTestLoggerSink().LogEntries.ToArray();
-
-        Assert.Single(log);
 
         Assert.Contains(
             log,
@@ -160,7 +160,7 @@ public partial class ConnectorManagerTests
             )
         );
 
-        await _manager.Update(name, null, true);
+        await _manager.Update(name);
 
         Assert.Contains(
             _loggerFactory.GetTestLoggerSink().LogEntries.ToArray(),
