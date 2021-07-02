@@ -1,3 +1,15 @@
+# v0.3.0 (2021-07-02)
+
+## Issues Closed in this Release
+
+### New Features
+
+- Decouple from Core #8
+
+### Bug Fixes
+
+- When version is null connector manager update should install latest version #15
+
 # v0.2.1 (2021-06-03)
 
 Bug fixes to support runtime-independent connector packages.
