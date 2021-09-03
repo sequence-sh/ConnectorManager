@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
@@ -7,7 +7,7 @@
     <RootNamespace>Reductech.EDR.ConnectorManagement.Base</RootNamespace>
     <AssemblyName>Reductech.EDR.ConnectorManagement.Base</AssemblyName>
     <Nullable>enable</Nullable>
-    <Version>0.3.0$(VersionSuffix)</Version>
+    <Version>0.4.0$(VersionSuffix)$(VersionSuffix)</Version>
   </PropertyGroup>
 
   <PropertyGroup>
