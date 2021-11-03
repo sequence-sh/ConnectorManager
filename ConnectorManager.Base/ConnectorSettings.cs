@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Reductech.EDR.ConnectorManagement.Base
 {
@@ -14,6 +15,7 @@ public class ConnectorSettings
     /// <summary>
     /// The id of the connector in the registry
     /// </summary>
+    [JsonPropertyName("id")]
     [DataMember(Name = "id")]
     public string Id { get; set; } = null!;
 
@@ -21,18 +23,21 @@ public class ConnectorSettings
     /// The version of the connector
     /// </summary>
     [DataMember(Name = "version")]
+    [JsonPropertyName("version")]
     public string Version { get; set; } = null!;
 
     /// <summary>
     /// Whether to enable this connector
     /// </summary>
     [DataMember(Name = "enable")]
+    [JsonPropertyName("enable")]
     public bool Enable { get; set; } = true;
 
     /// <summary>
     /// Individual settings for the connector
     /// </summary>
     [DataMember(Name = "settings")]
+    [JsonPropertyName("settings")]
     public Dictionary<string, object>? Settings { get; set; }
 
     /// <summary>

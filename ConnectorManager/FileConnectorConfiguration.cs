@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.IO.Abstractions;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
+using System.Text.Json;
 using Reductech.EDR.ConnectorManagement.Base;
 
 namespace Reductech.EDR.ConnectorManagement
@@ -73,14 +73,13 @@ public class FileConnectorConfiguration : ConnectorConfigurationBase
 
     private async Task SaveSettings(CancellationToken ct)
     {
-        var jsonSettings =
-            new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
+        var options = new JsonSerializerOptions() { WriteIndented = true, IgnoreNullValues = true };
 
-        var output = JsonConvert.SerializeObject(
-            Connectors,
-            Formatting.Indented,
-            jsonSettings
-        );
+        var output =
+            JsonSerializer.Serialize(
+                Connectors,
+                options
+            );
 
         await _fileSystem.File.WriteAllTextAsync(_path, output, ct).ConfigureAwait(false);
     }
@@ -104,10 +103,8 @@ public class FileConnectorConfiguration : ConnectorConfigurationBase
             _fileSystem.File.WriteAllText(_path, text);
         }
 
-        _connectors = JsonConvert.DeserializeObject<Dictionary<string, ConnectorSettings>>(text)
-                   ?? new Dictionary<string, ConnectorSettings>();
-
-        _init = true;
+        _connectors = JsonSerializer.Deserialize<Dictionary<string, ConnectorSettings>>(text)!;
+        _init       = true;
     }
 }
 
