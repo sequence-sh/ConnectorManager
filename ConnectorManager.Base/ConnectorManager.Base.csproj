@@ -7,7 +7,7 @@
     <RootNamespace>Reductech.EDR.ConnectorManagement.Base</RootNamespace>
     <AssemblyName>Reductech.EDR.ConnectorManagement.Base</AssemblyName>
     <Nullable>enable</Nullable>
-    <Version>0.4.0$(VersionSuffix)</Version>
+    <Version>0.5.0$(VersionSuffix)</Version>
   </PropertyGroup>
 
   <PropertyGroup>

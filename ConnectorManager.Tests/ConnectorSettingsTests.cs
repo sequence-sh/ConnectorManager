@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Moq;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using System.Text.Json;
 using Reductech.EDR.ConnectorManagement.Base;
 using Xunit;
 
@@ -22,6 +22,7 @@ public class ConnectorSettingsTests
         assembly.Setup(a => a.GetName()).Returns(() => new AssemblyName(name));
 
         assembly.Setup(a => a.GetCustomAttributes(It.IsAny<Type>(), true))
+            // ReSharper disable once CoVariantArrayConversion
             .Returns(() => new Attribute[] { new AssemblyInformationalVersionAttribute(version) });
 
         var settings = ConnectorSettings.DefaultForAssembly(assembly.Object);
@@ -40,7 +41,7 @@ public class ConnectorSettingsTests
         assembly.Setup(a => a.GetName()).Returns(() => new AssemblyName());
 
         assembly.Setup(a => a.GetCustomAttributes(It.IsAny<Type>(), true))
-            .Returns(() => Array.Empty<Attribute>());
+            .Returns(Array.Empty<Attribute>);
 
         var settings = ConnectorSettings.DefaultForAssembly(assembly.Object);
 
@@ -54,19 +55,33 @@ public class ConnectorSettingsTests
         var expectedFeatures = new[] { "ANALYSIS", "CASE_CREATION" };
 
         var settings =
-            JsonConvert.DeserializeObject<Dictionary<string, ConnectorSettings>>(
+            JsonSerializer.Deserialize<Dictionary<string, ConnectorSettings>>(
                 Helpers.TestConfiguration
-            );
+            )!;
 
         var nuixSettings = settings["Reductech.EDR.Connectors.Nuix"];
 
         Assert.NotNull(nuixSettings.Settings);
-        Assert.Equal("dongle", nuixSettings.Settings!["licencesourcetype"]);
+        Assert.Equal("dongle", nuixSettings.Settings!["licencesourcetype"].ToString());
 
-        var nuixFeatures = nuixSettings.Settings!["features"] as JArray;
+        var nuixFeatures = (JsonElement)nuixSettings.Settings!["features"];
 
         Assert.NotNull(nuixFeatures);
-        Assert.Equal(expectedFeatures, nuixFeatures!.ToObject<string[]>());
+        Assert.Equal(JsonValueKind.Array, nuixFeatures.ValueKind);
+
+        var actualFeatures = ToIEnumerable(nuixFeatures.EnumerateArray())
+            .Select(x => x.GetString()!)
+            .ToArray();
+
+        Assert.Equal(expectedFeatures, actualFeatures);
+
+        static IEnumerable<T> ToIEnumerable<T>(IEnumerator<T> enumerator)
+        {
+            while (enumerator.MoveNext())
+            {
+                yield return enumerator.Current;
+            }
+        }
     }
 }
 
