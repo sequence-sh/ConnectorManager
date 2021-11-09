@@ -103,8 +103,12 @@ public class FileConnectorConfiguration : ConnectorConfigurationBase
             _fileSystem.File.WriteAllText(_path, text);
         }
 
-        _connectors = JsonSerializer.Deserialize<Dictionary<string, ConnectorSettings>>(text)!;
-        _init       = true;
+        _connectors = JsonSerializer.Deserialize<Dictionary<string, ConnectorSettings>>(
+            text,
+            new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
+        )!;
+
+        _init = true;
     }
 }
 
