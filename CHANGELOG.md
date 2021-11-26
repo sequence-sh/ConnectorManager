@@ -5,7 +5,6 @@
 ### Maintenance
 
 - Use Text.Json instead on Newtonsoft.Json #23
-- Use Text.Json instead on Newtonsoft.Json #23
 
 # v0.4.0 (2021-09-03)
 
