@@ -1,3 +1,12 @@
+# v0.5.0 (2021-11-26)
+
+## Issues Closed in this Release
+
+### Maintenance
+
+- Use Text.Json instead on Newtonsoft.Json #23
+- Use Text.Json instead on Newtonsoft.Json #23
+
 # v0.4.0 (2021-09-03)
 
 Dependency updates only
@@ -51,3 +60,4 @@ Initial release of the Connector Manager which provides functionality to:
 - Add ability to get assembly settings tuples #2
 - Add unit tests for connector manager #4
 - Add implementation of nuget logger #3
+
