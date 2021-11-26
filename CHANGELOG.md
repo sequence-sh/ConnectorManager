@@ -1,5 +1,7 @@
 # v0.5.0 (2021-11-26)
 
+Moving from `Newtonsoft.Json` to `Text.Json`.
+
 ## Issues Closed in this Release
 
 ### Maintenance
