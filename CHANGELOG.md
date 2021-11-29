@@ -1,3 +1,13 @@
+# v0.5.1 (2021-11-29)
+
+Bug fix release.
+
+## Issues Closed in this Release
+
+### Bug Fixes
+
+- ConnectorManager should not load the same Assembly more than once #25
+
 # v0.5.0 (2021-11-26)
 
 Moving from `Newtonsoft.Json` to `Text.Json`.
@@ -61,4 +71,5 @@ Initial release of the Connector Manager which provides functionality to:
 - Add ability to get assembly settings tuples #2
 - Add unit tests for connector manager #4
 - Add implementation of nuget logger #3
+
 
