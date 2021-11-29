@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
 using Microsoft.Extensions.Logging;
@@ -18,6 +21,14 @@ public class PluginLoadContext : AssemblyLoadContext
     }
 
     private readonly AssemblyDependencyResolver _resolver;
+
+    private static readonly ConcurrentDictionary<string, PluginLoadContext> InstanceDictionary =
+        new();
+
+    private static PluginLoadContext GetOrCreate(string pluginPath)
+    {
+        return InstanceDictionary.GetOrAdd(pluginPath, x => new PluginLoadContext(x));
+    }
 
     /// <summary>
     /// Gets an absolute path from a path relative to this assembly
@@ -49,13 +60,20 @@ public class PluginLoadContext : AssemblyLoadContext
     {
         logger.LogDebug($"Loading assembly from path: {absolutePath}");
 
-        PluginLoadContext loadContext = new(absolutePath);
+        var loadContext = GetOrCreate(absolutePath);
 
-        var assembly = loadContext.LoadFromAssemblyName(
-            new AssemblyName(Path.GetFileNameWithoutExtension(absolutePath))
-        );
+        var assemblyName = new AssemblyName(Path.GetFileNameWithoutExtension(absolutePath));
 
-        logger.LogDebug($"Successfully loaded assembly: {assembly.FullName}");
+        var previousCount = loadContext.Assemblies.Count();
+
+        var assembly = loadContext.LoadFromAssemblyName(assemblyName);
+
+        if (loadContext.Assemblies.Count() > previousCount)
+            logger.LogDebug($"Successfully loaded assembly: {assembly.FullName}");
+        else
+        {
+            logger.LogDebug($"Assembly already loaded: {assembly.FullName}");
+        }
 
         return assembly;
     }
