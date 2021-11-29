@@ -1,10 +1,12 @@
 # v0.5.1 (2021-11-29)
 
+Bug fix release.
+
 ## Issues Closed in this Release
 
 ### Bug Fixes
 
-- BUG: ConnectorManager should not load the same Assembly more than once #25
+- ConnectorManager should not load the same Assembly more than once #25
 
 # v0.5.0 (2021-11-26)
 
