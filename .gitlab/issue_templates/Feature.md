@@ -2,7 +2,6 @@
 /label ~"wf::backlog"
 /label ~"area::release/packaging"
 /label ~edr
-/epic reductech&24
 
 ## Story
 

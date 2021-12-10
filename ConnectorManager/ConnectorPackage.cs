@@ -9,7 +9,7 @@ namespace Reductech.EDR.ConnectorManagement;
 public sealed record ConnectorPackage
     (ConnectorMetadata Metadata, PackageArchiveReader Package) : IDisposable
 {
-    private static readonly string[] FlattenPaths = { "lib/net5.0/", "contentFiles/any/any/" };
+    private static readonly string[] FlattenPaths = { "lib/net5.0/", "lib/net6.0/", "contentFiles/any/any/" };
 
     /// <summary>
     /// Extract the connector to the destination directory.
