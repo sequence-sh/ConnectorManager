@@ -2,8 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Reductech.EDR.ConnectorManagement.Base
-{
+namespace Reductech.EDR.ConnectorManagement.Base;
 
 /// <summary>
 /// 
@@ -78,6 +77,4 @@ public interface IConnectorManager
     /// <param name="ct">Cancellation token</param>
     /// <returns></returns>
     Task<bool> Verify(CancellationToken ct = default);
-}
-
 }

@@ -3,8 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Reductech.EDR.ConnectorManagement.Base;
 
-namespace Reductech.EDR.ConnectorManagement
-{
+namespace Reductech.EDR.ConnectorManagement;
 
 /// <summary>
 /// A way of managing connector configurations.
@@ -85,6 +84,4 @@ public interface IConnectorConfiguration : IEnumerable<KeyValuePair<string, Conn
     /// </summary>
     /// <param name="name"></param>
     ConnectorSettings this[string name] { get; set; }
-}
-
 }

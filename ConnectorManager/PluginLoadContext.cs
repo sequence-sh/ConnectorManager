@@ -7,8 +7,7 @@ using System.Reflection;
 using System.Runtime.Loader;
 using Microsoft.Extensions.Logging;
 
-namespace Reductech.EDR.ConnectorManagement
-{
+namespace Reductech.EDR.ConnectorManagement;
 
 /// <summary>
 /// Loads assemblies for connector plugins.
@@ -93,6 +92,4 @@ public class PluginLoadContext : AssemblyLoadContext
 
         return libraryPath is null ? IntPtr.Zero : LoadUnmanagedDllFromPath(libraryPath);
     }
-}
-
 }

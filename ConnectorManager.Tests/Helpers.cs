@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using Reductech.EDR.ConnectorManagement.Base;
 
-namespace Reductech.EDR.ConnectorManagement.Tests
-{
+namespace Reductech.EDR.ConnectorManagement.Tests;
 
 internal static class Helpers
 {
@@ -74,6 +73,4 @@ internal static class Helpers
             }
         }
     };
-}
-
 }

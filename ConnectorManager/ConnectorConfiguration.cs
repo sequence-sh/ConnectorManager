@@ -3,8 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Reductech.EDR.ConnectorManagement.Base;
 
-namespace Reductech.EDR.ConnectorManagement
-{
+namespace Reductech.EDR.ConnectorManagement;
 
 /// <summary>
 /// A ConnectorConfiguration that uses an in-memory dictionary as the backing store.
@@ -39,6 +38,4 @@ public class ConnectorConfiguration : ConnectorConfigurationBase
     /// <inheritdoc />
     public override Task<bool> RemoveAsync(string name, CancellationToken ct = default) =>
         Task.FromResult(Connectors.Remove(name));
-}
-
 }

@@ -6,8 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Reductech.EDR.ConnectorManagement.Base;
 
-namespace Reductech.EDR.ConnectorManagement
-{
+namespace Reductech.EDR.ConnectorManagement;
 
 /// <inheritdoc />
 public abstract class ConnectorConfigurationBase : IConnectorConfiguration
@@ -72,6 +71,4 @@ public abstract class ConnectorConfigurationBase : IConnectorConfiguration
         Connectors.GetEnumerator();
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-}
-
 }

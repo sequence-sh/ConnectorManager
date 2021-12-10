@@ -3,8 +3,7 @@ using System.IO;
 using System.IO.Abstractions;
 using System.IO.Compression;
 
-namespace Reductech.EDR.ConnectorManagement
-{
+namespace Reductech.EDR.ConnectorManagement;
 
 /// <summary>
 /// Modified from
@@ -58,13 +57,13 @@ public static class ZipArchiveEntryExtensions
         FileMode fMode = overwrite ? FileMode.Create : FileMode.CreateNew;
 
         using (Stream fs = fileSystem.FileStream.Create(
-            destinationFileName,
-            fMode,
-            FileAccess.Write,
-            FileShare.None,
-            bufferSize: 0x1000,
-            useAsync: false
-        ))
+                   destinationFileName,
+                   fMode,
+                   FileAccess.Write,
+                   FileShare.None,
+                   bufferSize: 0x1000,
+                   useAsync: false
+               ))
         {
             using (Stream es = source.Open())
                 es.CopyTo(fs);
@@ -72,6 +71,4 @@ public static class ZipArchiveEntryExtensions
 
         fileSystem.File.SetLastWriteTime(destinationFileName, source.LastWriteTime.DateTime);
     }
-}
-
 }

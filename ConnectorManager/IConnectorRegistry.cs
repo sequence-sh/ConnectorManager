@@ -3,8 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Reductech.EDR.ConnectorManagement.Base;
 
-namespace Reductech.EDR.ConnectorManagement
-{
+namespace Reductech.EDR.ConnectorManagement;
 
 /// <summary>
 /// Represents a way of interacting with a remote connector registry / nuget feed.
@@ -58,6 +57,4 @@ public interface IConnectorRegistry
         string id,
         string version,
         CancellationToken ct = default);
-}
-
 }

@@ -4,8 +4,7 @@ using MELT;
 using Microsoft.Extensions.Logging;
 using Xunit;
 
-namespace Reductech.EDR.ConnectorManagement.Tests
-{
+namespace Reductech.EDR.ConnectorManagement.Tests;
 
 public class PluginLoadContextTests
 {
@@ -41,6 +40,4 @@ public class PluginLoadContextTests
             l => l.Message!.Equals($"Successfully loaded assembly: {assembly.FullName}")
         );
     }
-}
-
 }

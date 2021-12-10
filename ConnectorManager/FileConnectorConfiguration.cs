@@ -5,8 +5,7 @@ using System.Threading.Tasks;
 using System.Text.Json;
 using Reductech.EDR.ConnectorManagement.Base;
 
-namespace Reductech.EDR.ConnectorManagement
-{
+namespace Reductech.EDR.ConnectorManagement;
 
 /// <summary>
 /// A ConnectorConfiguration that uses a JSON file as the backing store.
@@ -110,6 +109,4 @@ public class FileConnectorConfiguration : ConnectorConfigurationBase
 
         _init = true;
     }
-}
-
 }

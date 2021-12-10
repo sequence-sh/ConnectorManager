@@ -9,8 +9,7 @@ using Moq;
 using Reductech.EDR.ConnectorManagement.Base;
 using Xunit;
 
-namespace Reductech.EDR.ConnectorManagement.Tests
-{
+namespace Reductech.EDR.ConnectorManagement.Tests;
 
 public partial class ConnectorManagerTests
 {
@@ -156,6 +155,4 @@ public partial class ConnectorManagerTests
 
         Assert.Equal(expected, connectors);
     }
-}
-
 }

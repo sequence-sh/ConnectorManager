@@ -5,8 +5,7 @@ using System.Threading.Tasks;
 using NuGet.Packaging;
 using Reductech.EDR.ConnectorManagement.Base;
 
-namespace Reductech.EDR.ConnectorManagement
-{
+namespace Reductech.EDR.ConnectorManagement;
 
 /// <summary>
 /// Connector metadata which includes a downloaded connector package.
@@ -50,6 +49,4 @@ public sealed record ConnectorPackage
 
     /// <inheritdoc />
     public void Dispose() => Package.Dispose();
-}
-
 }

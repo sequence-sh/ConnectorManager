@@ -10,8 +10,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Reductech.EDR.ConnectorManagement.Base;
 
-namespace Reductech.EDR.ConnectorManagement
-{
+namespace Reductech.EDR.ConnectorManagement;
 
 /// <inheritdoc />
 public class ConnectorManager : IConnectorManager
@@ -39,34 +38,45 @@ public class ConnectorManager : IConnectorManager
         _fileSystem    = fileSystem;
     }
 
-
-
     /// <summary>
     /// Create a new Connector Manager with connector settings
     /// </summary>
-    public static async Task<ConnectorManager> CreateAndPopulate(ILogger<ConnectorManager> logger,
-                                                ConnectorManagerSettings settings,
-                                                IConnectorRegistry connectorRegistry,
-                                                IFileSystem fileSystem,
-                                                Dictionary<string, ConnectorSettings>? settingsDictionary)
+    public static async Task<ConnectorManager> CreateAndPopulate(
+        ILogger<ConnectorManager> logger,
+        ConnectorManagerSettings settings,
+        IConnectorRegistry connectorRegistry,
+        IFileSystem fileSystem,
+        Dictionary<string, ConnectorSettings>? settingsDictionary)
     {
-
         if (settingsDictionary is null || settingsDictionary.Count == 0)
         {
-
             //load latest connectors from repository
-            var manager1 = new ConnectorManager(logger, settings, connectorRegistry,
-                                                new ConnectorConfiguration(), fileSystem);
+            var manager1 = new ConnectorManager(
+                logger,
+                settings,
+                connectorRegistry,
+                new ConnectorConfiguration(),
+                fileSystem
+            );
 
             var found = await manager1.Find(); //Find all connectors
 
-            settingsDictionary = found.ToDictionary(x => x.Id,
-                                                            x => new ConnectorSettings() { Enable = true, Id = x.Id, Version = GetBestVersion(x.Version) });
+            settingsDictionary = found.ToDictionary(
+                x => x.Id,
+                x => new ConnectorSettings()
+                {
+                    Enable = true, Id = x.Id, Version = GetBestVersion(x.Version)
+                }
+            );
         }
 
-
-        var connectorManager = new ConnectorManager(logger, settings, connectorRegistry,
-                                                    new ConnectorConfiguration(settingsDictionary), fileSystem);
+        var connectorManager = new ConnectorManager(
+            logger,
+            settings,
+            connectorRegistry,
+            new ConnectorConfiguration(settingsDictionary),
+            fileSystem
+        );
 
         return connectorManager;
 
@@ -78,7 +88,8 @@ public class ConnectorManager : IConnectorManager
 
                 var thisVersion = Assembly.GetEntryAssembly()!.GetName().Version!;
 
-                if (latestVersion.Major > thisVersion.Major || latestVersion.Minor > thisVersion.Minor)
+                if (latestVersion.Major > thisVersion.Major
+                 || latestVersion.Minor > thisVersion.Minor)
                     return thisVersion.ToString();
 
                 return latestVersionString;
@@ -442,6 +453,4 @@ public class ConnectorManager : IConnectorManager
 
         return new VersionCheck(version, latest, isValid, isLatest);
     }
-}
-
 }

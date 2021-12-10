@@ -2,8 +2,7 @@
 using Reductech.EDR.ConnectorManagement.Base;
 using Xunit;
 
-namespace Reductech.EDR.ConnectorManagement.Tests
-{
+namespace Reductech.EDR.ConnectorManagement.Tests;
 
 public class ConnectorConfigurationTests
 {
@@ -32,6 +31,4 @@ public class ConnectorConfigurationTests
 
         Assert.DoesNotContain(name, config.Keys);
     }
-}
-
 }

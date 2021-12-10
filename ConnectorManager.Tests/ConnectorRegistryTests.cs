@@ -8,8 +8,7 @@ using Microsoft.Extensions.Logging;
 using Reductech.EDR.ConnectorManagement.Base;
 using Xunit;
 
-namespace Reductech.EDR.ConnectorManagement.Tests
-{
+namespace Reductech.EDR.ConnectorManagement.Tests;
 
 public class ConnectorRegistryTests
 {
@@ -176,6 +175,4 @@ public class ConnectorRegistryTests
 
         Assert.Equal(14, files.Count());
     }
-}
-
 }

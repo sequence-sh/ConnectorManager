@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 
-namespace Reductech.EDR.ConnectorManagement.Base
-{
+namespace Reductech.EDR.ConnectorManagement.Base;
 
 /// <summary>
 /// Connector assembly and associated settings.
@@ -10,6 +9,4 @@ public record ConnectorData(ConnectorSettings ConnectorSettings, Assembly? Assem
 {
     /// <inheritdoc />
     public override string ToString() => ConnectorSettings.ToString()!;
-}
-
 }

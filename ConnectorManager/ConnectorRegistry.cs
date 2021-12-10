@@ -13,8 +13,7 @@ using NuGet.Protocol.Core.Types;
 using NuGet.Versioning;
 using Reductech.EDR.ConnectorManagement.Base;
 
-namespace Reductech.EDR.ConnectorManagement
-{
+namespace Reductech.EDR.ConnectorManagement;
 
 /// <summary>
 /// Connector management using a nuget feed.
@@ -162,6 +161,4 @@ public class ConnectorRegistry : IConnectorRegistry
 
         return await repository.GetResourceAsync<T>(ct);
     }
-}
-
 }

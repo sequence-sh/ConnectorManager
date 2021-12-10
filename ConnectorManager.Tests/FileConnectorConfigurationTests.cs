@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 using Reductech.EDR.ConnectorManagement.Base;
 using Xunit;
 
-namespace Reductech.EDR.ConnectorManagement.Tests
-{
+namespace Reductech.EDR.ConnectorManagement.Tests;
 
 public class FileConnectorConfigurationTests
 {
@@ -230,6 +229,4 @@ public class FileConnectorConfigurationTests
         foreach (var c in config)
             Assert.NotEmpty(c.Key);
     }
-}
-
 }

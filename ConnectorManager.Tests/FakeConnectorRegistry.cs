@@ -7,8 +7,7 @@ using System.Threading.Tasks;
 using NuGet.Packaging;
 using Reductech.EDR.ConnectorManagement.Base;
 
-namespace Reductech.EDR.ConnectorManagement.Tests
-{
+namespace Reductech.EDR.ConnectorManagement.Tests;
 
 public class FakeConnectorRegistry : IConnectorRegistry
 {
@@ -75,6 +74,4 @@ public class FakeConnectorRegistry : IConnectorRegistry
             )
         )
     );
-}
-
 }
