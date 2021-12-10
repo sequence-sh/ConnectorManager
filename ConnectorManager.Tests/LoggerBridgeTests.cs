@@ -1,13 +1,8 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using MELT;
-using Microsoft.Extensions.Logging;
+﻿using MELT;
 using NuGet.Common;
-using Xunit;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
-namespace Reductech.EDR.ConnectorManagement.Tests
-{
+namespace Reductech.EDR.ConnectorManagement.Tests;
 
 public class LoggerBridgeTests
 {
@@ -121,6 +116,4 @@ public class LoggerBridgeTests
             l => l.LogLevel == LogLevel.Information && l.Message!.Equals(message)
         );
     }
-}
-
 }

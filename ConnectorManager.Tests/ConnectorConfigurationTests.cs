@@ -1,9 +1,6 @@
-﻿using System.Threading.Tasks;
-using Reductech.EDR.ConnectorManagement.Base;
-using Xunit;
+﻿using Reductech.EDR.ConnectorManagement.Base;
 
-namespace Reductech.EDR.ConnectorManagement.Tests
-{
+namespace Reductech.EDR.ConnectorManagement.Tests;
 
 public class ConnectorConfigurationTests
 {
@@ -32,6 +29,4 @@ public class ConnectorConfigurationTests
 
         Assert.DoesNotContain(name, config.Keys);
     }
-}
-
 }

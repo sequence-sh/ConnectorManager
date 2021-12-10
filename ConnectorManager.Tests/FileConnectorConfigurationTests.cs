@@ -1,14 +1,10 @@
 using System.Collections.Generic;
 using System.IO.Abstractions.TestingHelpers;
-using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
 using Reductech.EDR.ConnectorManagement.Base;
-using Xunit;
 
-namespace Reductech.EDR.ConnectorManagement.Tests
-{
+namespace Reductech.EDR.ConnectorManagement.Tests;
 
 public class FileConnectorConfigurationTests
 {
@@ -230,6 +226,4 @@ public class FileConnectorConfigurationTests
         foreach (var c in config)
             Assert.NotEmpty(c.Key);
     }
-}
-
 }

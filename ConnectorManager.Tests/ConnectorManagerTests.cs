@@ -1,16 +1,10 @@
-﻿using System;
-using System.IO.Abstractions.TestingHelpers;
-using System.Linq;
+﻿using System.IO.Abstractions.TestingHelpers;
 using System.Reflection;
-using System.Threading.Tasks;
 using MELT;
-using Microsoft.Extensions.Logging;
 using Moq;
 using Reductech.EDR.ConnectorManagement.Base;
-using Xunit;
 
-namespace Reductech.EDR.ConnectorManagement.Tests
-{
+namespace Reductech.EDR.ConnectorManagement.Tests;
 
 public partial class ConnectorManagerTests
 {
@@ -156,6 +150,4 @@ public partial class ConnectorManagerTests
 
         Assert.Equal(expected, connectors);
     }
-}
-
 }

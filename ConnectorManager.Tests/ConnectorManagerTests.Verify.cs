@@ -1,10 +1,4 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using Xunit;
-
-namespace Reductech.EDR.ConnectorManagement.Tests
-{
+﻿namespace Reductech.EDR.ConnectorManagement.Tests;
 
 public partial class ConnectorManagerTests
 {
@@ -105,6 +99,4 @@ public partial class ConnectorManagerTests
             Assert.Contains(dll, _fileSystem.AllFiles);
         }
     }
-}
-
 }

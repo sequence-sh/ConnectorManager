@@ -1,8 +1,6 @@
 ﻿using Reductech.EDR.ConnectorManagement.Base;
-using Xunit;
 
-namespace Reductech.EDR.ConnectorManagement.Tests
-{
+namespace Reductech.EDR.ConnectorManagement.Tests;
 
 public class ConnectorDataTests
 {
@@ -15,6 +13,4 @@ public class ConnectorDataTests
         var cd       = new ConnectorData(settings, null);
         Assert.Equal($"{id} {version}", cd.ToString());
     }
-}
-
 }

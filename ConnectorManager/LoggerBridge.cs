@@ -1,10 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Nu = NuGet.Common;
 
-namespace Reductech.EDR.ConnectorManagement
-{
+namespace Reductech.EDR.ConnectorManagement;
 
 /// <inheritdoc />
 public class LoggerBridge<T> : Nu.ILogger
@@ -66,6 +63,4 @@ public class LoggerBridge<T> : Nu.ILogger
         Nu.LogLevel.Error       => LogLevel.Error,
         _                       => throw new ArgumentOutOfRangeException(nameof(logLevel))
     };
-}
-
 }

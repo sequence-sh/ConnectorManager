@@ -3,8 +3,7 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
-namespace Reductech.EDR.ConnectorManagement.Base
-{
+namespace Reductech.EDR.ConnectorManagement.Base;
 
 /// <summary>
 /// Settings for a connector
@@ -67,6 +66,4 @@ public class ConnectorSettings
             Enable  = true
         };
     }
-}
-
 }

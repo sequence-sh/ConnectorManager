@@ -1,5 +1,4 @@
-﻿namespace Reductech.EDR.ConnectorManagement
-{
+﻿namespace Reductech.EDR.ConnectorManagement;
 
 /// <summary>
 /// Settings for the default Reductech connector registry.
@@ -38,6 +37,4 @@ public record ConnectorRegistrySettings
     /// By default, nuget protocol logging is disabled. For debugging, set this to true.
     /// </summary>
     public bool EnableNuGetLog { get; init; } = false;
-}
-
 }

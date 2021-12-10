@@ -1,8 +1,6 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 
-namespace Reductech.EDR.ConnectorManagement
-{
+namespace Reductech.EDR.ConnectorManagement;
 
 /// <summary>
 /// Settings for the connector manager.
@@ -46,6 +44,4 @@ public record ConnectorManagerSettings
     /// Automatically download missing connectors when using the Verify method.
     /// </summary>
     public bool AutoDownload { get; init; }
-}
-
 }

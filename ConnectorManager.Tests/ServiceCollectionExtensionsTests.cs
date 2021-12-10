@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Reductech.EDR.ConnectorManagement.Base;
-using Xunit;
 
-namespace Reductech.EDR.ConnectorManagement.Tests
-{
+namespace Reductech.EDR.ConnectorManagement.Tests;
 
 public class ServiceCollectionExtensions
 {
@@ -100,6 +97,4 @@ public class ServiceCollectionExtensions
         Assert.Equal("c:\\connectors\\connectors.json", managerConfig.ConfigurationPath);
         Assert.False(managerConfig.AutoDownload);
     }
-}
-
 }
