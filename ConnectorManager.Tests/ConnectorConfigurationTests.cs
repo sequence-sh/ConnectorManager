@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-using Reductech.EDR.ConnectorManagement.Base;
-using Xunit;
+﻿using Reductech.EDR.ConnectorManagement.Base;
 
 namespace Reductech.EDR.ConnectorManagement.Tests;
 

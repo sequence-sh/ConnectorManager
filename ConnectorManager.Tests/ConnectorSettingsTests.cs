@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Reflection;
 using Moq;
 using System.Text.Json;
 using Reductech.EDR.ConnectorManagement.Base;
-using Xunit;
 
 namespace Reductech.EDR.ConnectorManagement.Tests;
 

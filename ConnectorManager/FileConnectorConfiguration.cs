@@ -1,9 +1,5 @@
-using System.Collections.Generic;
 using System.IO.Abstractions;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Text.Json;
-using Reductech.EDR.ConnectorManagement.Base;
 
 namespace Reductech.EDR.ConnectorManagement;
 

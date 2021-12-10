@@ -1,9 +1,5 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using MELT;
-using Microsoft.Extensions.Logging;
+﻿using MELT;
 using NuGet.Common;
-using Xunit;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace Reductech.EDR.ConnectorManagement.Tests;

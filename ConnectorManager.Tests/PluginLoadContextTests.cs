@@ -1,8 +1,5 @@
 ﻿using System.IO;
-using System.Linq;
 using MELT;
-using Microsoft.Extensions.Logging;
-using Xunit;
 
 namespace Reductech.EDR.ConnectorManagement.Tests;
 
