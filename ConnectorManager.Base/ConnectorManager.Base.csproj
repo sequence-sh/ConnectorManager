@@ -12,9 +12,9 @@
 
   <PropertyGroup>
     <PackageId>Reductech.Sequence.ConnectorManager.Base</PackageId>
-    <Title>Sequence Connector Manager Base</Title>
+    <Title>Sequence® Connector Manager Base</Title>
     <Description>Generic Connector package management.</Description>
-    <Product>Sequence</Product>
+    <Product>Sequence®</Product>
     <PackageTags>ediscovery;forensics;automation;orchestration;edrm;packagemanagement;nuget;connectors</PackageTags>
 
     <PackageProjectUrl>https://gitlab.com/reductech/Sequence/connectormanager</PackageProjectUrl>
