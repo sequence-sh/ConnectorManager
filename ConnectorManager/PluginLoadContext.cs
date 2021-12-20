@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Runtime.Loader;
 using Microsoft.Extensions.Logging;
 
-namespace Reductech.EDR.ConnectorManagement;
+namespace Reductech.Sequence.ConnectorManagement;
 
 /// <summary>
 /// Loads assemblies for connector plugins.

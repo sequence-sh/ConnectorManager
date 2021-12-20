@@ -1,7 +1,8 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Reductech.Sequence.ConnectorManagement.Base;
 
-namespace Reductech.EDR.ConnectorManagement;
+namespace Reductech.Sequence.ConnectorManagement;
 
 /// <summary>
 /// Extension methods for dependency injection using IServiceCollection.

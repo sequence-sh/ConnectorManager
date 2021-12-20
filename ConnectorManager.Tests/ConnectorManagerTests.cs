@@ -2,9 +2,9 @@
 using System.Reflection;
 using MELT;
 using Moq;
-using Reductech.EDR.ConnectorManagement.Base;
+using Reductech.Sequence.ConnectorManagement.Base;
 
-namespace Reductech.EDR.ConnectorManagement.Tests;
+namespace Reductech.Sequence.ConnectorManagement.Tests;
 
 public partial class ConnectorManagerTests
 {
@@ -35,8 +35,8 @@ public partial class ConnectorManagerTests
     [Fact]
     public async Task List_WhenConfigurationIsEmpty_ReturnsEmpty()
     {
-        await _config.RemoveAsync("Reductech.EDR.Connectors.Nuix");
-        await _config.RemoveAsync("Reductech.EDR.Connectors.StructuredData");
+        await _config.RemoveAsync("Reductech.Sequence.Connectors.Nuix");
+        await _config.RemoveAsync("Reductech.Sequence.Connectors.StructuredData");
 
         Assert.Empty(_config);
 
@@ -48,7 +48,7 @@ public partial class ConnectorManagerTests
     [Fact]
     public void List_WhenDllDoesNotExist_WritesErrorAndContinues()
     {
-        const string name    = "Reductech.EDR.Connectors.Nuix";
+        const string name    = "Reductech.Sequence.Connectors.Nuix";
         const string version = "0.9.0";
 
         var path = _fileSystem.Path.Combine(_settings.ConnectorPath, name, version);
@@ -85,7 +85,7 @@ public partial class ConnectorManagerTests
     [Fact]
     public void List_ByDefault_ReturnsConnectorAssemblies()
     {
-        const string name    = "Reductech.EDR.Connectors.Nuix";
+        const string name    = "Reductech.Sequence.Connectors.Nuix";
         const string version = "0.9.0";
         const string filter  = "(?i)nuix";
 
@@ -114,8 +114,8 @@ public partial class ConnectorManagerTests
     {
         var expected = new ConnectorMetadata[]
         {
-            new("Reductech.EDR.Connectors.FileSystem", "0.9.0"),
-            new("Reductech.EDR.Connectors.StructuredData", "0.9.0")
+            new("Reductech.Sequence.Connectors.FileSystem", "0.9.0"),
+            new("Reductech.Sequence.Connectors.StructuredData", "0.9.0")
         };
 
         var connectors = await _manager.Find();
@@ -128,9 +128,9 @@ public partial class ConnectorManagerTests
     {
         var expected = new ConnectorMetadata[]
         {
-            new("Reductech.EDR.Connectors.FileSystem", "0.9.0"),
-            new("Reductech.EDR.Connectors.StructuredData", "0.9.0"),
-            new("Reductech.EDR.Connectors.Nuix", "0.9.0-beta.2")
+            new("Reductech.Sequence.Connectors.FileSystem", "0.9.0"),
+            new("Reductech.Sequence.Connectors.StructuredData", "0.9.0"),
+            new("Reductech.Sequence.Connectors.Nuix", "0.9.0-beta.2")
         };
 
         var connectors = await _manager.Find(prerelease: true);
@@ -143,7 +143,7 @@ public partial class ConnectorManagerTests
     {
         var expected = new ConnectorMetadata[]
         {
-            new("Reductech.EDR.Connectors.FileSystem", "0.9.0")
+            new("Reductech.Sequence.Connectors.FileSystem", "0.9.0")
         };
 
         var connectors = await _manager.Find("File");

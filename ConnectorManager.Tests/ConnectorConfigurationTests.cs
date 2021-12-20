@@ -1,6 +1,6 @@
-﻿using Reductech.EDR.ConnectorManagement.Base;
+﻿using Reductech.Sequence.ConnectorManagement.Base;
 
-namespace Reductech.EDR.ConnectorManagement.Tests;
+namespace Reductech.Sequence.ConnectorManagement.Tests;
 
 public class ConnectorConfigurationTests
 {
@@ -19,7 +19,7 @@ public class ConnectorConfigurationTests
     [Fact]
     public async Task RemoveAsync_RemovesConfiguration()
     {
-        const string name = "Reductech.EDR.Connectors.Nuix";
+        const string name = "Reductech.Sequence.Connectors.Nuix";
 
         var config = new ConnectorConfiguration(Helpers.GetDefaultConnectors());
 

@@ -2,22 +2,22 @@
 using System.IO;
 using System.Threading;
 using NuGet.Packaging;
-using Reductech.EDR.ConnectorManagement.Base;
+using Reductech.Sequence.ConnectorManagement.Base;
 
-namespace Reductech.EDR.ConnectorManagement.Tests;
+namespace Reductech.Sequence.ConnectorManagement.Tests;
 
 public class FakeConnectorRegistry : IConnectorRegistry
 {
     public static readonly IReadOnlyList<ConnectorMetadata> Connectors = new List<ConnectorMetadata>
     {
-        new("Reductech.EDR.Connectors.FileSystem", "0.9.0-a.master.2105052158"),
-        new("Reductech.EDR.Connectors.FileSystem", "0.9.0"),
-        new("Reductech.EDR.Connectors.StructuredData", "0.7.0"),
-        new("Reductech.EDR.Connectors.StructuredData", "0.8.0"),
-        new("Reductech.EDR.Connectors.StructuredData", "0.9.0"),
-        new("Reductech.EDR.Connectors.Nuix", "0.9.0-a.master.2105052200"),
-        new("Reductech.EDR.Connectors.Nuix", "0.9.0-beta.1"),
-        new("Reductech.EDR.Connectors.Nuix", "0.9.0-beta.2")
+        new("Reductech.Sequence.Connectors.FileSystem", "0.9.0-a.master.2105052158"),
+        new("Reductech.Sequence.Connectors.FileSystem", "0.9.0"),
+        new("Reductech.Sequence.Connectors.StructuredData", "0.7.0"),
+        new("Reductech.Sequence.Connectors.StructuredData", "0.8.0"),
+        new("Reductech.Sequence.Connectors.StructuredData", "0.9.0"),
+        new("Reductech.Sequence.Connectors.Nuix", "0.9.0-a.master.2105052200"),
+        new("Reductech.Sequence.Connectors.Nuix", "0.9.0-beta.1"),
+        new("Reductech.Sequence.Connectors.Nuix", "0.9.0-beta.2")
     }.AsReadOnly();
 
     public Task<ICollection<ConnectorMetadata>> Find(
@@ -65,7 +65,7 @@ public class FakeConnectorRegistry : IConnectorRegistry
                 File.OpenRead(
                     Path.Combine(
                         AppContext.BaseDirectory,
-                        "reductech.edr.connectors.filesystem.0.9.0.nupkg"
+                        "Reductech.Sequence.Connectors.filesystem.0.9.0.nupkg"
                     )
                 )
             )

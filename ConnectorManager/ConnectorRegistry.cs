@@ -6,8 +6,9 @@ using NuGet.Packaging;
 using NuGet.Protocol;
 using NuGet.Protocol.Core.Types;
 using NuGet.Versioning;
+using Reductech.Sequence.ConnectorManagement.Base;
 
-namespace Reductech.EDR.ConnectorManagement;
+namespace Reductech.Sequence.ConnectorManagement;
 
 /// <summary>
 /// Connector management using a nuget feed.

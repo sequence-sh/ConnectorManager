@@ -1,7 +1,7 @@
 /label ~feature
 /label ~"wf::backlog"
 /label ~"area::release/packaging"
-/label ~edr
+/label ~sequence
 
 ## Story
 
@@ -14,7 +14,7 @@ and without providing implementation specifics, describe the following:
 
 ---
 
-> Everything below here is **optional**.
+> Everything below here is **optional**.\f
 > It can be added later, once the feature is in planning or design.
 
 ## Implementation Details
@@ -62,7 +62,7 @@ Example:
 ## Help
 
 - [Issues and User Stories](https://gitlab.com/reductech/kb/-/wikis/Development/Issues-and-User-Stories)
-- [Roles](https://gitlab.com/reductech/kb/-/wikis/Development/Issues-and-User-Stories#roles-for-edr-and-flow)
+- [Roles](https://gitlab.com/reductech/kb/-/wikis/Development/Issues-and-User-Stories#roles)
 - [Done Criteria](https://gitlab.com/reductech/kb/-/wikis/Development/Issues-and-User-Stories#done-criteria)
 - [Feature Labels](https://gitlab.com/reductech/kb/-/wikis/Development/Labels#features-a9cab9)
 

@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Reductech.EDR.ConnectorManagement;
+namespace Reductech.Sequence.ConnectorManagement;
 
 /// <summary>
 /// Settings for the connector manager.
@@ -10,7 +10,7 @@ public record ConnectorManagerSettings
     /// <summary>
     /// appsettings.json section key that contains the settings
     /// </summary>
-    public const string Key = "edr";
+    public const string Key = "sequence";
 
     /// <summary>
     /// Default settings for the connector manager.

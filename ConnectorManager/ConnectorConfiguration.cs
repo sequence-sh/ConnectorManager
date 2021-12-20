@@ -1,4 +1,6 @@
-﻿namespace Reductech.EDR.ConnectorManagement;
+﻿using Reductech.Sequence.ConnectorManagement.Base;
+
+namespace Reductech.Sequence.ConnectorManagement;
 
 /// <summary>
 /// A ConnectorConfiguration that uses an in-memory dictionary as the backing store.

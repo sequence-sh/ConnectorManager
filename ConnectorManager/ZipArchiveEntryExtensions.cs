@@ -2,7 +2,7 @@
 using System.IO.Abstractions;
 using System.IO.Compression;
 
-namespace Reductech.EDR.ConnectorManagement;
+namespace Reductech.Sequence.ConnectorManagement;
 
 /// <summary>
 /// Modified from

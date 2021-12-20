@@ -1,4 +1,6 @@
-﻿namespace Reductech.EDR.ConnectorManagement;
+﻿using Reductech.Sequence.ConnectorManagement.Base;
+
+namespace Reductech.Sequence.ConnectorManagement;
 
 /// <summary>
 /// A way of managing connector configurations.

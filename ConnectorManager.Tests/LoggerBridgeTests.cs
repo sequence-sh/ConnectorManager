@@ -2,7 +2,7 @@
 using NuGet.Common;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
-namespace Reductech.EDR.ConnectorManagement.Tests;
+namespace Reductech.Sequence.ConnectorManagement.Tests;
 
 public class LoggerBridgeTests
 {

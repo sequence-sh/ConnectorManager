@@ -4,9 +4,9 @@ using System.IO.Abstractions.TestingHelpers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Reductech.EDR.ConnectorManagement.Base;
+using Reductech.Sequence.ConnectorManagement.Base;
 
-namespace Reductech.EDR.ConnectorManagement.Tests;
+namespace Reductech.Sequence.ConnectorManagement.Tests;
 
 public class ServiceCollectionExtensions
 {
@@ -57,7 +57,7 @@ public class ServiceCollectionExtensions
     ""uri"": ""https://registry/packages/index.json"",
     ""user"": ""connectoruser""
   },
-  ""edr"": {
+  ""sequence"": {
     ""connectorPath"": ""c:\\connectors"",
     ""configurationPath"": ""c:\\connectors\\connectors.json"",
     ""autoDownload"": false

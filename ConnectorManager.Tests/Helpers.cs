@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Reductech.EDR.ConnectorManagement.Base;
+using Reductech.Sequence.ConnectorManagement.Base;
 
-namespace Reductech.EDR.ConnectorManagement.Tests;
+namespace Reductech.Sequence.ConnectorManagement.Tests;
 
 internal static class Helpers
 {
@@ -20,18 +20,18 @@ internal static class Helpers
     };
 
     internal static readonly string InstalledConnectorPath =
-        @"connectors\Reductech.EDR.Connectors.FileSystem\0.9.0";
+        @"connectors\Reductech.Sequence.Connectors.FileSystem\0.9.0";
 
     internal static readonly string[] InstalledConnectorExpectedFiles =
     {
-        "x64\\additional.dll", "content.txt", "Reductech.EDR.Connectors.FileSystem.dll",
-        "Reductech.EDR.Connectors.FileSystem.xml", "System.IO.Abstractions.dll"
+        "x64\\additional.dll", "content.txt", "Reductech.Sequence.Connectors.FileSystem.dll",
+        "Reductech.Sequence.Connectors.FileSystem.xml", "System.IO.Abstractions.dll"
     };
 
     internal const string TestConfiguration = @"
 {
-  ""Reductech.EDR.Connectors.Nuix"": {
-    ""id"": ""Reductech.EDR.Connectors.Nuix"",
+  ""Reductech.Sequence.Connectors.Nuix"": {
+    ""id"": ""Reductech.Sequence.Connectors.Nuix"",
     ""version"": ""0.9.0"",
     ""enabled"": true,
     ""settings"": {
@@ -44,16 +44,16 @@ internal static class Helpers
       ]
     }
   },
-  ""Reductech.EDR.Connectors.FileSystem"": {
-    ""id"": ""Reductech.EDR.Connectors.FileSystem"",
+  ""Reductech.Sequence.Connectors.FileSystem"": {
+    ""id"": ""Reductech.Sequence.Connectors.FileSystem"",
     ""version"": ""0.9.0""
   },
-  ""Reductech.EDR.Connectors.StructuredData"": {
-    ""id"": ""Reductech.EDR.Connectors.StructuredData"",
+  ""Reductech.Sequence.Connectors.StructuredData"": {
+    ""id"": ""Reductech.Sequence.Connectors.StructuredData"",
     ""version"": ""0.9.0""
   },
   ""StructuredData - disabled"": {
-    ""id"": ""Reductech.EDR.Connectors.StructuredData"",
+    ""id"": ""Reductech.Sequence.Connectors.StructuredData"",
     ""version"": ""0.8.0"",
     ""enable"": false
   }
@@ -62,14 +62,14 @@ internal static class Helpers
     internal static Dictionary<string, ConnectorSettings> GetDefaultConnectors() => new()
     {
         {
-            "Reductech.EDR.Connectors.Nuix",
-            new ConnectorSettings { Id = "Reductech.EDR.Connectors.Nuix", Version = "0.9.0" }
+            "Reductech.Sequence.Connectors.Nuix",
+            new ConnectorSettings { Id = "Reductech.Sequence.Connectors.Nuix", Version = "0.9.0" }
         },
         {
-            "Reductech.EDR.Connectors.StructuredData",
+            "Reductech.Sequence.Connectors.StructuredData",
             new ConnectorSettings
             {
-                Id = "Reductech.EDR.Connectors.StructuredData", Version = "0.8.0"
+                Id = "Reductech.Sequence.Connectors.StructuredData", Version = "0.8.0"
             }
         }
     };

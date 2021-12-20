@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace Reductech.EDR.ConnectorManagement.Base;
+namespace Reductech.Sequence.ConnectorManagement.Base;
 
 /// <summary>
 /// Connector assembly and associated settings.

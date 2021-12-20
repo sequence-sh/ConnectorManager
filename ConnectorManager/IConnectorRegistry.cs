@@ -1,4 +1,6 @@
-﻿namespace Reductech.EDR.ConnectorManagement;
+﻿using Reductech.Sequence.ConnectorManagement.Base;
+
+namespace Reductech.Sequence.ConnectorManagement;
 
 /// <summary>
 /// Represents a way of interacting with a remote connector registry / nuget feed.

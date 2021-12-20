@@ -3,8 +3,9 @@ using System.IO.Abstractions;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
+using Reductech.Sequence.ConnectorManagement.Base;
 
-namespace Reductech.EDR.ConnectorManagement;
+namespace Reductech.Sequence.ConnectorManagement;
 
 /// <inheritdoc />
 public class ConnectorManager : IConnectorManager
