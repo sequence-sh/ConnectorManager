@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
-using Moq;
 using System.Text.Json;
-using Reductech.EDR.ConnectorManagement.Base;
+using Moq;
+using Reductech.Sequence.ConnectorManagement.Base;
 
-namespace Reductech.EDR.ConnectorManagement.Tests;
+namespace Reductech.Sequence.ConnectorManagement.Tests;
 
 public class ConnectorSettingsTests
 {
@@ -55,7 +55,7 @@ public class ConnectorSettingsTests
                 Helpers.TestConfiguration
             )!;
 
-        var nuixSettings = settings["Reductech.EDR.Connectors.Nuix"];
+        var nuixSettings = settings["Reductech.Sequence.Connectors.Nuix"];
 
         Assert.NotNull(nuixSettings.Settings);
         Assert.Equal("dongle", nuixSettings.Settings!["licencesourcetype"].ToString());

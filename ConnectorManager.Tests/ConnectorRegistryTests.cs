@@ -1,9 +1,9 @@
 ﻿using System.Data;
 using System.Threading;
 using MELT;
-using Reductech.EDR.ConnectorManagement.Base;
+using Reductech.Sequence.ConnectorManagement.Base;
 
-namespace Reductech.EDR.ConnectorManagement.Tests;
+namespace Reductech.Sequence.ConnectorManagement.Tests;
 
 public class ConnectorRegistryTests
 {
@@ -24,8 +24,8 @@ public class ConnectorRegistryTests
     {
         var expected = new ConnectorMetadata[]
         {
-            new("Reductech.EDR.Connectors.FileSystem", "0.9.0"),
-            new("Reductech.EDR.Connectors.StructuredData", "0.9.0")
+            new("Reductech.Sequence.Connectors.FileSystem", "0.9.0"),
+            new("Reductech.Sequence.Connectors.StructuredData", "0.9.0")
         };
 
         var found = await _registry.Find("", false, CancellationToken.None);
@@ -40,9 +40,9 @@ public class ConnectorRegistryTests
     {
         var expected = new ConnectorMetadata[]
         {
-            new("Reductech.EDR.Connectors.FileSystem", "0.9.0"),
-            new("Reductech.EDR.Connectors.Nuix", "0.9.0-beta.2"),
-            new("Reductech.EDR.Connectors.StructuredData", "0.9.0")
+            new("Reductech.Sequence.Connectors.FileSystem", "0.9.0"),
+            new("Reductech.Sequence.Connectors.Nuix", "0.9.0-beta.2"),
+            new("Reductech.Sequence.Connectors.StructuredData", "0.9.0")
         };
 
         var found = await _registry.Find("", true, CancellationToken.None);
@@ -53,8 +53,8 @@ public class ConnectorRegistryTests
 
     [Theory]
     [Trait("Category", "Integration")]
-    [InlineData("Reductech.EDR.Connectors.FileSystem",   true)]
-    [InlineData("Reductech.EDR.Connectors.DoesNotExist", false)]
+    [InlineData("Reductech.Sequence.Connectors.FileSystem",   true)]
+    [InlineData("Reductech.Sequence.Connectors.DoesNotExist", false)]
     public async Task Exists_NoVersionSpecified(string name, bool expected)
     {
         var exists = await _registry.Exists(name);
@@ -63,11 +63,11 @@ public class ConnectorRegistryTests
 
     [Theory]
     [Trait("Category", "Integration")]
-    [InlineData("Reductech.EDR.Connectors.FileSystem",   "0.9.0",                     true)]
-    [InlineData("Reductech.EDR.Connectors.FileSystem",   "0.9.0-a.master.2105052158", true)]
-    [InlineData("Reductech.EDR.Connectors.Nuix",         "0.9.0-beta.1",              true)]
-    [InlineData("Reductech.EDR.Connectors.FileSystem",   "0.8.0",                     false)]
-    [InlineData("Reductech.EDR.Connectors.DoesNotExist", "0.9.0-beta.1",              false)]
+    [InlineData("Reductech.Sequence.Connectors.FileSystem",   "0.9.0",                     true)]
+    [InlineData("Reductech.Sequence.Connectors.FileSystem",   "0.9.0-a.master.2105052158", true)]
+    [InlineData("Reductech.Sequence.Connectors.Nuix",         "0.9.0-beta.1",              true)]
+    [InlineData("Reductech.Sequence.Connectors.FileSystem",   "0.8.0",                     false)]
+    [InlineData("Reductech.Sequence.Connectors.DoesNotExist", "0.9.0-beta.1",              false)]
     public async Task Exists_WithVersion(string name, string version, bool expected)
     {
         var exists = await _registry.Exists(name, version);
@@ -76,10 +76,13 @@ public class ConnectorRegistryTests
 
     [Theory]
     [Trait("Category", "Integration")]
-    [InlineData("Reductech.EDR.Connectors.DoesNotExist",   new string[] { })]
-    [InlineData("Reductech.EDR.Connectors.FileSystem",     new[] { "0.9.0" })]
-    [InlineData("Reductech.EDR.Connectors.Nuix",           new string[] { })]
-    [InlineData("Reductech.EDR.Connectors.StructuredData", new[] { "0.7.0", "0.8.0", "0.9.0" })]
+    [InlineData("Reductech.Sequence.Connectors.DoesNotExist", new string[] { })]
+    [InlineData("Reductech.Sequence.Connectors.FileSystem",   new[] { "0.9.0" })]
+    [InlineData("Reductech.Sequence.Connectors.Nuix",         new string[] { })]
+    [InlineData(
+        "Reductech.Sequence.Connectors.StructuredData",
+        new[] { "0.7.0", "0.8.0", "0.9.0" }
+    )]
     public async Task GetVersion_WhenPrereleaseIsFalse_ReturnsOnlyMajorVersion(
         string name,
         string[] expected)
@@ -90,16 +93,19 @@ public class ConnectorRegistryTests
 
     [Theory]
     [Trait("Category", "Integration")]
-    [InlineData("Reductech.EDR.Connectors.DoesNotExist", new string[] { })]
+    [InlineData("Reductech.Sequence.Connectors.DoesNotExist", new string[] { })]
     [InlineData(
-        "Reductech.EDR.Connectors.FileSystem",
+        "Reductech.Sequence.Connectors.FileSystem",
         new[] { "0.9.0-a.master.2105052158", "0.9.0" }
     )]
     [InlineData(
-        "Reductech.EDR.Connectors.Nuix",
+        "Reductech.Sequence.Connectors.Nuix",
         new[] { "0.9.0-a.master.2105052200", "0.9.0-beta.1", "0.9.0-beta.2" }
     )]
-    [InlineData("Reductech.EDR.Connectors.StructuredData", new[] { "0.7.0", "0.8.0", "0.9.0" })]
+    [InlineData(
+        "Reductech.Sequence.Connectors.StructuredData",
+        new[] { "0.7.0", "0.8.0", "0.9.0" }
+    )]
     public async Task GetVersion_WhenPrereleaseIsTrue_ReturnsMajorAndPrereleaseVersions(
         string name,
         string[] expected)
@@ -125,7 +131,7 @@ public class ConnectorRegistryTests
     [Trait("Category", "Integration")]
     public async Task GetConnectorPackage_WhenConnectorNotFound_Throws()
     {
-        const string id      = "Reductech.EDR.Connectors.Nuix";
+        const string id      = "Reductech.Sequence.Connectors.Nuix";
         const string version = "0.5.0";
 
         var error = await Assert.ThrowsAsync<ArgumentException>(
@@ -139,7 +145,7 @@ public class ConnectorRegistryTests
     [Trait("Category", "Integration")]
     public async Task GetConnectorPackage_ReturnsConnectorPackage()
     {
-        const string id      = "Reductech.EDR.Connectors.Nuix";
+        const string id      = "Reductech.Sequence.Connectors.Nuix";
         const string version = "0.9.0-beta.1";
 
         using var package = await _registry.GetConnectorPackage(id, version);
@@ -156,8 +162,8 @@ public class ConnectorRegistryTests
     [Trait("Category", "Integration")]
     public async Task GetConnectorPackage_WhenIdIsLowerCase_ReturnsConnectorPackageWithCorrectId()
     {
-        const string id              = "reductech.edr.connectors.nuix";
-        const string expectedId      = "Reductech.EDR.Connectors.Nuix";
+        const string id              = "Reductech.Sequence.Connectors.nuix";
+        const string expectedId      = "Reductech.Sequence.Connectors.Nuix";
         const string version         = "0.9.0-BETA.1";
         const string expectedVersion = "0.9.0-beta.1";
 

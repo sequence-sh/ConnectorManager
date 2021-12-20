@@ -5,12 +5,12 @@
     <IsPackable>false</IsPackable>
     <IsPublishable>false</IsPublishable>
     <IsTestProject>true</IsTestProject>
-    <RootNamespace>Reductech.EDR.ConnectorManagement.Tests</RootNamespace>
+    <RootNamespace>Reductech.Sequence.ConnectorManagement.Tests</RootNamespace>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup>
-    <RepositoryUrl>https://gitlab.com/reductech/edr/connectormanager</RepositoryUrl>
+    <RepositoryUrl>https://gitlab.com/reductech/sequence/connectormanager</RepositoryUrl>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <Authors>Reductech</Authors>
     <Company>Reductech</Company>
@@ -44,7 +44,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="reductech.edr.connectors.filesystem.0.9.0.nupkg">
+    <None Update="reductech.sequence.connectors.filesystem.0.9.0.nupkg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="ExampleConnector\ExampleConnector.dll">

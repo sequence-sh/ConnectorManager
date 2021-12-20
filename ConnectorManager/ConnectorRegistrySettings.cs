@@ -1,4 +1,4 @@
-﻿namespace Reductech.EDR.ConnectorManagement;
+﻿namespace Reductech.Sequence.ConnectorManagement;
 
 /// <summary>
 /// Settings for the default Reductech connector registry.

@@ -1,6 +1,6 @@
-﻿using Reductech.EDR.ConnectorManagement.Base;
+﻿using Reductech.Sequence.ConnectorManagement.Base;
 
-namespace Reductech.EDR.ConnectorManagement.Tests;
+namespace Reductech.Sequence.ConnectorManagement.Tests;
 
 public class ConnectorDataTests
 {

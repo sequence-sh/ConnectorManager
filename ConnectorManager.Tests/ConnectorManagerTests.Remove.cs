@@ -1,4 +1,4 @@
-﻿namespace Reductech.EDR.ConnectorManagement.Tests;
+﻿namespace Reductech.Sequence.ConnectorManagement.Tests;
 
 public partial class ConnectorManagerTests
 {
@@ -23,7 +23,7 @@ public partial class ConnectorManagerTests
     [Fact]
     public async Task Remove_WhenConnectorDirectoryNotFound_WritesWarningAndRemovesConfiguration()
     {
-        const string name = "Reductech.EDR.Connectors.StructuredData";
+        const string name = "Reductech.Sequence.Connectors.StructuredData";
 
         var expectedPath = _fileSystem.Path.Combine(
             _settings.ConnectorPath,
@@ -47,7 +47,7 @@ public partial class ConnectorManagerTests
     [Fact]
     public async Task Remove_WhenConfigurationOnlyIsTrue_RemovesConfiguration()
     {
-        const string name = "Reductech.EDR.Connectors.StructuredData";
+        const string name = "Reductech.Sequence.Connectors.StructuredData";
 
         var path = _fileSystem.Path.Combine(
             _settings.ConnectorPath,

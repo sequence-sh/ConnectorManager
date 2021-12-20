@@ -2,13 +2,13 @@ using System.Collections.Generic;
 using System.IO.Abstractions.TestingHelpers;
 using System.Text.RegularExpressions;
 using System.Threading;
-using Reductech.EDR.ConnectorManagement.Base;
+using Reductech.Sequence.ConnectorManagement.Base;
 
-namespace Reductech.EDR.ConnectorManagement.Tests;
+namespace Reductech.Sequence.ConnectorManagement.Tests;
 
 public class FileConnectorConfigurationTests
 {
-    private const string ConnectorName = "Reductech.EDR.Connectors.FileSystem";
+    private const string ConnectorName = "Reductech.Sequence.Connectors.FileSystem";
 
     private static (IConnectorConfiguration, MockFileSystem) GetConfig(
         string file = Helpers.ConfigurationPath,
@@ -41,7 +41,7 @@ public class FileConnectorConfigurationTests
     {
         var (config, _) = GetConfig();
         Assert.Equal(4, config.Keys.Count);
-        Assert.Equal(3, config.Keys.Count(k => Regex.IsMatch(k, "^Reductech.EDR.Connectors")));
+        Assert.Equal(3, config.Keys.Count(k => Regex.IsMatch(k, "^Reductech.Sequence.Connectors")));
         Assert.Equal(1, config.Keys.Count(k => Regex.IsMatch(k, "disabled")));
     }
 
@@ -53,7 +53,7 @@ public class FileConnectorConfigurationTests
 
         Assert.Equal(
             4,
-            config.Settings.Count(s => Regex.IsMatch(s.Id, "^Reductech.EDR.Connectors"))
+            config.Settings.Count(s => Regex.IsMatch(s.Id, "^Reductech.Sequence.Connectors"))
         );
 
         Assert.Equal(1, config.Settings.Count(s => !s.Enable));
@@ -66,8 +66,8 @@ public class FileConnectorConfigurationTests
     public async Task AddAsync_AddsConfigFile()
     {
         const string initialConfig = @"{
-  ""Reductech.EDR.Connectors.StructuredData"": {
-    ""id"": ""Reductech.EDR.Connectors.StructuredData"",
+  ""Reductech.Sequence.Connectors.StructuredData"": {
+    ""id"": ""Reductech.Sequence.Connectors.StructuredData"",
     ""version"": ""0.9.0""
   }
 }";
@@ -121,12 +121,12 @@ public class FileConnectorConfigurationTests
     }
 
     [Theory]
-    [InlineData("DoesNotExist",                            "0.8.0", false)]
-    [InlineData(ConnectorName,                             "0.9.0", true)]
-    [InlineData(ConnectorName,                             "0.5.0", false)]
-    [InlineData("Reductech.EDR.Connectors.StructuredData", "0.9.0", true)]
-    [InlineData("Reductech.EDR.Connectors.StructuredData", "0.8.0", true)]
-    [InlineData("StructuredData - disabled",               "0.8.0", false)]
+    [InlineData("DoesNotExist",                                 "0.8.0", false)]
+    [InlineData(ConnectorName,                                  "0.9.0", true)]
+    [InlineData(ConnectorName,                                  "0.5.0", false)]
+    [InlineData("Reductech.Sequence.Connectors.StructuredData", "0.9.0", true)]
+    [InlineData("Reductech.Sequence.Connectors.StructuredData", "0.8.0", true)]
+    [InlineData("StructuredData - disabled",                    "0.8.0", false)]
     public void ContainsVersionString_ChecksConnectorIdAndVersion(
         string id,
         string version,
@@ -160,7 +160,7 @@ public class FileConnectorConfigurationTests
         var (config, _) = GetConfig();
 
         var success = config.TryGetSettingsById(
-            "Reductech.EDR.Connectors.StructuredData",
+            "Reductech.Sequence.Connectors.StructuredData",
             out var settings
         );
 

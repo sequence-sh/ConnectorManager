@@ -1,4 +1,6 @@
-namespace Reductech.EDR.ConnectorManagement;
+using Reductech.Sequence.ConnectorManagement.Base;
+
+namespace Reductech.Sequence.ConnectorManagement;
 
 /// <inheritdoc />
 public abstract class ConnectorConfigurationBase : IConnectorConfiguration

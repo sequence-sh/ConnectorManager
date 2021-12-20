@@ -4,22 +4,22 @@
     <TargetFramework>net6.0</TargetFramework>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <RootNamespace>Reductech.EDR.ConnectorManagement.Base</RootNamespace>
-    <AssemblyName>Reductech.EDR.ConnectorManagement.Base</AssemblyName>
+    <RootNamespace>Reductech.Sequence.ConnectorManagement.Base</RootNamespace>
+    <AssemblyName>Reductech.Sequence.ConnectorManagement.Base</AssemblyName>
     <Nullable>enable</Nullable>
     <Version>0.6.0$(VersionSuffix)</Version>
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageId>Reductech.EDR.ConnectorManager.Base</PackageId>
-    <Title>EDR Connector Manager Base</Title>
+    <PackageId>Reductech.Sequence.ConnectorManager.Base</PackageId>
+    <Title>Sequence Connector Manager Base</Title>
     <Description>Generic Connector package management.</Description>
-    <Product>EDR</Product>
+    <Product>Sequence</Product>
     <PackageTags>ediscovery;forensics;automation;orchestration;edrm;packagemanagement;nuget;connectors</PackageTags>
 
-    <PackageProjectUrl>https://gitlab.com/reductech/edr/connectormanager</PackageProjectUrl>
-    <RepositoryUrl>https://gitlab.com/reductech/edr/connectormanager</RepositoryUrl>
-    <PackageReleaseNotes>https://gitlab.com/reductech/edr/connectormanager/-/blob/master/CHANGELOG.md</PackageReleaseNotes>
+    <PackageProjectUrl>https://gitlab.com/reductech/Sequence/connectormanager</PackageProjectUrl>
+    <RepositoryUrl>https://gitlab.com/reductech/Sequence/connectormanager</RepositoryUrl>
+    <PackageReleaseNotes>https://gitlab.com/reductech/Sequence/connectormanager/-/blob/master/CHANGELOG.md</PackageReleaseNotes>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     
     <Authors>Reductech</Authors>

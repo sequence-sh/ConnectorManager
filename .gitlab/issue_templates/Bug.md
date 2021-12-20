@@ -3,7 +3,7 @@
 /label ~"priority::3"
 /label ~"wf::backlog"
 /label ~"area::release/packaging"
-/label ~edr
+/label ~sequence
 
 ## Summary
 

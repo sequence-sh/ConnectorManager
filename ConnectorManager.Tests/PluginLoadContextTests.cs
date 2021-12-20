@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using MELT;
 
-namespace Reductech.EDR.ConnectorManagement.Tests;
+namespace Reductech.Sequence.ConnectorManagement.Tests;
 
 public class PluginLoadContextTests
 {

@@ -1,4 +1,4 @@
-﻿namespace Reductech.EDR.ConnectorManagement.Tests;
+﻿namespace Reductech.Sequence.ConnectorManagement.Tests;
 
 public partial class ConnectorManagerTests
 {
@@ -27,7 +27,7 @@ public partial class ConnectorManagerTests
 
             _fileSystem.AddDirectory(dir);
 
-            if (c.Id.Equals("Reductech.EDR.Connectors.StructuredData"))
+            if (c.Id.Equals("Reductech.Sequence.Connectors.StructuredData"))
             {
                 var dll = _fileSystem.Path.Combine(dir, $"{c.Id}.dll");
                 _fileSystem.AddFile(dll, "");
@@ -42,13 +42,13 @@ public partial class ConnectorManagerTests
     [Fact]
     public async Task Verify_WhenDirectoryDoesNotExistAndAutoDownloadIsFalse_ReturnsFalse()
     {
-        var exists = _config["Reductech.EDR.Connectors.StructuredData"];
+        var exists = _config["Reductech.Sequence.Connectors.StructuredData"];
         var dir    = _fileSystem.Path.Combine(_settings.ConnectorPath, exists.Id, exists.Version);
         _fileSystem.AddDirectory(dir);
         var dll = _fileSystem.Path.Combine(dir, $"{exists.Id}.dll");
         _fileSystem.AddFile(dll, "");
 
-        var missing = _config["Reductech.EDR.Connectors.Nuix"];
+        var missing = _config["Reductech.Sequence.Connectors.Nuix"];
 
         var missingDir = _fileSystem.Path.Combine(
             _settings.ConnectorPath,
@@ -79,7 +79,7 @@ public partial class ConnectorManagerTests
         );
     }
 
-    [Fact]
+    [Fact(Skip = Skip)]
     public async Task
         Verify_WhenDirectoryDoesNotExistAndInstallMissingIsTrue_InstallsConnectorAndReturnsTrue()
     {
@@ -93,7 +93,7 @@ public partial class ConnectorManagerTests
                 _settings.ConnectorPath,
                 c.Id,
                 c.Version,
-                "Reductech.EDR.Connectors.FileSystem.dll"
+                "Reductech.Sequence.Connectors.FileSystem.dll"
             );
 
             Assert.Contains(dll, _fileSystem.AllFiles);
