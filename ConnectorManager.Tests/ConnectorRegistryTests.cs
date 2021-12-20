@@ -7,6 +7,8 @@ namespace Reductech.Sequence.ConnectorManagement.Tests;
 
 public class ConnectorRegistryTests
 {
+    public const string Skip = "Temporary";
+
     private readonly ILoggerFactory _loggerFactory;
     private readonly ILogger<ConnectorRegistry> _logger;
     private readonly ConnectorRegistry _registry;
@@ -18,7 +20,7 @@ public class ConnectorRegistryTests
         _registry      = new ConnectorRegistry(_logger, Helpers.IntegrationRegistrySettings);
     }
 
-    [Fact]
+    [Fact(Skip = Skip)]
     [Trait("Category", "Integration")]
     public async Task Find_ByDefault_ReturnsLatestMajorVersionOnly()
     {
@@ -34,7 +36,7 @@ public class ConnectorRegistryTests
         Assert.Equal(expected, found);
     }
 
-    [Fact]
+    [Fact(Skip = Skip)]
     [Trait("Category", "Integration")]
     public async Task Find_WhenPrereleaseIsTrue_ReturnsAllLatestVersions()
     {
@@ -51,7 +53,7 @@ public class ConnectorRegistryTests
         Assert.Equal(found, expected);
     }
 
-    [Theory]
+    [Theory(Skip = Skip)]
     [Trait("Category", "Integration")]
     [InlineData("Reductech.Sequence.Connectors.FileSystem",   true)]
     [InlineData("Reductech.Sequence.Connectors.DoesNotExist", false)]
@@ -61,7 +63,7 @@ public class ConnectorRegistryTests
         Assert.Equal(expected, exists);
     }
 
-    [Theory]
+    [Theory(Skip = Skip)]
     [Trait("Category", "Integration")]
     [InlineData("Reductech.Sequence.Connectors.FileSystem",   "0.9.0",                     true)]
     [InlineData("Reductech.Sequence.Connectors.FileSystem",   "0.9.0-a.master.2105052158", true)]
@@ -74,7 +76,7 @@ public class ConnectorRegistryTests
         Assert.Equal(expected, exists);
     }
 
-    [Theory]
+    [Theory(Skip = Skip)]
     [Trait("Category", "Integration")]
     [InlineData("Reductech.Sequence.Connectors.DoesNotExist", new string[] { })]
     [InlineData("Reductech.Sequence.Connectors.FileSystem",   new[] { "0.9.0" })]
@@ -91,7 +93,7 @@ public class ConnectorRegistryTests
         Assert.Equal(expected, exists);
     }
 
-    [Theory]
+    [Theory(Skip = Skip)]
     [Trait("Category", "Integration")]
     [InlineData("Reductech.Sequence.Connectors.DoesNotExist", new string[] { })]
     [InlineData(
@@ -114,7 +116,7 @@ public class ConnectorRegistryTests
         Assert.Equal(expected, exists);
     }
 
-    [Fact]
+    [Fact(Skip = Skip)]
     [Trait("Category", "Integration")]
     public async Task GetConnectorPackage_WhenVersionCantBeParsed_Throws()
     {
@@ -127,7 +129,7 @@ public class ConnectorRegistryTests
         Assert.Equal($"Could not parse version: {version}", error.Message);
     }
 
-    [Fact]
+    [Fact(Skip = Skip)]
     [Trait("Category", "Integration")]
     public async Task GetConnectorPackage_WhenConnectorNotFound_Throws()
     {
@@ -141,7 +143,7 @@ public class ConnectorRegistryTests
         Assert.Equal($"Can't find connector {id} ({version})", error.Message);
     }
 
-    [Fact]
+    [Fact(Skip = Skip)]
     [Trait("Category", "Integration")]
     public async Task GetConnectorPackage_ReturnsConnectorPackage()
     {
@@ -158,7 +160,7 @@ public class ConnectorRegistryTests
         Assert.Equal(14, files.Count());
     }
 
-    [Fact]
+    [Fact(Skip = Skip)]
     [Trait("Category", "Integration")]
     public async Task GetConnectorPackage_WhenIdIsLowerCase_ReturnsConnectorPackageWithCorrectId()
     {
