@@ -1,4 +1,4 @@
-# Connector Manager
+# Sequence® Connector Manager
 
 A plugins management system for [Sequence Connectors](https://gitlab.com/reductech/sequence/connectors).
 
