@@ -1,3 +1,27 @@
+# v0.6.0 (2022-01-16)
+
+EDR is now Sequence. The following has changed:
+
+- The GitLab group has moved to https://gitlab.com/reductech/sequence
+- The root namespace is now `Reductech.Sequence`
+- The documentation site has moved to https://sequence.sh
+
+Everything else is still the same - automation, simplified.
+
+The project has now been updated to use .NET 6.
+
+## Issues Closed in this Release
+
+### Bug Fixes
+
+- Connector manager should flatten paths when installing #30
+
+### Maintenance
+
+- Rename EDR to Sequence #31
+- Use dotnet 6 #29
+- Add all connectors if connector data is null #27
+
 # v0.5.1 (2021-11-29)
 
 Bug fix release.
@@ -71,5 +95,6 @@ Initial release of the Connector Manager which provides functionality to:
 - Add ability to get assembly settings tuples #2
 - Add unit tests for connector manager #4
 - Add implementation of nuget logger #3
+
 
 
