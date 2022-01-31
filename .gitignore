@@ -378,4 +378,4 @@ nupkg/
 **/StrykerOutput/
 version.env
 
-!ConnectorManager.Tests/reductech.edr.connectors.filesystem.0.9.0.nupkg
+!ConnectorManager.Tests/reductech.sequence.connectors.filesystem.0.13.0.nupkg
