@@ -44,7 +44,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="reductech.sequence.connectors.filesystem.0.9.0.nupkg">
+    <None Update="reductech.sequence.connectors.filesystem.0.13.0.nupkg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="ExampleConnector\ExampleConnector.dll">
