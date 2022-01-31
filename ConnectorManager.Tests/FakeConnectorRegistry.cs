@@ -65,7 +65,7 @@ public class FakeConnectorRegistry : IConnectorRegistry
                 File.OpenRead(
                     Path.Combine(
                         AppContext.BaseDirectory,
-                        "Reductech.Sequence.Connectors.filesystem.0.13.0.nupkg"
+                        "reductech.sequence.connectors.filesystem.0.13.0.nupkg"
                     )
                 )
             )
