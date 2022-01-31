@@ -14,7 +14,7 @@ The connector manager is set up to work with this registry by default.
 {
   "Reductech.Sequence.Connectors.Nuix": {
     "id": "Reductech.Sequence.Connectors.Nuix",
-    "version": "0.9.0",
+    "version": "0.13.0",
     "settings": {
       "exeConsolePath": "C:\\Program Files\\Nuix\\Nuix 9.0\\nuix_console.exe",
       "licencesourcetype": "dongle",
@@ -31,16 +31,15 @@ The connector manager is set up to work with this registry by default.
   },
   "Reductech.Sequence.Connectors.FileSystem": {
     "id": "Reductech.Sequence.Connectors.FileSystem",
-    "version": "0.9.0"
+    "version": "0.13.0"
   },
   "data": {
     "id": "Reductech.Sequence.Connectors.StructuredData",
-    "version": "0.9.0",
+    "version": "0.13.0",
     "enabled": false
   }
 }
 ```
-
 
 # Packaging Projects as Connectors
 
@@ -74,7 +73,7 @@ dotnet pack --configuration Release --version-suffix "-alpha.1" -p:PackConnector
 Everything in these nuget package directories will be extracted to the connector's
 root directory, preserving any subdirectories:
 
-- `lib/net5.0/`
+- `lib/net6.0/`
 - `contentFiles/any/any/`
 
 All other files will be extracted to their respective paths.
