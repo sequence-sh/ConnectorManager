@@ -24,7 +24,7 @@ public class ConnectorRegistryTests
     {
         var expected = new ConnectorMetadata[]
         {
-            new("Reductech.Sequence.Connectors.FileSystem", "0.9.0"),
+            new("Reductech.Sequence.Connectors.FileSystem", "0.13.0"),
             new("Reductech.Sequence.Connectors.StructuredData", "0.9.0")
         };
 
@@ -40,8 +40,8 @@ public class ConnectorRegistryTests
     {
         var expected = new ConnectorMetadata[]
         {
-            new("Reductech.Sequence.Connectors.FileSystem", "0.9.0"),
-            new("Reductech.Sequence.Connectors.Nuix", "0.9.0-beta.2"),
+            new("Reductech.Sequence.Connectors.FileSystem", "0.13.0"),
+            new("Reductech.Sequence.Connectors.Nuix", "0.14.0-beta.2"),
             new("Reductech.Sequence.Connectors.StructuredData", "0.9.0")
         };
 
@@ -63,11 +63,11 @@ public class ConnectorRegistryTests
 
     [Theory]
     [Trait("Category", "Integration")]
-    [InlineData("Reductech.Sequence.Connectors.FileSystem",   "0.9.0",                     true)]
-    [InlineData("Reductech.Sequence.Connectors.FileSystem",   "0.9.0-a.master.2105052158", true)]
-    [InlineData("Reductech.Sequence.Connectors.Nuix",         "0.9.0-beta.1",              true)]
-    [InlineData("Reductech.Sequence.Connectors.FileSystem",   "0.8.0",                     false)]
-    [InlineData("Reductech.Sequence.Connectors.DoesNotExist", "0.9.0-beta.1",              false)]
+    [InlineData("Reductech.Sequence.Connectors.FileSystem",   "0.13.0",                   true)]
+    [InlineData("Reductech.Sequence.Connectors.FileSystem",   "0.13.0-a.main.2201311800", true)]
+    [InlineData("Reductech.Sequence.Connectors.Nuix",         "0.14.0-beta.1",            true)]
+    [InlineData("Reductech.Sequence.Connectors.FileSystem",   "0.8.0",                    false)]
+    [InlineData("Reductech.Sequence.Connectors.DoesNotExist", "0.14.0-beta.1",            false)]
     public async Task Exists_WithVersion(string name, string version, bool expected)
     {
         var exists = await _registry.Exists(name, version);
@@ -77,7 +77,7 @@ public class ConnectorRegistryTests
     [Theory]
     [Trait("Category", "Integration")]
     [InlineData("Reductech.Sequence.Connectors.DoesNotExist", new string[] { })]
-    [InlineData("Reductech.Sequence.Connectors.FileSystem",   new[] { "0.9.0" })]
+    [InlineData("Reductech.Sequence.Connectors.FileSystem",   new[] { "0.13.0" })]
     [InlineData("Reductech.Sequence.Connectors.Nuix",         new string[] { })]
     [InlineData(
         "Reductech.Sequence.Connectors.StructuredData",
@@ -96,11 +96,11 @@ public class ConnectorRegistryTests
     [InlineData("Reductech.Sequence.Connectors.DoesNotExist", new string[] { })]
     [InlineData(
         "Reductech.Sequence.Connectors.FileSystem",
-        new[] { "0.9.0-a.master.2105052158", "0.9.0" }
+        new[] { "0.13.0-a.main.2201311800", "0.13.0" }
     )]
     [InlineData(
         "Reductech.Sequence.Connectors.Nuix",
-        new[] { "0.9.0-a.master.2105052200", "0.9.0-beta.1", "0.9.0-beta.2" }
+        new[] { "0.14.0-a.main.2201311748", "0.14.0-beta.1", "0.14.0-beta.2" }
     )]
     [InlineData(
         "Reductech.Sequence.Connectors.StructuredData",
@@ -146,7 +146,7 @@ public class ConnectorRegistryTests
     public async Task GetConnectorPackage_ReturnsConnectorPackage()
     {
         const string id      = "Reductech.Sequence.Connectors.Nuix";
-        const string version = "0.9.0-beta.1";
+        const string version = "0.14.0-beta.1";
 
         using var package = await _registry.GetConnectorPackage(id, version);
 
@@ -155,7 +155,7 @@ public class ConnectorRegistryTests
 
         var files = await package.Package.GetFilesAsync(CancellationToken.None);
 
-        Assert.Equal(14, files.Count());
+        Assert.Equal(7, files.Count());
     }
 
     [Fact]
@@ -164,8 +164,8 @@ public class ConnectorRegistryTests
     {
         const string id              = "Reductech.Sequence.Connectors.nuix";
         const string expectedId      = "Reductech.Sequence.Connectors.Nuix";
-        const string version         = "0.9.0-BETA.1";
-        const string expectedVersion = "0.9.0-beta.1";
+        const string version         = "0.14.0-BETA.1";
+        const string expectedVersion = "0.14.0-beta.1";
 
         using var package = await _registry.GetConnectorPackage(id, version);
 
@@ -174,6 +174,6 @@ public class ConnectorRegistryTests
 
         var files = await package.Package.GetFilesAsync(CancellationToken.None);
 
-        Assert.Equal(14, files.Count());
+        Assert.Equal(7, files.Count());
     }
 }

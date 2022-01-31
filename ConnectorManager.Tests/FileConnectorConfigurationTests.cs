@@ -68,7 +68,7 @@ public class FileConnectorConfigurationTests
         const string initialConfig = @"{
   ""Reductech.Sequence.Connectors.StructuredData"": {
     ""id"": ""Reductech.Sequence.Connectors.StructuredData"",
-    ""version"": ""0.9.0""
+    ""version"": ""0.13.0""
   }
 }";
 
@@ -121,12 +121,12 @@ public class FileConnectorConfigurationTests
     }
 
     [Theory]
-    [InlineData("DoesNotExist",                                 "0.8.0", false)]
-    [InlineData(ConnectorName,                                  "0.9.0", true)]
-    [InlineData(ConnectorName,                                  "0.5.0", false)]
-    [InlineData("Reductech.Sequence.Connectors.StructuredData", "0.9.0", true)]
-    [InlineData("Reductech.Sequence.Connectors.StructuredData", "0.8.0", true)]
-    [InlineData("StructuredData - disabled",                    "0.8.0", false)]
+    [InlineData("DoesNotExist",                                 "0.8.0",  false)]
+    [InlineData(ConnectorName,                                  "0.13.0", true)]
+    [InlineData(ConnectorName,                                  "0.5.0",  false)]
+    [InlineData("Reductech.Sequence.Connectors.StructuredData", "0.13.0", true)]
+    [InlineData("Reductech.Sequence.Connectors.StructuredData", "0.8.0",  true)]
+    [InlineData("StructuredData - disabled",                    "0.8.0",  false)]
     public void ContainsVersionString_ChecksConnectorIdAndVersion(
         string id,
         string version,

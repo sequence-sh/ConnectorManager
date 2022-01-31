@@ -79,7 +79,7 @@ public partial class ConnectorManagerTests
         );
     }
 
-    [Fact(Skip = Skip)]
+    [Fact]
     public async Task
         Verify_WhenDirectoryDoesNotExistAndInstallMissingIsTrue_InstallsConnectorAndReturnsTrue()
     {
