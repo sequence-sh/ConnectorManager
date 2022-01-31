@@ -7,7 +7,7 @@
     <RootNamespace>Reductech.Sequence.ConnectorManagement.Base</RootNamespace>
     <AssemblyName>Reductech.Sequence.ConnectorManagement.Base</AssemblyName>
     <Nullable>enable</Nullable>
-    <Version>0.6.0$(VersionSuffix)</Version>
+    <Version>0.7.0$(VersionSuffix)</Version>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -21,7 +21,7 @@
     <RepositoryUrl>https://gitlab.com/reductech/Sequence/connectormanager</RepositoryUrl>
     <PackageReleaseNotes>https://gitlab.com/reductech/Sequence/connectormanager/-/blob/master/CHANGELOG.md</PackageReleaseNotes>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    
+
     <Authors>Reductech</Authors>
     <Company>Reductech</Company>
     <Copyright>Copyright (c) 2021 Reductech Ltd</Copyright>

@@ -26,7 +26,7 @@ public partial class ConnectorManagerTests
     public async Task Update_WhenVersionIsSameAsConfig_WritesInfoAndReturns()
     {
         const string name    = "Reductech.Sequence.Connectors.Nuix";
-        const string version = "0.9.0";
+        const string version = "0.13.0";
 
         await _manager.Update(name, version);
 
@@ -68,7 +68,7 @@ public partial class ConnectorManagerTests
     public async Task Update_WhenVersionIsAlreadyLatest_WritesErrorAndReturns()
     {
         const string name    = "Reductech.Sequence.Connectors.StructuredData";
-        const string version = "0.9.0";
+        const string version = "0.13.0";
 
         _config[name].Version = version;
 
@@ -89,7 +89,7 @@ public partial class ConnectorManagerTests
     public async Task Update_WhenInstallFails_WritesErrorAndReturns()
     {
         const string name    = "Reductech.Sequence.Connectors.Nuix";
-        const string version = "0.9.0-a.master.2105052200";
+        const string version = "0.13.0-a.master.2105052200";
 
         var path = _fileSystem.Path.Combine(_settings.ConnectorPath, name, version);
 
@@ -110,11 +110,11 @@ public partial class ConnectorManagerTests
         );
     }
 
-    [Fact(Skip = Skip)]
+    [Fact]
     public async Task Update_ByDefault_InstallsConnectorAndUpdatesVersion()
     {
         const string name    = "Reductech.Sequence.Connectors.Nuix";
-        const string version = "0.9.0-a.master.2105052200";
+        const string version = "0.13.0-a.master.2105052200";
 
         var expected = _fileSystem.Path.Combine(
             AppContext.BaseDirectory,
@@ -139,11 +139,11 @@ public partial class ConnectorManagerTests
         Assert.Equal(version, _config[name].Version);
     }
 
-    [Fact(Skip = Skip)]
+    [Fact]
     public async Task Update_WhenVersionIsNull_UpdatesToLatestVersion()
     {
         const string name    = "Reductech.Sequence.Connectors.StructuredData";
-        const string version = "0.9.0";
+        const string version = "0.13.0";
 
         var expected = _fileSystem.Path.Combine(
             AppContext.BaseDirectory,

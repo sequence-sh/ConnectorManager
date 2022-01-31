@@ -2,8 +2,6 @@
 
 public partial class ConnectorManagerTests
 {
-    public const string Skip = "Temporary";
-
     [Fact]
     public async Task Add_WhenConnectorDoesNotExist_WritesErrorAndReturns()
     {
@@ -80,7 +78,7 @@ public partial class ConnectorManagerTests
         );
     }
 
-    [Fact(Skip = Skip)]
+    [Fact]
     public async Task Add_WhenIdAlreadyExistsAndForceIsTrue_OverwritesConfiguration()
     {
         const string id = "Reductech.Sequence.Connectors.StructuredData";
@@ -98,11 +96,11 @@ public partial class ConnectorManagerTests
         Assert.Contains(id, _config.Keys);
     }
 
-    [Fact(Skip = Skip)]
+    [Fact]
     public async Task Add_WhenIdDoesNotExist_InstallsConnector()
     {
         const string id      = "Reductech.Sequence.Connectors.FileSystem";
-        const string version = "0.9.0";
+        const string version = "0.13.0";
 
         var expected = Helpers.InstalledConnectorExpectedFiles.Select(
                 f => _fileSystem.Path.Combine(
@@ -132,7 +130,7 @@ public partial class ConnectorManagerTests
     public async Task Add_WhenDirectoryAlreadyExistsAndForceIsFalse_WritesErrorAndReturns()
     {
         const string id      = "Reductech.Sequence.Connectors.FileSystem";
-        const string version = "0.9.0";
+        const string version = "0.13.0";
 
         var path = _fileSystem.Path.Combine(_settings.ConnectorPath, id, version);
 
@@ -151,11 +149,11 @@ public partial class ConnectorManagerTests
         );
     }
 
-    [Fact(Skip = Skip)]
+    [Fact]
     public async Task Add_WhenDirectoryAlreadyExistsAndForceIsTrue_InstallsConnector()
     {
         const string id      = "Reductech.Sequence.Connectors.FileSystem";
-        const string version = "0.9.0";
+        const string version = "0.13.0";
 
         var expected = Helpers.InstalledConnectorExpectedFiles.Select(
                 f => _fileSystem.Path.Combine(

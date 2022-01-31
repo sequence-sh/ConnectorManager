@@ -49,7 +49,7 @@ public partial class ConnectorManagerTests
     public void List_WhenDllDoesNotExist_WritesErrorAndContinues()
     {
         const string name    = "Reductech.Sequence.Connectors.Nuix";
-        const string version = "0.9.0";
+        const string version = "0.13.0";
 
         var path = _fileSystem.Path.Combine(_settings.ConnectorPath, name, version);
 
@@ -86,7 +86,7 @@ public partial class ConnectorManagerTests
     public void List_ByDefault_ReturnsConnectorAssemblies()
     {
         const string name    = "Reductech.Sequence.Connectors.Nuix";
-        const string version = "0.9.0";
+        const string version = "0.13.0";
         const string filter  = "(?i)nuix";
 
         var mock = new Mock<ConnectorManager>(
@@ -114,8 +114,8 @@ public partial class ConnectorManagerTests
     {
         var expected = new ConnectorMetadata[]
         {
-            new("Reductech.Sequence.Connectors.FileSystem", "0.9.0"),
-            new("Reductech.Sequence.Connectors.StructuredData", "0.9.0")
+            new("Reductech.Sequence.Connectors.FileSystem", "0.13.0"),
+            new("Reductech.Sequence.Connectors.StructuredData", "0.13.0")
         };
 
         var connectors = await _manager.Find();
@@ -128,9 +128,9 @@ public partial class ConnectorManagerTests
     {
         var expected = new ConnectorMetadata[]
         {
-            new("Reductech.Sequence.Connectors.FileSystem", "0.9.0"),
-            new("Reductech.Sequence.Connectors.StructuredData", "0.9.0"),
-            new("Reductech.Sequence.Connectors.Nuix", "0.9.0-beta.2")
+            new("Reductech.Sequence.Connectors.FileSystem", "0.13.0"),
+            new("Reductech.Sequence.Connectors.StructuredData", "0.13.0"),
+            new("Reductech.Sequence.Connectors.Nuix", "0.13.0-beta.2")
         };
 
         var connectors = await _manager.Find(prerelease: true);
@@ -143,7 +143,7 @@ public partial class ConnectorManagerTests
     {
         var expected = new ConnectorMetadata[]
         {
-            new("Reductech.Sequence.Connectors.FileSystem", "0.9.0")
+            new("Reductech.Sequence.Connectors.FileSystem", "0.13.0")
         };
 
         var connectors = await _manager.Find("File");

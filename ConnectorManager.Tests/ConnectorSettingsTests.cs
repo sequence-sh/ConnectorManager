@@ -12,7 +12,7 @@ public class ConnectorSettingsTests
     public void DefaultForAssembly_ByDefault_ReturnsAssemblyInformation()
     {
         const string name    = "test";
-        const string version = "0.9.0";
+        const string version = "0.13.0";
 
         var assembly = new Mock<Assembly>();
         assembly.Setup(a => a.GetName()).Returns(() => new AssemblyName(name));

@@ -20,11 +20,12 @@ internal static class Helpers
     };
 
     internal static readonly string InstalledConnectorPath =
-        @"connectors\Reductech.Sequence.Connectors.FileSystem\0.9.0";
+        @"connectors\Reductech.Sequence.Connectors.FileSystem\0.13.0";
 
     internal static readonly string[] InstalledConnectorExpectedFiles =
     {
         "x64\\additional.dll", "content.txt", "Reductech.Sequence.Connectors.FileSystem.dll",
+        "Reductech.Sequence.Connectors.FileSystem.deps.json",
         "Reductech.Sequence.Connectors.FileSystem.xml", "System.IO.Abstractions.dll"
     };
 
@@ -32,7 +33,7 @@ internal static class Helpers
 {
   ""Reductech.Sequence.Connectors.Nuix"": {
     ""id"": ""Reductech.Sequence.Connectors.Nuix"",
-    ""version"": ""0.9.0"",
+    ""version"": ""0.13.0"",
     ""enabled"": true,
     ""settings"": {
       ""exeConsolePath"": ""C:\\Program Files\\Nuix\\Nuix 9.0\\nuix_console.exe"",
@@ -46,11 +47,11 @@ internal static class Helpers
   },
   ""Reductech.Sequence.Connectors.FileSystem"": {
     ""id"": ""Reductech.Sequence.Connectors.FileSystem"",
-    ""version"": ""0.9.0""
+    ""version"": ""0.13.0""
   },
   ""Reductech.Sequence.Connectors.StructuredData"": {
     ""id"": ""Reductech.Sequence.Connectors.StructuredData"",
-    ""version"": ""0.9.0""
+    ""version"": ""0.13.0""
   },
   ""StructuredData - disabled"": {
     ""id"": ""Reductech.Sequence.Connectors.StructuredData"",
@@ -63,7 +64,7 @@ internal static class Helpers
     {
         {
             "Reductech.Sequence.Connectors.Nuix",
-            new ConnectorSettings { Id = "Reductech.Sequence.Connectors.Nuix", Version = "0.9.0" }
+            new ConnectorSettings { Id = "Reductech.Sequence.Connectors.Nuix", Version = "0.13.0" }
         },
         {
             "Reductech.Sequence.Connectors.StructuredData",
