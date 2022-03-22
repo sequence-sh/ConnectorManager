@@ -261,13 +261,25 @@ public class ConnectorManager : IConnectorManager
 
         foreach (var (key, settings) in configs)
         {
-            var dir     = GetInstallPath(settings.Id, settings.Version);
-            var dllPath = _fileSystem.Path.Combine(dir, $"{settings.Id}.dll");
+            var dir = GetInstallPath(settings.Id, settings.Version);
+
+            var enumerationOptions = _fileSystem.GetType().Name == "MockFileSystem"
+                ? new EnumerationOptions()
+                : //MockFileSystem does not support MatchCasing
+                new EnumerationOptions() { MatchCasing = MatchCasing.CaseInsensitive };
 
             Assembly? plugin;
 
             try
             {
+                //Use case insensitive matching to find the dll
+                var dllPath = _fileSystem.Directory.GetFiles(
+                        dir,
+                        $"{settings.Id}.dll",
+                        enumerationOptions
+                    )
+                    .FirstOrDefault();
+
                 plugin = LoadPlugin(dllPath, _logger);
             }
             catch (Exception e)

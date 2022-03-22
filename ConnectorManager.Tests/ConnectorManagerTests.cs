@@ -61,6 +61,18 @@ public partial class ConnectorManagerTests
             _fileSystem
         );
 
+        foreach (var configSetting in _config.Settings)
+        {
+            var filePath = _fileSystem.Path.Combine(
+                _settings.ConnectorPath,
+                configSetting.Id,
+                configSetting.Version,
+                configSetting.Id + ".dll"
+            );
+
+            _fileSystem.AddFile(filePath, new MockFileData("abcd"));
+        }
+
         mock.SetupSequence(m => m.LoadPlugin(It.IsAny<string>(), It.IsAny<ILogger>()))
             .Returns(() => throw new Exception())
             .Returns(Mock.Of<Assembly>);
@@ -96,6 +108,20 @@ public partial class ConnectorManagerTests
             _config,
             _fileSystem
         );
+
+        foreach (var configSetting in _config.Settings)
+        {
+            var filePath = _fileSystem.Path.Combine(
+                _settings.ConnectorPath,
+                configSetting.Id,
+                configSetting.Version,
+                configSetting.Id + ".dll"
+            );
+
+            _fileSystem.AddFile(filePath, new MockFileData("abcd"));
+        }
+
+        //_fileSystem.AddFile();
 
         mock.Setup(m => m.LoadPlugin(It.IsAny<string>(), It.IsAny<ILogger>()))
             .Returns(Mock.Of<Assembly>);
