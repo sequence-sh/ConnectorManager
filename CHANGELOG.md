@@ -1,3 +1,17 @@
+# v0.7.0 (2022-03-25)
+
+Bug fix and maintenance release.
+
+## Issues Closed in this Release
+
+### Bug Fixes
+
+- Dependency resolution fails on case-sensitive file systems #28
+
+### Maintenance
+
+- ReEnable tests #32
+
 # v0.6.0 (2022-01-16)
 
 EDR is now Sequence. The following has changed:
@@ -95,6 +109,7 @@ Initial release of the Connector Manager which provides functionality to:
 - Add ability to get assembly settings tuples #2
 - Add unit tests for connector manager #4
 - Add implementation of nuget logger #3
+
 
 
 
