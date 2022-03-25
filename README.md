@@ -14,7 +14,7 @@ The connector manager is set up to work with this registry by default.
 {
   "Reductech.Sequence.Connectors.Nuix": {
     "id": "Reductech.Sequence.Connectors.Nuix",
-    "version": "0.13.0",
+    "version": "0.14.0",
     "settings": {
       "exeConsolePath": "C:\\Program Files\\Nuix\\Nuix 9.0\\nuix_console.exe",
       "licencesourcetype": "dongle",
@@ -31,11 +31,11 @@ The connector manager is set up to work with this registry by default.
   },
   "Reductech.Sequence.Connectors.FileSystem": {
     "id": "Reductech.Sequence.Connectors.FileSystem",
-    "version": "0.13.0"
+    "version": "0.14.0"
   },
   "data": {
     "id": "Reductech.Sequence.Connectors.StructuredData",
-    "version": "0.13.0",
+    "version": "0.14.0",
     "enabled": false
   }
 }
@@ -82,6 +82,10 @@ All other files will be extracted to their respective paths.
 
 `ConnectorRegistry` is integration tested against the
 [nuget feed](https://gitlab.com/reductech/sequence/connectormanager/-/packages) of this project.
+
+# Documentation
+
+Documentation available at https://sequence.sh
 
 # Releases
 

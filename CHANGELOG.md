@@ -1,5 +1,7 @@
 # v0.7.0 (2022-03-25)
 
+Bug fix and maintenance release.
+
 ## Issues Closed in this Release
 
 ### Bug Fixes
