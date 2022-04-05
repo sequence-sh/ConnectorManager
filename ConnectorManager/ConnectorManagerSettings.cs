@@ -10,7 +10,7 @@ public record ConnectorManagerSettings
     /// <summary>
     /// appsettings.json section key that contains the settings
     /// </summary>
-    public const string Key = "sequence";
+    public const string Key = "connectorManager";
 
     /// <summary>
     /// Default settings for the connector manager.
@@ -33,12 +33,12 @@ public record ConnectorManagerSettings
     /// <summary>
     /// Path to the installation directory for connectors.
     /// </summary>
-    public string ConnectorPath { get; init; }
+    public string ConnectorPath { get; init; } = null!;
 
     /// <summary>
     /// Path to the connector configuration JSON.
     /// </summary>
-    public string ConfigurationPath { get; init; }
+    public string ConfigurationPath { get; init; } = null!;
 
     /// <summary>
     /// Automatically download missing connectors when using the Verify method.
