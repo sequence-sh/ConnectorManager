@@ -5,12 +5,22 @@ namespace Reductech.Sequence.ConnectorManagement.Tests;
 
 internal static class Helpers
 {
-    internal static readonly ConnectorRegistrySettings IntegrationRegistrySettings = new()
-    {
-        Uri = "https://gitlab.com/api/v4/projects/26301248/packages/nuget/index.json"
-    };
-
     internal const string ConfigurationPath = @"c:\temp\connectors.json";
+
+    internal static readonly ConnectorManagerSettings IntegrationRegistrySettings = new()
+    {
+        ConnectorPath     = @"c:\temp\connectors",
+        ConfigurationPath = ConfigurationPath,
+        AutoDownload      = true,
+        Registries = new ConnectorRegistryEndpoint[]
+        {
+            new()
+            {
+                Uri =
+                    "https://gitlab.com/api/v4/projects/26301248/packages/nuget/index.json"
+            }
+        }
+    };
 
     internal static readonly ConnectorManagerSettings ManagerSettings = new()
     {

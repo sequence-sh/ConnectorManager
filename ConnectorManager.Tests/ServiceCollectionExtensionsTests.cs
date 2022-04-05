@@ -43,7 +43,6 @@ public class ServiceCollectionExtensions
         var (provider, _) = CreateServiceCollection();
 
         Assert.NotNull(provider.GetService(typeof(ConnectorManagerSettings)));
-        Assert.NotNull(provider.GetService(typeof(ConnectorRegistrySettings)));
         Assert.NotNull(provider.GetService(typeof(IConnectorRegistry)));
         Assert.NotNull(provider.GetService(typeof(IConnectorConfiguration)));
         Assert.NotNull(provider.GetService(typeof(IConnectorManager)));
@@ -53,14 +52,17 @@ public class ServiceCollectionExtensions
     public void AddConnectorManager_CorrectlySerializesCustomAppSettingsJson()
     {
         const string settingsJson = @"{
-  ""connectorRegistry"": {
-    ""uri"": ""https://registry/packages/index.json"",
-    ""user"": ""connectoruser""
-  },
-  ""sequence"": {
+  ""connectorManager"": {
     ""connectorPath"": ""c:\\connectors"",
     ""configurationPath"": ""c:\\connectors\\connectors.json"",
-    ""autoDownload"": false
+    ""autoDownload"": false,
+    ""registries"": [
+        {
+            ""uri"": ""https://registry/packages/index.json"",
+            ""user"": ""connectoruser""
+        }
+    ],
+    ""enableNuGetLog"": true
   }
 }";
 
@@ -83,12 +85,12 @@ public class ServiceCollectionExtensions
             )
             .Build();
 
-        var registryConfig =
-            (ConnectorRegistrySettings)hb.Services.GetService(typeof(ConnectorRegistrySettings))!;
+        var config =
+            (ConnectorManagerSettings)hb.Services.GetService(typeof(ConnectorManagerSettings))!;
 
-        Assert.Equal("https://registry/packages/index.json", registryConfig.Uri);
-        Assert.Equal("connectoruser",                        registryConfig.User);
-        Assert.Null(registryConfig.Token);
+        Assert.Equal("https://registry/packages/index.json", config.Registries[0].Uri);
+        Assert.Equal("connectoruser",                        config.Registries[0].User);
+        Assert.Null(config.Registries[0].Token);
 
         var managerConfig =
             (ConnectorManagerSettings)hb.Services.GetService(typeof(ConnectorManagerSettings))!;

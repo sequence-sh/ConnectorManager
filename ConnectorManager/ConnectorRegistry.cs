@@ -16,7 +16,7 @@ namespace Reductech.Sequence.ConnectorManagement;
 public class ConnectorRegistry : IConnectorRegistry
 {
     private readonly ILogger _logger;
-    private readonly ConnectorRegistrySettings _settings;
+    private readonly ConnectorManagerSettings _settings;
 
     /// <summary>
     /// Max results to return from the remote registry when using Find.
@@ -27,16 +27,16 @@ public class ConnectorRegistry : IConnectorRegistry
     /// Create a new connector registry with the specified settings.
     /// </summary>
     /// <param name="logger"></param>
-    /// <param name="connectorRegistrySettings"></param>
+    /// <param name="connectorManagerSettings"></param>
     public ConnectorRegistry(
         Microsoft.Extensions.Logging.ILogger<ConnectorRegistry> logger,
-        ConnectorRegistrySettings connectorRegistrySettings)
+        ConnectorManagerSettings connectorManagerSettings)
     {
-        _logger = connectorRegistrySettings.EnableNuGetLog
+        _logger = connectorManagerSettings.EnableNuGetLog
             ? new LoggerBridge<ConnectorRegistry>(logger)
             : new NullLogger();
 
-        _settings = connectorRegistrySettings;
+        _settings = connectorManagerSettings;
     }
 
     /// <inheritdoc />
@@ -45,21 +45,32 @@ public class ConnectorRegistry : IConnectorRegistry
         bool prerelease = false,
         CancellationToken ct = default)
     {
-        var resource = await GetPrivateResource<PackageSearchResource>(ct);
+        List<ConnectorMetadata> results = new();
 
-        var results = await resource.SearchAsync(
-            search,
-            new SearchFilter(prerelease),
-            skip: 0,
-            take: FindResults,
-            _logger,
-            ct
-        );
+        foreach (var registry in _settings.Registries)
+        {
+            var resource = await GetPrivateResource<PackageSearchResource>(registry, ct);
 
-        return results.Select(
-                p => new ConnectorMetadata(p.Identity.Id, p.Identity.Version.ToNormalizedString())
-            )
-            .ToArray();
+            var searchResult = await resource.SearchAsync(
+                search,
+                new SearchFilter(prerelease),
+                skip: 0,
+                take: FindResults,
+                _logger,
+                ct
+            );
+
+            results.AddRange(
+                searchResult.Select(
+                    p => new ConnectorMetadata(
+                        p.Identity.Id,
+                        p.Identity.Version.ToNormalizedString()
+                    )
+                )
+            );
+        }
+
+        return results.OrderBy(p => p.Id).ToList();
     }
 
     /// <inheritdoc />
@@ -82,13 +93,22 @@ public class ConnectorRegistry : IConnectorRegistry
         bool prerelease = false,
         CancellationToken ct = default)
     {
-        var resource = await GetPrivateResource<FindPackageByIdResource>(ct);
-        var cache    = new SourceCacheContext();
-        var versions = await resource.GetAllVersionsAsync(id, cache, _logger, ct);
+        List<string> results = new();
 
-        return versions.Where(v => prerelease || !v.IsPrerelease)
-            .Select(v => v.ToNormalizedString())
-            .ToArray();
+        foreach (var registry in _settings.Registries)
+        {
+            var resource = await GetPrivateResource<FindPackageByIdResource>(registry, ct);
+            var cache    = new SourceCacheContext();
+            var versions = await resource.GetAllVersionsAsync(id, cache, _logger, ct);
+
+            results.AddRange(
+                versions.Where(v => prerelease || !v.IsPrerelease)
+                    .Select(v => v.ToNormalizedString())
+                    .ToList()
+            );
+        }
+
+        return results;
     }
 
     /// <inheritdoc />
@@ -108,12 +128,17 @@ public class ConnectorRegistry : IConnectorRegistry
             throw new VersionNotFoundException($"Could not parse version: {version}");
         }
 
-        var resource = await GetPrivateResource<FindPackageByIdResource>(ct);
-        var cache    = new SourceCacheContext();
-
         var ms = new MemoryStream();
 
-        await resource.CopyNupkgToStreamAsync(id, nugetVersion, ms, cache, _logger, ct);
+        foreach (var registry in _settings.Registries)
+        {
+            var resource = await GetPrivateResource<FindPackageByIdResource>(registry, ct);
+            var cache    = new SourceCacheContext();
+            await resource.CopyNupkgToStreamAsync(id, nugetVersion, ms, cache, _logger, ct);
+
+            if (ms.Length > 0)
+                break;
+        }
 
         if (ms.Length == 0)
             throw new ArgumentException($"Can't find connector {id} ({version})");
@@ -128,20 +153,21 @@ public class ConnectorRegistry : IConnectorRegistry
         );
     }
 
-    private async Task<T> GetPrivateResource<T>(CancellationToken ct)
+    private async Task<T> GetPrivateResource<T>(
+        ConnectorRegistryEndpoint registry,
+        CancellationToken ct)
         where T : class, INuGetResource
     {
         SourceRepository repository;
 
-        if (!string.IsNullOrEmpty(_settings.User)
-         || !string.IsNullOrEmpty(_settings.Token))
+        if (!string.IsNullOrEmpty(registry.User) || !string.IsNullOrEmpty(registry.Token))
         {
-            var source = new PackageSource(_settings.Uri)
+            var source = new PackageSource(registry.Uri)
             {
                 Credentials = new PackageSourceCredential(
-                    source: _settings.Uri,
-                    username: _settings.User,
-                    passwordText: _settings.Token,
+                    source: registry.Uri,
+                    username: registry.User,
+                    passwordText: registry.Token,
                     isPasswordClearText: true,
                     validAuthenticationTypesText: null
                 )
@@ -151,7 +177,7 @@ public class ConnectorRegistry : IConnectorRegistry
         }
         else
         {
-            repository = Repository.Factory.GetCoreV3(_settings.Uri);
+            repository = Repository.Factory.GetCoreV3(registry.Uri);
         }
 
         return await repository.GetResourceAsync<T>(ct);
