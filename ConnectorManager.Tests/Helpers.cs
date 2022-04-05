@@ -5,8 +5,13 @@ namespace Reductech.Sequence.ConnectorManagement.Tests;
 
 internal static class Helpers
 {
-    internal static readonly ConnectorRegistrySettings IntegrationRegistrySettings = new()
+    internal const string ConfigurationPath = @"c:\temp\connectors.json";
+
+    internal static readonly ConnectorManagerSettings IntegrationRegistrySettings = new()
     {
+        ConnectorPath     = @"c:\temp\connectors",
+        ConfigurationPath = ConfigurationPath,
+        AutoDownload      = true,
         Registries = new ConnectorRegistryEndpoint[]
         {
             new()
@@ -16,8 +21,6 @@ internal static class Helpers
             }
         }
     };
-
-    internal const string ConfigurationPath = @"c:\temp\connectors.json";
 
     internal static readonly ConnectorManagerSettings ManagerSettings = new()
     {

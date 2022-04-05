@@ -16,7 +16,7 @@ namespace Reductech.Sequence.ConnectorManagement;
 public class ConnectorRegistry : IConnectorRegistry
 {
     private readonly ILogger _logger;
-    private readonly ConnectorRegistrySettings _settings;
+    private readonly ConnectorManagerSettings _settings;
 
     /// <summary>
     /// Max results to return from the remote registry when using Find.
@@ -27,16 +27,16 @@ public class ConnectorRegistry : IConnectorRegistry
     /// Create a new connector registry with the specified settings.
     /// </summary>
     /// <param name="logger"></param>
-    /// <param name="connectorRegistrySettings"></param>
+    /// <param name="connectorManagerSettings"></param>
     public ConnectorRegistry(
         Microsoft.Extensions.Logging.ILogger<ConnectorRegistry> logger,
-        ConnectorRegistrySettings connectorRegistrySettings)
+        ConnectorManagerSettings connectorManagerSettings)
     {
-        _logger = connectorRegistrySettings.EnableNuGetLog
+        _logger = connectorManagerSettings.EnableNuGetLog
             ? new LoggerBridge<ConnectorRegistry>(logger)
             : new NullLogger();
 
-        _settings = connectorRegistrySettings;
+        _settings = connectorManagerSettings;
     }
 
     /// <inheritdoc />

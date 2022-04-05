@@ -14,7 +14,6 @@ public static class ServiceCollectionExtensions
     /// a JSON configuration file.
     /// 
     ///   - ConnectorManagerSettings
-    ///   - ConnectorRegistrySettings
     ///   - IConnectorRegistry
     ///   - IConnectorConfiguration (FileConnectorConfiguration)
     ///   - IConnectorManager
@@ -36,11 +35,6 @@ public static class ServiceCollectionExtensions
             .Get<ConnectorManagerSettings>() ?? ConnectorManagerSettings.Default;
 
         services.AddSingleton(managerSettings);
-
-        var registrySettings = configuration.GetSection(ConnectorRegistrySettings.Key)
-            .Get<ConnectorRegistrySettings>() ?? ConnectorRegistrySettings.Reductech;
-
-        services.AddSingleton(registrySettings);
 
         services.AddSingleton<IConnectorRegistry, ConnectorRegistry>();
 
