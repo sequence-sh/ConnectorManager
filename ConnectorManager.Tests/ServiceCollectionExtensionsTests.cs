@@ -54,10 +54,14 @@ public class ServiceCollectionExtensions
     {
         const string settingsJson = @"{
   ""connectorRegistry"": {
-    ""uri"": ""https://registry/packages/index.json"",
-    ""user"": ""connectoruser""
+    ""registries"": [
+        {
+            ""uri"": ""https://registry/packages/index.json"",
+            ""user"": ""connectoruser""
+        }
+    ]
   },
-  ""sequence"": {
+  ""connectorManager"": {
     ""connectorPath"": ""c:\\connectors"",
     ""configurationPath"": ""c:\\connectors\\connectors.json"",
     ""autoDownload"": false
@@ -86,9 +90,9 @@ public class ServiceCollectionExtensions
         var registryConfig =
             (ConnectorRegistrySettings)hb.Services.GetService(typeof(ConnectorRegistrySettings))!;
 
-        Assert.Equal("https://registry/packages/index.json", registryConfig.Uri);
-        Assert.Equal("connectoruser",                        registryConfig.User);
-        Assert.Null(registryConfig.Token);
+        Assert.Equal("https://registry/packages/index.json", registryConfig.Registries[0].Uri);
+        Assert.Equal("connectoruser",                        registryConfig.Registries[0].User);
+        Assert.Null(registryConfig.Registries[0].Token);
 
         var managerConfig =
             (ConnectorManagerSettings)hb.Services.GetService(typeof(ConnectorManagerSettings))!;

@@ -1,6 +1,27 @@
 ﻿namespace Reductech.Sequence.ConnectorManagement;
 
 /// <summary>
+/// Defines uri and login details for a connector registry.
+/// </summary>
+public record ConnectorRegistryEndpoint
+{
+    /// <summary>
+    /// The uri of the connector registry.
+    /// </summary>
+    public string Uri { get; init; } = null!;
+
+    /// <summary>
+    /// UserName for private registries.
+    /// </summary>
+    public string? User { get; init; }
+
+    /// <summary>
+    /// Token / password for private registries.
+    /// </summary>
+    public string? Token { get; init; }
+}
+
+/// <summary>
 /// Settings for the default Reductech connector registry.
 /// </summary>
 public record ConnectorRegistrySettings
@@ -15,23 +36,25 @@ public record ConnectorRegistrySettings
     /// </summary>
     public static ConnectorRegistrySettings Reductech = new()
     {
-        Uri = "https://gitlab.com/api/v4/projects/26337972/packages/nuget/index.json"
+        Registries = new ConnectorRegistryEndpoint[]
+        {
+            new()
+            {
+                Uri =
+                    "https://gitlab.com/api/v4/projects/26337972/packages/nuget/index.json"
+            },
+            new()
+            {
+                Uri =
+                    "https://gitlab.com/api/v4/projects/35096937/packages/nuget/index.json"
+            }
+        }
     };
 
     /// <summary>
-    /// The uri of the connector registry.
+    /// Collection of connector registries.
     /// </summary>
-    public string Uri { get; init; }
-
-    /// <summary>
-    /// UserName for private registries.
-    /// </summary>
-    public string? User { get; init; }
-
-    /// <summary>
-    /// Token / password for private registries.
-    /// </summary>
-    public string? Token { get; init; }
+    public ConnectorRegistryEndpoint[] Registries { get; init; } = null!;
 
     /// <summary>
     /// By default, nuget protocol logging is disabled. For debugging, set this to true.
