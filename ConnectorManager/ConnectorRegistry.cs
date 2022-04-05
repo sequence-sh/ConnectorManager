@@ -67,6 +67,7 @@ public class ConnectorRegistry : IConnectorRegistry
                             p.Identity.Version.ToNormalizedString()
                         )
                     )
+                    .OrderBy(p => p.Id)
                     .ToList()
             );
         }
@@ -161,8 +162,7 @@ public class ConnectorRegistry : IConnectorRegistry
     {
         SourceRepository repository;
 
-        if (!string.IsNullOrEmpty(registry.User)
-         || !string.IsNullOrEmpty(registry.Token))
+        if (!string.IsNullOrEmpty(registry.User) || !string.IsNullOrEmpty(registry.Token))
         {
             var source = new PackageSource(registry.Uri)
             {
