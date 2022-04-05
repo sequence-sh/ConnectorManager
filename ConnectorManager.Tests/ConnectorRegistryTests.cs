@@ -176,4 +176,46 @@ public class ConnectorRegistryTests
 
         Assert.Equal(7, files.Count());
     }
+
+    [Fact]
+    [Trait("Category", "Integration")]
+    public async Task Find_WithMultipleRegistries_ReturnsPackages()
+    {
+        var expected = new[]
+        {
+            "Reductech.Sequence.Connectors.FileSystem",
+            "Reductech.Sequence.Connectors.StructuredData",
+            "Reductech.Sequence.Connectors.Rest" // does not exist in the default integration registry
+        };
+
+        var settings = new ConnectorManagerSettings
+        {
+            ConnectorPath     = @"c:\temp\connectors",
+            ConfigurationPath = @"c:\temp\connectors.json",
+            AutoDownload      = true,
+            Registries = new ConnectorRegistryEndpoint[]
+            {
+                new()
+                {
+                    Uri =
+                        "https://gitlab.com/api/v4/projects/26301248/packages/nuget/index.json"
+                },
+                new()
+                {
+                    Uri =
+                        "https://gitlab.com/api/v4/projects/35096937/packages/nuget/index.json",
+                    User = "conreg-integration-test",
+                    // read only token for a publicly accessible registry
+                    Token = "aasXXpRyJzx9jj9uKhw9"
+                }
+            }
+        };
+
+        var registry = new ConnectorRegistry(_logger, settings);
+
+        var found = await registry.Find("", true, CancellationToken.None);
+
+        foreach (var exp in expected)
+            Assert.Contains(found, f => f.Id.Equals(exp));
+    }
 }
