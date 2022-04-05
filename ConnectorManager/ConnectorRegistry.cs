@@ -62,17 +62,15 @@ public class ConnectorRegistry : IConnectorRegistry
 
             results.AddRange(
                 searchResult.Select(
-                        p => new ConnectorMetadata(
-                            p.Identity.Id,
-                            p.Identity.Version.ToNormalizedString()
-                        )
+                    p => new ConnectorMetadata(
+                        p.Identity.Id,
+                        p.Identity.Version.ToNormalizedString()
                     )
-                    .OrderBy(p => p.Id)
-                    .ToList()
+                )
             );
         }
 
-        return results;
+        return results.OrderBy(p => p.Id).ToList();
     }
 
     /// <inheritdoc />
