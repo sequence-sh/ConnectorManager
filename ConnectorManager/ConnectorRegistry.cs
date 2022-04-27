@@ -70,7 +70,11 @@ public class ConnectorRegistry : IConnectorRegistry
             );
         }
 
-        return results.OrderBy(p => p.Id).ToList();
+        return results.GroupBy(
+                p => p.Id,
+                (_, group) => group.OrderByDescending(p => p.Version).First()
+            )
+            .ToList();
     }
 
     /// <inheritdoc />
