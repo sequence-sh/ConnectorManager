@@ -51,6 +51,45 @@ public class ConnectorRegistryTests
         Assert.Equal(found, expected);
     }
 
+    [Fact]
+    [Trait("Category", "Integration")]
+    public async Task Find_MultipleRegistriesWhenPrereleaseIsTrue_ReturnsAllLatestVersions()
+    {
+        var expected = new ConnectorMetadata[]
+        {
+            new("Reductech.Sequence.Connectors.FileSystem", "0.13.0"),
+            new("Reductech.Sequence.Connectors.Nuix", "0.14.0-beta.2"),
+            new("Reductech.Sequence.Connectors.StructuredData", "0.9.0")
+        };
+
+        var settings = new ConnectorManagerSettings
+        {
+            ConnectorPath     = @"c:\temp\connectors",
+            ConfigurationPath = Helpers.ConfigurationPath,
+            AutoDownload      = true,
+            Registries = new ConnectorRegistryEndpoint[]
+            {
+                new()
+                {
+                    Uri =
+                        "https://gitlab.com/api/v4/projects/26301248/packages/nuget/index.json"
+                },
+                new()
+                {
+                    Uri =
+                        "https://gitlab.com/api/v4/projects/26301248/packages/nuget/index.json"
+                }
+            }
+        };
+
+        var registry = new ConnectorRegistry(_logger, settings);
+
+        var found = await registry.Find("", true, CancellationToken.None);
+
+        Assert.Equal(3,     found.Count);
+        Assert.Equal(found, expected);
+    }
+
     [Theory]
     [Trait("Category", "Integration")]
     [InlineData("Reductech.Sequence.Connectors.FileSystem",   true)]
