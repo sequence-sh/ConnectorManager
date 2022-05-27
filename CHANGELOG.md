@@ -1,3 +1,42 @@
+# v0.8.0 (2022-05-27)
+
+## Summary of Changes
+
+
+- Consolidated connector registry and manager settings
+- The connector manager `appsettings.json` key has changed from `sequence` to `connectorManager`
+- `ConnectorRegistrySettings` type has been removed
+- It's now possible to specify more than one registry in the configuration:
+
+```json
+"connectorManager": {
+  "connectorPath": "c:\\connectors",
+  "configurationPath": "c:\\connectors\\connectors.json",
+  "autoDownload": false,
+  "registries": [
+      {
+          "uri": "https://registry/packages/index.json"
+      },
+      {
+        "uri": "https://another-registry/packages/index.json",
+        "User": "ci-login-token",
+        "Token": "abc123"
+      }
+  ],
+  "enableNuGetLog": true
+}
+```
+
+## Issues Closed in this Release
+
+### New Features
+
+- Allow setting multiple connector registry endpoints #41
+
+### Bug Fixes
+
+- Using the prerelease flag returns multiple versions for a connector #43
+
 # v0.7.0 (2022-03-25)
 
 Bug fix and maintenance release.
@@ -109,6 +148,7 @@ Initial release of the Connector Manager which provides functionality to:
 - Add ability to get assembly settings tuples #2
 - Add unit tests for connector manager #4
 - Add implementation of nuget logger #3
+
 
 
 
