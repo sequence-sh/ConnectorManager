@@ -61,8 +61,14 @@ public abstract class ConnectorConfigurationBase : IConnectorConfiguration
     }
 
     /// <inheritdoc />
-    public IEnumerator<KeyValuePair<string, ConnectorSettings>> GetEnumerator() =>
-        Connectors.GetEnumerator();
+    public IEnumerator<KeyValuePair<string, ConnectorSettings>> GetEnumerator()
+    {
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+        if (Connectors == null)
+            return Enumerable.Empty<KeyValuePair<string, ConnectorSettings>>().GetEnumerator();
+
+        return Connectors.GetEnumerator();
+    }
 
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }
