@@ -1,5 +1,6 @@
 using System.IO.Abstractions;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Reductech.Sequence.ConnectorManagement.Base;
 
 namespace Reductech.Sequence.ConnectorManagement;
@@ -23,7 +24,7 @@ public class FileConnectorConfiguration : ConnectorConfigurationBase
         _fileSystem = fileSystem;
     }
 
-    private Dictionary<string, ConnectorSettings> _connectors = null!;
+    private Dictionary<string, ConnectorSettings>? _connectors;
 
     /// <inheritdoc />
     protected override Dictionary<string, ConnectorSettings> Connectors
@@ -31,7 +32,7 @@ public class FileConnectorConfiguration : ConnectorConfigurationBase
         get
         {
             Initialize();
-            return _connectors;
+            return _connectors ?? new Dictionary<string, ConnectorSettings>();
         }
     }
 
@@ -69,7 +70,10 @@ public class FileConnectorConfiguration : ConnectorConfigurationBase
 
     private async Task SaveSettings(CancellationToken ct)
     {
-        var options = new JsonSerializerOptions() { WriteIndented = true, IgnoreNullValues = true };
+        var options = new JsonSerializerOptions()
+        {
+            WriteIndented = true, DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        };
 
         var output =
             JsonSerializer.Serialize(
@@ -87,13 +91,14 @@ public class FileConnectorConfiguration : ConnectorConfigurationBase
         if (_init)
             return;
 
-        string text;
+        var text = "";
 
         if (_fileSystem.File.Exists(_path))
         {
             text = _fileSystem.File.ReadAllText(_path);
         }
-        else
+
+        if (string.IsNullOrEmpty(text))
         {
             text = "{}";
             _fileSystem.File.WriteAllText(_path, text);
@@ -102,7 +107,7 @@ public class FileConnectorConfiguration : ConnectorConfigurationBase
         _connectors = JsonSerializer.Deserialize<Dictionary<string, ConnectorSettings>>(
             text,
             new JsonSerializerOptions() { PropertyNameCaseInsensitive = true }
-        )!;
+        );
 
         _init = true;
     }
