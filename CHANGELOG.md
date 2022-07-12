@@ -1,3 +1,11 @@
+# v0.9.0 (2022-07-13)
+
+## Issues Closed in this Release
+
+### Bug Fixes
+
+- Prevent null reference exception #48
+
 # v0.8.0 (2022-05-27)
 
 ## Summary of Changes
@@ -148,6 +156,7 @@ Initial release of the Connector Manager which provides functionality to:
 - Add ability to get assembly settings tuples #2
 - Add unit tests for connector manager #4
 - Add implementation of nuget logger #3
+
 
 
 
