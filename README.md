@@ -1,12 +1,15 @@
 # Sequence® Connector Manager
 
-A plugins management system for [Sequence Connectors](https://gitlab.com/reductech/sequence/connectors).
+A plugins management system for [Sequence](https://sequence.sh) and [Sequence Connectors](https://gitlab.com/reductech/sequence/connectors).
 
 # Connectors
 
 All the available connectors can be found in the
 [Connector Registry](https://gitlab.com/reductech/sequence/connector-registry/-/packages).
 The connector manager is set up to work with this registry by default.
+
+Pre-release and development builds of connectors can be found in the
+[Connector Registry Dev](https://gitlab.com/reductech/sequence/connector-registry-dev).
 
 # Example `connectors.json`
 
@@ -80,7 +83,7 @@ All other files will be extracted to their respective paths.
 
 # Testing
 
-`ConnectorRegistry` is integration tested against the
+The `ConnectorRegistry` is integration tested against the
 [nuget feed](https://gitlab.com/reductech/sequence/connectormanager/-/packages) of this project.
 
 # Documentation
@@ -93,4 +96,4 @@ Can be downloaded from the [Releases page](https://gitlab.com/reductech/sequence
 
 # NuGet Packages
 
-Are available in the [Reductech Nuget feed](https://gitlab.com/reductech/nuget/-/packages).
+Release builds are available on [nuget.org](https://www.nuget.org/profiles/Sequence).
