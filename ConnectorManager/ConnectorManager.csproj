@@ -13,23 +13,48 @@
   <PropertyGroup>
     <PackageId>Reductech.Sequence.ConnectorManager</PackageId>
     <Title>Sequence® Connector Manager</Title>
-    <Description>Connector package management for Sequence. Uses a nuget feed to manage and configure packages.</Description>
+    <Description>Connector package management for Sequence. Uses a nuget feed to manage and configure connectors.</Description>
     <Product>Sequence®</Product>
     <PackageTags>ediscovery;forensics;automation;orchestration;edrm;packagemanagement;nuget;connectors</PackageTags>
 
-    <PackageProjectUrl>https://gitlab.com/reductech/sequence/connectormanager</PackageProjectUrl>
-    <RepositoryUrl>https://gitlab.com/reductech/sequence/connectormanager</RepositoryUrl>
+    <PackageProjectUrl>https://sequence.sh</PackageProjectUrl>
+    <RepositoryUrl>https://gitlab.com/reductech/sequence/connectormanager.git</RepositoryUrl>
     <PackageReleaseNotes>https://gitlab.com/reductech/sequence/connectormanager/-/blob/master/CHANGELOG.md</PackageReleaseNotes>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
 
     <Authors>Reductech</Authors>
     <Company>Reductech</Company>
     <Copyright>Copyright (c) 2022 Reductech Ltd</Copyright>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(CI)' != ''">
+    <!-- deterministic builds for Source Link -->
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- Source Link and symbols -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../CHANGELOG.md" Pack="true" PackagePath="/" />
+    <None Include="../LICENSE" Pack="true" PackagePath="/" />
+    <None Include="../NOTICE" Pack="true" PackagePath="/" />
+    <None Include="../README.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
+    <PackageReference Include="Microsoft.SourceLink.GitLab" Version="1.1.1">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="NuGet.Protocol" Version="6.2.1" />
     <PackageReference Include="System.IO.Abstractions" Version="16.1.26" />
   </ItemGroup>
