@@ -1,7 +1,18 @@
+# v0.9.0 (2022-07-13)
+
+- Enabled [Source Link](https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/sourcelink)
+- Enabled publish to [Nuget.org](https://www.nuget.org) including symbols
+- Bux fixes and dependency updates
+
+## Issues Closed in this Release
+
+### Bug Fixes
+
+- Prevent null reference exception #48
+
 # v0.8.0 (2022-05-27)
 
 ## Summary of Changes
-
 
 - Consolidated connector registry and manager settings
 - The connector manager `appsettings.json` key has changed from `sequence` to `connectorManager`
@@ -148,8 +159,3 @@ Initial release of the Connector Manager which provides functionality to:
 - Add ability to get assembly settings tuples #2
 - Add unit tests for connector manager #4
 - Add implementation of nuget logger #3
-
-
-
-
-

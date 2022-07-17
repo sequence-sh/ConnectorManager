@@ -13,18 +13,46 @@
   <PropertyGroup>
     <PackageId>Reductech.Sequence.ConnectorManager.Base</PackageId>
     <Title>Sequence® Connector Manager Base</Title>
-    <Description>Generic Connector package management.</Description>
+    <Description>Connector package management for Sequence. Data model.</Description>
     <Product>Sequence®</Product>
     <PackageTags>ediscovery;forensics;automation;orchestration;edrm;packagemanagement;nuget;connectors</PackageTags>
 
-    <PackageProjectUrl>https://gitlab.com/reductech/Sequence/connectormanager</PackageProjectUrl>
-    <RepositoryUrl>https://gitlab.com/reductech/Sequence/connectormanager</RepositoryUrl>
+    <PackageProjectUrl>https://sequence.sh</PackageProjectUrl>
+    <RepositoryUrl>https://gitlab.com/reductech/Sequence/connectormanager.git</RepositoryUrl>
     <PackageReleaseNotes>https://gitlab.com/reductech/Sequence/connectormanager/-/blob/master/CHANGELOG.md</PackageReleaseNotes>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
 
     <Authors>Reductech</Authors>
     <Company>Reductech</Company>
     <Copyright>Copyright (c) 2022 Reductech Ltd</Copyright>
   </PropertyGroup>
+
+  <PropertyGroup Condition="'$(CI)' != ''">
+    <!-- deterministic builds for Source Link -->
+    <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- Source Link and symbols -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="../CHANGELOG.md" Pack="true" PackagePath="/" />
+    <None Include="../LICENSE" Pack="true" PackagePath="/" />
+    <None Include="../NOTICE" Pack="true" PackagePath="/" />
+    <None Include="../README.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitLab" Version="1.1.1">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
 
 </Project>
