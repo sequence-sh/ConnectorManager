@@ -1,3 +1,7 @@
+# v0.10.0 (2022-08-29)
+
+Maintenance release - dependency updates only.
+
 # v0.9.0 (2022-07-13)
 
 - Enabled [Source Link](https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/sourcelink)
@@ -159,3 +163,4 @@ Initial release of the Connector Manager which provides functionality to:
 - Add ability to get assembly settings tuples #2
 - Add unit tests for connector manager #4
 - Add implementation of nuget logger #3
+
