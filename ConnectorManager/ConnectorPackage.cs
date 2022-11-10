@@ -1,8 +1,8 @@
 ﻿using System.IO.Abstractions;
 using NuGet.Packaging;
-using Reductech.Sequence.ConnectorManagement.Base;
+using Sequence.ConnectorManagement.Base;
 
-namespace Reductech.Sequence.ConnectorManagement;
+namespace Sequence.ConnectorManagement;
 
 /// <summary>
 /// Connector metadata which includes a downloaded connector package.

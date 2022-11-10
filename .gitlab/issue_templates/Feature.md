@@ -14,7 +14,7 @@ and without providing implementation specifics, describe the following:
 
 ---
 
-> Everything below here is **optional**.\f
+> Everything below here is **optional**.
 > It can be added later, once the feature is in planning or design.
 
 ## Implementation Details
@@ -34,36 +34,3 @@ Default is:
 - Delivers value
 - Has the required code coverage
 - Is merged into master
-
----
-
-> **Everything below here can and should be deleted.**
-
-## Roles
-
-- Developer
-- Technician
-- Manager
-- Reviewer
-- Us (Reductech) - default if no role is specified
-
-## Title
-
-- What is being built, for whom and why including the value created
-
-```
-[Create feature], so that a [role] can [do something]
-```
-
-Example:
-
-> Create process to automate searching and tagging, so that a Technician can save time
-
-## Help
-
-- [Issues and User Stories](https://gitlab.com/reductech/kb/-/wikis/Development/Issues-and-User-Stories)
-- [Roles](https://gitlab.com/reductech/kb/-/wikis/Development/Issues-and-User-Stories#roles)
-- [Done Criteria](https://gitlab.com/reductech/kb/-/wikis/Development/Issues-and-User-Stories#done-criteria)
-- [Feature Labels](https://gitlab.com/reductech/kb/-/wikis/Development/Labels#features-a9cab9)
-
-Don't forget to link to any related issues or blockers.

@@ -2,9 +2,9 @@ using System.Collections.Generic;
 using System.IO.Abstractions.TestingHelpers;
 using System.Text.RegularExpressions;
 using System.Threading;
-using Reductech.Sequence.ConnectorManagement.Base;
+using Sequence.ConnectorManagement.Base;
 
-namespace Reductech.Sequence.ConnectorManagement.Tests;
+namespace Sequence.ConnectorManagement.Tests;
 
 public class FileConnectorConfigurationTests
 {

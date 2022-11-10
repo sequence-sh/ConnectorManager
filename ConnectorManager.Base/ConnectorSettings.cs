@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
 
-namespace Reductech.Sequence.ConnectorManagement.Base;
+namespace Sequence.ConnectorManagement.Base;
 
 /// <summary>
 /// Settings for a connector

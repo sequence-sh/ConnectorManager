@@ -5,14 +5,14 @@
     <IsPackable>false</IsPackable>
     <IsPublishable>false</IsPublishable>
     <IsTestProject>true</IsTestProject>
-    <RootNamespace>Reductech.Sequence.ConnectorManagement.Tests</RootNamespace>
+    <RootNamespace>Sequence.ConnectorManagement.Tests</RootNamespace>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup>
-    <RepositoryUrl>https://gitlab.com/reductech/sequence/connectormanager.git</RepositoryUrl>
+    <RepositoryUrl>https://gitlab.com/sequence/connectormanager.git</RepositoryUrl>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-    <Authors>Reductech</Authors>
+    <Authors>antonyoni;MarkWainwright</Authors>
     <Company>Reductech</Company>
     <Copyright>Copyright (c) 2022 Reductech Ltd</Copyright>
   </PropertyGroup>

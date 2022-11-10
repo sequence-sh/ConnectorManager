@@ -4,26 +4,26 @@
     <TargetFramework>net6.0</TargetFramework>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <RootNamespace>Reductech.Sequence.ConnectorManagement.Base</RootNamespace>
-    <AssemblyName>Reductech.Sequence.ConnectorManagement.Base</AssemblyName>
+    <RootNamespace>Sequence.ConnectorManagement.Base</RootNamespace>
+    <AssemblyName>Sequence.ConnectorManagement.Base</AssemblyName>
     <Nullable>enable</Nullable>
     <Version>0.11.0$(VersionSuffix)</Version>
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageId>Reductech.Sequence.ConnectorManager.Base</PackageId>
+    <PackageId>Sequence.ConnectorManager.Base</PackageId>
     <Title>Sequence® Connector Manager Base</Title>
     <Description>Connector package management for Sequence. Data model.</Description>
     <Product>Sequence®</Product>
     <PackageTags>ediscovery;forensics;automation;orchestration;edrm;packagemanagement;nuget;connectors</PackageTags>
 
     <PackageProjectUrl>https://sequence.sh</PackageProjectUrl>
-    <RepositoryUrl>https://gitlab.com/reductech/Sequence/connectormanager.git</RepositoryUrl>
-    <PackageReleaseNotes>https://gitlab.com/reductech/Sequence/connectormanager/-/blob/master/CHANGELOG.md</PackageReleaseNotes>
+    <RepositoryUrl>https://gitlab.com/sequence/connectormanager.git</RepositoryUrl>
+    <PackageReleaseNotes>https://gitlab.com/sequence/connectormanager/-/blob/master/CHANGELOG.md</PackageReleaseNotes>
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
 
-    <Authors>Reductech</Authors>
+    <Authors>antonyoni;MarkWainwright</Authors>
     <Company>Reductech</Company>
     <Copyright>Copyright (c) 2022 Reductech Ltd</Copyright>
   </PropertyGroup>

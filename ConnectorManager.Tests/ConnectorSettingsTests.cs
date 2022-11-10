@@ -2,9 +2,9 @@
 using System.Reflection;
 using System.Text.Json;
 using Moq;
-using Reductech.Sequence.ConnectorManagement.Base;
+using Sequence.ConnectorManagement.Base;
 
-namespace Reductech.Sequence.ConnectorManagement.Tests;
+namespace Sequence.ConnectorManagement.Tests;
 
 public class ConnectorSettingsTests
 {

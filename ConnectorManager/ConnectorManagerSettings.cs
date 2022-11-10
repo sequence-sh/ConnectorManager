@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Reductech.Sequence.ConnectorManagement;
+namespace Sequence.ConnectorManagement;
 
 /// <summary>
 /// Settings for the connector manager.

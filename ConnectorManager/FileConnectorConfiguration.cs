@@ -1,9 +1,9 @@
 using System.IO.Abstractions;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Reductech.Sequence.ConnectorManagement.Base;
+using Sequence.ConnectorManagement.Base;
 
-namespace Reductech.Sequence.ConnectorManagement;
+namespace Sequence.ConnectorManagement;
 
 /// <summary>
 /// A ConnectorConfiguration that uses a JSON file as the backing store.

@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using MELT;
 
-namespace Reductech.Sequence.ConnectorManagement.Tests;
+namespace Sequence.ConnectorManagement.Tests;
 
 public class PluginLoadContextTests
 {

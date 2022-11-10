@@ -1,4 +1,4 @@
-﻿namespace Reductech.Sequence.ConnectorManagement.Tests;
+﻿namespace Sequence.ConnectorManagement.Tests;
 
 public partial class ConnectorManagerTests
 {
