@@ -1,6 +1,6 @@
-using Reductech.Sequence.ConnectorManagement.Base;
+using Sequence.ConnectorManagement.Base;
 
-namespace Reductech.Sequence.ConnectorManagement;
+namespace Sequence.ConnectorManagement;
 
 /// <inheritdoc />
 public abstract class ConnectorConfigurationBase : IConnectorConfiguration

@@ -1,6 +1,6 @@
-﻿using Reductech.Sequence.ConnectorManagement.Base;
+﻿using Sequence.ConnectorManagement.Base;
 
-namespace Reductech.Sequence.ConnectorManagement;
+namespace Sequence.ConnectorManagement;
 
 /// <summary>
 /// A ConnectorConfiguration that uses an in-memory dictionary as the backing store.

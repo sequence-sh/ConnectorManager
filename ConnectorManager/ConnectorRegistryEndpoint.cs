@@ -1,4 +1,4 @@
-﻿namespace Reductech.Sequence.ConnectorManagement;
+﻿namespace Sequence.ConnectorManagement;
 
 /// <summary>
 /// Defines uri and login details for a connector registry.

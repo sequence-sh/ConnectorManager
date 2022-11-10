@@ -1,4 +1,4 @@
-﻿namespace Reductech.Sequence.ConnectorManagement.Base;
+﻿namespace Sequence.ConnectorManagement.Base;
 
 /// <summary>
 /// Stores connector metadata.

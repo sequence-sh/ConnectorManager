@@ -4,9 +4,9 @@ using System.IO.Abstractions.TestingHelpers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Reductech.Sequence.ConnectorManagement.Base;
+using Sequence.ConnectorManagement.Base;
 
-namespace Reductech.Sequence.ConnectorManagement.Tests;
+namespace Sequence.ConnectorManagement.Tests;
 
 public class ServiceCollectionExtensions
 {

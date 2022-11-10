@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using Reductech.Sequence.ConnectorManagement.Base;
+using Sequence.ConnectorManagement.Base;
 
-namespace Reductech.Sequence.ConnectorManagement.Tests;
+namespace Sequence.ConnectorManagement.Tests;
 
 internal static class Helpers
 {

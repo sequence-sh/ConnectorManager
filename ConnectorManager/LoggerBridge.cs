@@ -2,7 +2,7 @@
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 using Nu = NuGet.Common;
 
-namespace Reductech.Sequence.ConnectorManagement;
+namespace Sequence.ConnectorManagement;
 
 /// <inheritdoc />
 public class LoggerBridge<T> : Nu.ILogger

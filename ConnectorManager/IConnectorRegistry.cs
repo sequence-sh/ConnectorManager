@@ -1,6 +1,6 @@
-﻿using Reductech.Sequence.ConnectorManagement.Base;
+﻿using Sequence.ConnectorManagement.Base;
 
-namespace Reductech.Sequence.ConnectorManagement;
+namespace Sequence.ConnectorManagement;
 
 /// <summary>
 /// Represents a way of interacting with a remote connector registry / nuget feed.

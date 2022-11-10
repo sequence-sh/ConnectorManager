@@ -1,23 +1,24 @@
 # Sequence® Connector Manager
 
-A plugins management system for [Sequence](https://sequence.sh) and [Sequence Connectors](https://gitlab.com/reductech/sequence/connectors).
+A plugins management system for [Sequence](https://sequence.sh) and
+[Sequence Connectors](https://gitlab.com/sequence/connectors).
 
 # Connectors
 
 All the available connectors can be found in the
-[Connector Registry](https://gitlab.com/reductech/sequence/connector-registry/-/packages).
+[Connector Registry](https://gitlab.com/sequence/connector-registry/-/packages).
 The connector manager is set up to work with this registry by default.
 
 Pre-release and development builds of connectors can be found in the
-[Connector Registry Dev](https://gitlab.com/reductech/sequence/connector-registry-dev).
+[Connector Registry Dev](https://gitlab.com/sequence/connector-registry-dev/-/packages).
 
 # Example `connectors.json`
 
 ```json
 {
-  "Reductech.Sequence.Connectors.Nuix": {
-    "id": "Reductech.Sequence.Connectors.Nuix",
-    "version": "0.14.0",
+  "Sequence.Connectors.Nuix": {
+    "id": "Sequence.Connectors.Nuix",
+    "version": "0.18.0",
     "settings": {
       "exeConsolePath": "C:\\Program Files\\Nuix\\Nuix 9.0\\nuix_console.exe",
       "licencesourcetype": "dongle",
@@ -32,13 +33,13 @@ Pre-release and development builds of connectors can be found in the
       ]
     }
   },
-  "Reductech.Sequence.Connectors.FileSystem": {
-    "id": "Reductech.Sequence.Connectors.FileSystem",
-    "version": "0.14.0"
+  "Sequence.Connectors.FileSystem": {
+    "id": "Sequence.Connectors.FileSystem",
+    "version": "0.18.0"
   },
   "data": {
-    "id": "Reductech.Sequence.Connectors.StructuredData",
-    "version": "0.14.0",
+    "id": "Sequence.Connectors.StructuredData",
+    "version": "0.18.0",
     "enabled": false
   }
 }
@@ -84,7 +85,7 @@ All other files will be extracted to their respective paths.
 # Testing
 
 The `ConnectorRegistry` is integration tested against the
-[nuget feed](https://gitlab.com/reductech/sequence/connectormanager/-/packages) of this project.
+[nuget feed](https://gitlab.com/sequence/connectormanager/-/packages) of this project.
 
 # Documentation
 
@@ -92,7 +93,7 @@ Documentation available at https://sequence.sh
 
 # Releases
 
-Can be downloaded from the [Releases page](https://gitlab.com/reductech/sequence/connectormanager/-/releases).
+Can be downloaded from the [Releases page](https://gitlab.com/sequence/connectormanager/-/releases).
 
 # NuGet Packages
 
