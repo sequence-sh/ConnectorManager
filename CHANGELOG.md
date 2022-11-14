@@ -1,3 +1,11 @@
+# v0.11.0 (2022-11-14)
+
+## Issues Closed in this Release
+
+### Other
+
+- Update namespace and paths after move to Sequence group #61
+
 # v0.10.0 (2022-08-29)
 
 Maintenance release - dependency updates only.
@@ -163,4 +171,5 @@ Initial release of the Connector Manager which provides functionality to:
 - Add ability to get assembly settings tuples #2
 - Add unit tests for connector manager #4
 - Add implementation of nuget logger #3
+
 
